@@ -1,0 +1,67 @@
+{
+  "frame_id": "frame_041",
+  "timestamp": "16:47:20",
+  "location": "Driveway",
+  "vlm_description": "A person is standing near a parked white sedan in a driveway with a small entrance area.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "person",
+    "vehicle"
+  ],
+  "object_details": [
+    {
+      "label": "person",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "standing",
+        "near_vehicle"
+      ]
+    },
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 1,
+  "person_features": [
+    {
+      "id": "person_1",
+      "appearance": [
+        "white_t-shirt",
+        "lungee"
+      ],
+      "face_visible": false,
+      "actions": [
+        "standing"
+      ]
+    }
+  ],
+  "vehicles_detected": [],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A person standing next to a parked vehicle.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "Monitor for unusual behavior.",
+  "alert_reasoning": "No suspicious activity detected; normal residential presence during clear weather.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4085
+}

@@ -1,0 +1,46 @@
+{
+  "query": "Were there any vehicles detected? Describe them.",
+  "timestamp": "2026-04-26T05:09:53",
+  "results": [
+    {
+      "frame_id": "frame_021",
+      "similarity_score": 0.4423,
+      "timestamp": "16:23:40",
+      "location": "Side Entrance",
+      "description": "vehicle,shoe",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_014",
+      "similarity_score": 0.4218,
+      "timestamp": "16:15:23",
+      "location": "Side Entrance",
+      "description": "vehicle",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_037",
+      "similarity_score": 0.4158,
+      "timestamp": "16:42:36",
+      "location": "Perimeter North",
+      "description": "person,vehicle,shoes",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_040",
+      "similarity_score": 0.39,
+      "timestamp": "16:46:09",
+      "location": "Restricted Zone",
+      "description": "person,vehicle",
+      "threat_assessment": "medium"
+    },
+    {
+      "frame_id": "frame_042",
+      "similarity_score": 0.3891,
+      "timestamp": "16:48:31",
+      "location": "Side Entrance",
+      "description": "vehicle,footwear",
+      "threat_assessment": "none"
+    }
+  ]
+}

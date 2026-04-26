@@ -1,0 +1,46 @@
+{
+  "query": "Was anything detected after hours?",
+  "timestamp": "2026-04-26T03:04:16",
+  "results": [
+    {
+      "frame_id": "frame_004",
+      "similarity_score": 0.3267,
+      "timestamp": "16:03:33",
+      "location": "Back Entrance",
+      "description": "vehicle,shoes,door,stairs",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_027",
+      "similarity_score": 0.3185,
+      "timestamp": "16:30:46",
+      "location": "Driveway",
+      "description": "person,two vehicles,shoes,steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.2999,
+      "timestamp": "16:05:55",
+      "location": "Driveway",
+      "description": "car,shoes,bench",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_022",
+      "similarity_score": 0.2974,
+      "timestamp": "16:24:51",
+      "location": "Main Gate",
+      "description": "SUV,shoes,door",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_025",
+      "similarity_score": 0.2893,
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "description": "SUV,shoes,staircase,door,potted plant",
+      "threat_assessment": "low"
+    }
+  ]
+}

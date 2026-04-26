@@ -1,0 +1,55 @@
+{
+  "session_summary": {
+    "date": "2026-04-26",
+    "total_frames_analyzed": 200,
+    "total_alerts": 16,
+    "high_alerts": 4,
+    "medium_alerts": 12,
+    "low_alerts": 0,
+    "common_objects_detected": [
+      "door",
+      "doorstep",
+      "doorway",
+      "entrance",
+      "footwear",
+      "person",
+      "sandals",
+      "shoe"
+    ],
+    "people_count": 34,
+    "vehicles_count": 188,
+    "locations_visited": [
+      "Main Gate",
+      "Perimeter North",
+      "Garage",
+      "Back Entrance",
+      "Restricted Zone",
+      "Driveway",
+      "Side Entrance"
+    ],
+    "session_highlights": "Processed 200 frames with 16 alerts. Highest severity count: 4."
+  },
+  "system_operations": {
+    "average_processing_time_ms": 3672,
+    "most_frequent_model_used": "gpt-4o",
+    "max_confidence": 0.95,
+    "common_recommendation": "Review frame manually"
+  },
+  "alert_description": {
+    "total_alerts_with_no_trigger": 48,
+    "frames_triggers": 2
+  },
+  "battery_status": {
+    "initial_battery_level": "unknown",
+    "battery_issues_detected_in_frames": []
+  },
+  "narrative": "Monitoring session covered 7 locations with 2 triggered alerts. System maintained continuous frame-level analysis and indexing throughout the run.",
+  "statistics": {
+    "total_alerts": 16,
+    "frames_analyzed": 200,
+    "high_alerts": 4,
+    "medium_alerts": 12,
+    "low_alerts": 0
+  },
+  "one_line_summary": "Today's monitoring detected 16 alerts across 200 frames, including 4 high-severity incidents, notably 3 unauthorized entries at Back Entrance and Restricted Zone, with high vehicle activity observed."
+}

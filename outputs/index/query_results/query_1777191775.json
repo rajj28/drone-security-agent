@@ -1,0 +1,46 @@
+{
+  "query": "Was anything detected after hours?",
+  "timestamp": "2026-04-26T13:52:55",
+  "results": [
+    {
+      "frame_id": "frame_046",
+      "similarity_score": 0.327,
+      "timestamp": "16:53:15",
+      "location": "Back Entrance",
+      "description": "vehicle,shoes",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_020",
+      "similarity_score": 0.3109,
+      "timestamp": "16:22:29",
+      "location": "Driveway",
+      "description": "vehicle,shoes",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_035",
+      "similarity_score": 0.273,
+      "timestamp": "16:40:14",
+      "location": "Side Entrance",
+      "description": "vehicle,entrance,exterior_steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_005",
+      "similarity_score": 0.2709,
+      "timestamp": "16:04:44",
+      "location": "Restricted Zone",
+      "description": "",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_003",
+      "similarity_score": 0.2709,
+      "timestamp": "16:02:22",
+      "location": "Garage",
+      "description": "",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

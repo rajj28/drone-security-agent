@@ -1,0 +1,46 @@
+{
+  "query": "What happened at the restricted zone?",
+  "timestamp": "2026-04-26T13:50:39",
+  "results": [
+    {
+      "frame_id": "frame_039",
+      "similarity_score": 0.3227,
+      "timestamp": "16:44:58",
+      "location": "Back Entrance",
+      "description": "person,vehicle",
+      "threat_assessment": "medium"
+    },
+    {
+      "frame_id": "frame_046",
+      "similarity_score": 0.3111,
+      "timestamp": "16:53:15",
+      "location": "Back Entrance",
+      "description": "vehicle,shoes",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_043",
+      "similarity_score": 0.268,
+      "timestamp": "16:49:42",
+      "location": "Main Gate",
+      "description": "vehicle,footwear,door",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_007",
+      "similarity_score": 0.2571,
+      "timestamp": "16:07:06",
+      "location": "Side Entrance",
+      "description": "vehicle,shoes,stairs",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_042",
+      "similarity_score": 0.2541,
+      "timestamp": "16:48:31",
+      "location": "Side Entrance",
+      "description": "vehicle,shoes,stairs,door",
+      "threat_assessment": "low"
+    }
+  ]
+}

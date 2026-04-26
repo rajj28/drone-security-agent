@@ -1,0 +1,66 @@
+{
+  "frame_id": "frame_043",
+  "timestamp": "16:49:42",
+  "location": "Main Gate",
+  "vlm_description": "Image shows the entrance area with a parked white sedan on the left. Several pairs of shoes are visible near the steps leading to a door.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes",
+    "door"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 5,
+      "confidence": 0.85,
+      "attributes": [
+        "various positions"
+      ]
+    },
+    {
+      "label": "door",
+      "count": 1,
+      "confidence": 0.95,
+      "attributes": [
+        "wooden",
+        "closed"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "sedan"
+  ],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "white",
+      "position": "parked",
+      "direction": "north",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "No significant activity observed.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required.",
+  "alert_reasoning": "No suspicious activity detected. Vehicle is parked, and no people are present.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3235
+}

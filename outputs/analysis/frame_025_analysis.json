@@ -1,0 +1,48 @@
+{
+  "frame_id": "frame_025",
+  "timestamp": "16:28:24",
+  "location": "Back Entrance",
+  "vlm_description": "The scene shows a residential entrance area with a white vehicle parked near the entrance steps. Various shoes are visible near the steps.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Vehicle parked in the designated area with no visible person in the vicinity.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required. Vehicle is properly parked in a residential area.",
+  "alert_reasoning": "There are no suspicious activities or elements present. The vehicle is parked appropriately.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3851
+}

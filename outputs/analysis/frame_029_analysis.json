@@ -1,0 +1,49 @@
+{
+  "frame_id": "frame_029",
+  "timestamp": "16:33:08",
+  "location": "Main Gate",
+  "vlm_description": "The scene depicts a residential entrance area with one parked white vehicle. There are several pairs of shoes near the entrance, suggesting typical residential activity.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "shoes",
+    "door"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "The vehicle is stationary, likely belonging to the residents.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No security threat detected. Continue monitoring the area.",
+  "alert_reasoning": "Normal residential scene with no suspicious activity or unauthorized presence.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3896
+}

@@ -1,0 +1,50 @@
+{
+  "frame_id": "frame_007",
+  "timestamp": "16:07:06",
+  "location": "Side Entrance",
+  "vlm_description": "The scene shows the side entrance of a building with a parked sedan and a small set of steps leading to a door. The area is well-lit by sunlight.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes",
+    "steps",
+    "door"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "sedan"
+  ],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "black",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": true
+    }
+  ],
+  "activity": "No human activity detected; parked vehicle near the entrance.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No immediate action required.",
+  "alert_reasoning": "No suspicious activity or unauthorized access detected.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4161
+}

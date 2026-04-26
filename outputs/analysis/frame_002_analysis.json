@@ -1,0 +1,48 @@
+{
+  "frame_id": "frame_002",
+  "timestamp": "16:01:11",
+  "location": "Perimeter North",
+  "vlm_description": "The scene shows a residential entrance with a parked vehicle.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.95,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "black",
+      "position": "parked",
+      "direction": "north",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Vehicle is parked at the residential entrance. No people are present.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required.",
+  "alert_reasoning": "No suspicious activity detected; normal residential scene.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3622
+}

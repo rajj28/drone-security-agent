@@ -1,0 +1,56 @@
+{
+  "frame_id": "frame_022",
+  "timestamp": "16:24:51",
+  "location": "Main Gate",
+  "vlm_description": "The scene depicts an entrance area with a white SUV parked in front of a residential building. The entrance has a set of steps leading up to a door.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 3,
+      "confidence": 0.8,
+      "attributes": [
+        "outside"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A vehicle is parked outside a residential entrance.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "Continue monitoring the area for unusual activity.",
+  "alert_reasoning": "No suspicious activity or presence is observed in a non-restricted and active zone.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4593
+}

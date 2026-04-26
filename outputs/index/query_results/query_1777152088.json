@@ -1,0 +1,46 @@
+{
+  "query": "How many people were detected during monitoring?",
+  "timestamp": "2026-04-26T02:51:28",
+  "results": [
+    {
+      "frame_id": "frame_022",
+      "similarity_score": 0.2573,
+      "timestamp": "16:24:51",
+      "location": "Main Gate",
+      "description": "SUV,shoes,door",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_027",
+      "similarity_score": 0.2539,
+      "timestamp": "16:30:46",
+      "location": "Driveway",
+      "description": "person,two vehicles,shoes,steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.2308,
+      "timestamp": "16:05:55",
+      "location": "Driveway",
+      "description": "car,shoes,bench",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_011",
+      "similarity_score": 0.193,
+      "timestamp": "16:11:50",
+      "location": "Back Entrance",
+      "description": "car,shoes,door,vegetation",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_025",
+      "similarity_score": 0.1922,
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "description": "SUV,shoes,staircase,door,potted plant",
+      "threat_assessment": "low"
+    }
+  ]
+}

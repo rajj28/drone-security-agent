@@ -1,0 +1,46 @@
+{
+  "query": "Give me a complete timeline of incidents today",
+  "timestamp": "2026-04-26T02:53:37",
+  "results": [
+    {
+      "frame_id": "frame_027",
+      "similarity_score": 0.2353,
+      "timestamp": "16:30:46",
+      "location": "Driveway",
+      "description": "person,two vehicles,shoes,steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_038",
+      "similarity_score": 0.2087,
+      "timestamp": "16:43:47",
+      "location": "Garage",
+      "description": "two cars,building entrance,door,shoes,table",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_050",
+      "similarity_score": 0.2062,
+      "timestamp": "16:57:59",
+      "location": "Main Gate",
+      "description": "shoes,SUV,door,steps,bench,water bottles",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.1993,
+      "timestamp": "16:05:55",
+      "location": "Driveway",
+      "description": "car,shoes,bench",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_036",
+      "similarity_score": 0.1968,
+      "timestamp": "16:41:25",
+      "location": "Main Gate",
+      "description": "cars,person,shoes,rug,stairs",
+      "threat_assessment": "low"
+    }
+  ]
+}

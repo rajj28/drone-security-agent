@@ -1,0 +1,47 @@
+{
+  "frame_id": "frame_026",
+  "timestamp": "16:29:35",
+  "location": "Restricted Zone",
+  "vlm_description": "Exterior of a residential entrance with parked vehicles.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 2,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "No significant activity; vehicles are parked.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action needed; monitor for any changes.",
+  "alert_reasoning": "Scene is static with no unusual activity detected.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3811
+}

@@ -1,0 +1,56 @@
+{
+  "frame_id": "frame_050",
+  "timestamp": "16:57:59",
+  "location": "Main Gate",
+  "vlm_description": "A residential entrance with a parked vehicle on the left. Stairs leading to a door with several pairs of shoes scattered near the entrance. Bright daylight with shadows visible.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "white",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 4,
+      "confidence": 0.8,
+      "attributes": [
+        "scattered"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "vehicle_1"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Vehicle is parked, no people present",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required.",
+  "alert_reasoning": "No suspicious activity or objects detected.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3343
+}

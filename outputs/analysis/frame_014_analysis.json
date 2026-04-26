@@ -1,0 +1,47 @@
+{
+  "frame_id": "frame_014",
+  "timestamp": "16:15:23",
+  "location": "Side Entrance",
+  "vlm_description": "The scene shows a side entrance area with a white SUV parked near the entrance. There are multiple pairs of shoes outside, indicating potential presence inside.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "No visible human activity; vehicle is stationary.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "Continue monitoring as part of routine patrol.",
+  "alert_reasoning": "No suspicious activity detected during daylight hours in a non-restricted zone.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3398
+}

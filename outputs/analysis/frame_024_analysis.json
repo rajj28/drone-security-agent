@@ -1,0 +1,57 @@
+{
+  "frame_id": "frame_024",
+  "timestamp": "16:27:13",
+  "location": "Garage",
+  "vlm_description": "The frame shows a residential entrance with a parked white vehicle. Shoes are visible near the steps leading to a door.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 3,
+      "confidence": 0.9,
+      "attributes": [
+        "various types",
+        "near entrance"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "vehicle"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "No noticeable activity, the vehicle is parked.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required as there is no suspicious activity.",
+  "alert_reasoning": "The scene is typical for a residential area with no signs of intrusion or unusual activity.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3428
+}

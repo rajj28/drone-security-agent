@@ -1,0 +1,46 @@
+{
+  "query": "Show me all high severity alerts",
+  "timestamp": "2026-04-26T02:52:03",
+  "results": [
+    {
+      "frame_id": "frame_022",
+      "similarity_score": 0.2532,
+      "timestamp": "16:24:51",
+      "location": "Main Gate",
+      "description": "SUV,shoes,door",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_027",
+      "similarity_score": 0.2174,
+      "timestamp": "16:30:46",
+      "location": "Driveway",
+      "description": "person,two vehicles,shoes,steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.203,
+      "timestamp": "16:05:55",
+      "location": "Driveway",
+      "description": "car,shoes,bench",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_018",
+      "similarity_score": 0.1834,
+      "timestamp": "16:20:07",
+      "location": "Back Entrance",
+      "description": "car,shoes,door,steps",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_025",
+      "similarity_score": 0.1824,
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "description": "SUV,shoes,staircase,door,potted plant",
+      "threat_assessment": "low"
+    }
+  ]
+}

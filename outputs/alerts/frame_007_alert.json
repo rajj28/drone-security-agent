@@ -1,0 +1,31 @@
+{
+  "alert_id": "ALT_20260425_007",
+  "frame_id": "frame_007",
+  "timestamp": "16:07:06",
+  "location": "Side Entrance",
+  "alert_triggered": false,
+  "severity": "NONE",
+  "alert_type": null,
+  "message": "Alert for frame_007 at Side Entrance 16:07:06",
+  "objects_involved": [
+    "vehicle",
+    "shoes",
+    "steps",
+    "door"
+  ],
+  "rule_triggered": null,
+  "llm_validated": false,
+  "llm_reasoning": "",
+  "recommended_action": "No action required",
+  "acknowledged": false,
+  "auto_escalate": false,
+  "structured_reasoning": {
+    "severity": "NONE",
+    "alert_triggered": false,
+    "llm_validated": false,
+    "llm_reasoning": "",
+    "recommended_action": "No action required",
+    "confidence": 0.0,
+    "context_signal": ""
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "frame_id": "frame_047",
+  "timestamp": "16:54:26",
+  "unix_time": 1675270466,
+  "drone": {
+    "latitude": 18.5204,
+    "longitude": 73.8567,
+    "altitude_m": 15.0,
+    "battery_pct": 8.0,
+    "heading_degrees": 90,
+    "speed_ms": 0.0,
+    "status": "patrolling",
+    "signal_strength": "strong"
+  },
+  "location": "Restricted Zone",
+  "zone": "restricted",
+  "weather": "clear",
+  "temperature_c": 24.5,
+  "visibility": "good",
+  "is_restricted_zone": true,
+  "is_after_hours": false
+}

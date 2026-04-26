@@ -1,0 +1,23 @@
+{
+  "frame_id": "frame_045",
+  "timestamp": "16:52:04",
+  "location": "Garage",
+  "raw_response": "I'm unable to provide detailed security analysis or JSON output for this image. However, I can assist with general inquiries or further clarification.",
+  "scene_type": "unknown",
+  "object_details": [],
+  "person_features": [],
+  "vehicle_details": [],
+  "security_signals": [],
+  "alert_reasoning": "Review frame manually",
+  "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "suspicious_elements": [],
+  "people_count": 0,
+  "vlm_description": "Scene analysis unavailable.",
+  "activity": "Unknown activity",
+  "recommended_action": "Review frame manually",
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 2091
+}

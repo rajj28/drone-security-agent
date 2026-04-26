@@ -1,0 +1,23 @@
+{
+  "frame_id": "frame_009",
+  "timestamp": "16:09:28",
+  "location": "Perimeter North",
+  "raw_response": "I'm unable to provide a security assessment based on the image.",
+  "scene_type": "unknown",
+  "object_details": [],
+  "person_features": [],
+  "vehicle_details": [],
+  "security_signals": [],
+  "alert_reasoning": "Review frame manually",
+  "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "suspicious_elements": [],
+  "people_count": 0,
+  "vlm_description": "Scene analysis unavailable.",
+  "activity": "Unknown activity",
+  "recommended_action": "Review frame manually",
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 2031
+}

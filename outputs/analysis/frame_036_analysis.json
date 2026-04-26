@@ -1,0 +1,87 @@
+{
+  "frame_id": "frame_036",
+  "timestamp": "16:41:25",
+  "location": "Main Gate",
+  "vlm_description": "The frame captures a residential entrance area with a parked white sedan on the driveway. Two individuals are present by the vehicle. There is a small porch with shoes placed near the door, suggesting recent activity.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "person",
+    "vehicle",
+    "shoe"
+  ],
+  "object_details": [
+    {
+      "label": "person",
+      "count": 2,
+      "confidence": 0.9,
+      "attributes": [
+        "standing",
+        "near_vehicle"
+      ]
+    },
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoe",
+      "count": 2,
+      "confidence": 0.8,
+      "attributes": [
+        "near_entrance"
+      ]
+    }
+  ],
+  "people_count": 2,
+  "person_features": [
+    {
+      "id": "person_1",
+      "appearance": [
+        "casual_clothes"
+      ],
+      "face_visible": true,
+      "actions": [
+        "standing"
+      ]
+    },
+    {
+      "id": "person_2",
+      "appearance": [
+        "casual_clothes"
+      ],
+      "face_visible": true,
+      "actions": [
+        "standing"
+      ]
+    }
+  ],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Two individuals are standing near a parked vehicle at the entrance of a residential area.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action is required as there are no suspicious activities detected.",
+  "alert_reasoning": "The presence of individuals near a parked vehicle in a residential area during permitted hours does not indicate a threat.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4068
+}

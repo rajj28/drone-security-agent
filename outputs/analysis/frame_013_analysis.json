@@ -1,0 +1,64 @@
+{
+  "frame_id": "frame_013",
+  "timestamp": "16:14:12",
+  "location": "Driveway",
+  "vlm_description": "The scene shows a driveway with multiple pairs of shoes outside the entrance and a white vehicle parked nearby.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.95,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 4,
+      "confidence": 0.9,
+      "attributes": [
+        "various"
+      ]
+    },
+    {
+      "label": "door",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "open"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Parked vehicle with no visible people, open entrance, shoes placed outside.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "Continue monitoring; no immediate threat detected.",
+  "alert_reasoning": "Parked vehicle with no immediate suspicious activity noted.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4714
+}

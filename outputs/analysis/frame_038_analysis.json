@@ -1,0 +1,78 @@
+{
+  "frame_id": "frame_038",
+  "timestamp": "16:43:47",
+  "location": "Garage",
+  "vlm_description": "The scene depicts a residential area with parked vehicles. A driveway leading to an entrance is visible.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "person"
+  ],
+  "object_details": [
+    {
+      "label": "person",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "standing",
+        "near_vehicle"
+      ]
+    },
+    {
+      "label": "vehicle",
+      "count": 2,
+      "confidence": 0.85,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 1,
+  "person_features": [
+    {
+      "id": "person_1",
+      "appearance": [
+        "dark_clothes"
+      ],
+      "face_visible": false,
+      "actions": [
+        "near_vehicle"
+      ]
+    }
+  ],
+  "vehicles_detected": [
+    "sedan"
+  ],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "black",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": true
+    },
+    {
+      "type": "sedan",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A person is present near a parked vehicle.",
+  "security_signals": [
+    "none"
+  ],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "No immediate action required.",
+  "alert_reasoning": "Presence in a non-restricted, public zone during acceptable hours.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3784
+}

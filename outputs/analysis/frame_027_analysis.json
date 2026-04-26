@@ -1,0 +1,68 @@
+{
+  "frame_id": "frame_027",
+  "timestamp": "16:30:46",
+  "location": "Driveway",
+  "vlm_description": "A residential driveway with a person near the entrance.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "person",
+    "vehicle"
+  ],
+  "object_details": [
+    {
+      "label": "person",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "walking",
+        "holding_item"
+      ]
+    },
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 1,
+  "person_features": [
+    {
+      "id": "person_1",
+      "appearance": [
+        "purple_clothes"
+      ],
+      "face_visible": true,
+      "actions": [
+        "walking"
+      ]
+    }
+  ],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A person walking near the entrance of the house.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "Continue monitoring, no immediate action required.",
+  "alert_reasoning": "The scene appears typical for a residential area during daytime hours.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4058
+}

@@ -1,0 +1,26 @@
+{
+  "alert_id": "ALT_20260425_009",
+  "frame_id": "frame_009",
+  "timestamp": "16:09:28",
+  "location": "Perimeter North",
+  "alert_triggered": false,
+  "severity": "NONE",
+  "alert_type": null,
+  "message": "Alert for frame_009 at Perimeter North 16:09:28",
+  "objects_involved": [],
+  "rule_triggered": null,
+  "llm_validated": false,
+  "llm_reasoning": "",
+  "recommended_action": "No action required",
+  "acknowledged": false,
+  "auto_escalate": false,
+  "structured_reasoning": {
+    "severity": "NONE",
+    "alert_triggered": false,
+    "llm_validated": false,
+    "llm_reasoning": "",
+    "recommended_action": "No action required",
+    "confidence": 0.0,
+    "context_signal": ""
+  }
+}

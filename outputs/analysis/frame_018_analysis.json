@@ -1,0 +1,60 @@
+{
+  "frame_id": "frame_018",
+  "timestamp": "16:20:07",
+  "location": "Back Entrance",
+  "vlm_description": "The scene depicts a back entrance with a visible parked vehicle and a residential entryway.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 3,
+      "confidence": 0.8,
+      "attributes": [
+        "outdoor"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Vehicle is parked and entryway shows outdoor footwear, indicating possible presence.",
+  "security_signals": [
+    "restricted_zone_vehicle"
+  ],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "Monitor for movement or unauthorized entry.",
+  "alert_reasoning": "Low threat level due to absence of people and normal activity indications.",
+  "alert_priority_signals": [
+    "vehicle_loitering"
+  ],
+  "person_features": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 6694
+}

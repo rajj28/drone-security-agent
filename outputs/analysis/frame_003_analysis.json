@@ -1,0 +1,49 @@
+{
+  "frame_id": "frame_003",
+  "timestamp": "16:02:22",
+  "location": "Garage",
+  "vlm_description": "The scene depicts a garage area with a parked vehicle and a residential entrance.",
+  "scene_type": "garage",
+  "objects_detected": [
+    "vehicle",
+    "shoes",
+    "door"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.95,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "vehicle"
+  ],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "dark",
+      "position": "parked",
+      "direction": "facing inward",
+      "occupancy": "unknown",
+      "plate_visible": true
+    }
+  ],
+  "activity": "The vehicle is parked; multiple shoes near a doorway suggest possible human presence.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "low",
+  "confidence": 0.95,
+  "recommended_action": "No immediate action required. Continue monitoring for unusual activities.",
+  "alert_reasoning": "The zone is not restricted and it is not after hours. Observed objects are typical for a residential parking area.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3598
+}

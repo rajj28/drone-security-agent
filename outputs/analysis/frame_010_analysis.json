@@ -1,0 +1,68 @@
+{
+  "frame_id": "frame_010",
+  "timestamp": "16:10:39",
+  "location": "Garage",
+  "vlm_description": "A person is standing near a white sedan vehicle parked in a residential driveway.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "person",
+    "vehicle"
+  ],
+  "object_details": [
+    {
+      "label": "person",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "standing",
+        "near_vehicle"
+      ]
+    },
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "sedan",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 1,
+  "person_features": [
+    {
+      "id": "person_1",
+      "appearance": [
+        "dark_clothes"
+      ],
+      "face_visible": true,
+      "actions": [
+        "interacting_with_vehicle"
+      ]
+    }
+  ],
+  "vehicles_detected": [
+    "{'type': 'sedan', 'count': 1}"
+  ],
+  "vehicle_details": [
+    {
+      "type": "sedan",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "Person interacting with a parked vehicle.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required. Normal activity observed.",
+  "alert_reasoning": "Activity within normal parameters for residential area during public hours.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4059
+}

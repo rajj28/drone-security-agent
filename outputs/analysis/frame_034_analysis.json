@@ -1,0 +1,49 @@
+{
+  "frame_id": "frame_034",
+  "timestamp": "16:39:03",
+  "location": "Driveway",
+  "vlm_description": "The scene captures a driveway area with a parked white SUV, a tiled entrance with shoes visible, and nearby landscaping.",
+  "scene_type": "driveway",
+  "objects_detected": [
+    "vehicle",
+    "doorstep",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.95,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A vehicle is parked in the driveway, no active movement or people detected.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No immediate action required. Continue standard monitoring.",
+  "alert_reasoning": "No suspicious activity or individuals detected in the scene.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3457
+}

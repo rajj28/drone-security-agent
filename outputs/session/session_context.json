@@ -1,0 +1,196 @@
+{
+  "frames_analyzed": 200,
+  "total_alerts": 16,
+  "high_alerts": 4,
+  "medium_alerts": 12,
+  "people_detected": 34,
+  "vehicles_detected": 188,
+  "locations_visited": [
+    "Main Gate",
+    "Perimeter North",
+    "Garage",
+    "Back Entrance",
+    "Restricted Zone",
+    "Driveway",
+    "Side Entrance"
+  ],
+  "incidents": [
+    {
+      "frame_id": "frame_039",
+      "timestamp": "16:44:58",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person"
+    },
+    {
+      "frame_id": "frame_039",
+      "timestamp": "16:44:58",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person"
+    },
+    {
+      "frame_id": "frame_005",
+      "timestamp": "16:04:44",
+      "location": "Restricted Zone",
+      "severity": "MEDIUM",
+      "alert_type": "security_signal_detected",
+      "reasoning": "security signal raised by the vision model"
+    },
+    {
+      "frame_id": "frame_010",
+      "timestamp": "16:10:39",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "person_behavior_signal",
+      "reasoning": "person appearance is security-relevant"
+    },
+    {
+      "frame_id": "frame_011",
+      "timestamp": "16:11:50",
+      "location": "Back Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "security_signal_detected",
+      "reasoning": "security signal raised by the vision model"
+    },
+    {
+      "frame_id": "frame_018",
+      "timestamp": "16:20:07",
+      "location": "Back Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "security_signal_detected",
+      "reasoning": "security signal raised by the vision model"
+    },
+    {
+      "frame_id": "frame_025",
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "vehicle_context_signal",
+      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+    },
+    {
+      "frame_id": "frame_026",
+      "timestamp": "16:29:35",
+      "location": "Restricted Zone",
+      "severity": "MEDIUM",
+      "alert_type": "vehicle_context_signal",
+      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+    },
+    {
+      "frame_id": "frame_033",
+      "timestamp": "16:37:52",
+      "location": "Restricted Zone",
+      "severity": "MEDIUM",
+      "alert_type": "vehicle_context_signal",
+      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+    },
+    {
+      "frame_id": "frame_038",
+      "timestamp": "16:43:47",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "person_behavior_signal",
+      "reasoning": "person appearance is security-relevant"
+    },
+    {
+      "frame_id": "frame_039",
+      "timestamp": "16:44:58",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_040",
+      "timestamp": "16:46:09",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_046",
+      "timestamp": "16:53:15",
+      "location": "Back Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "security_signal_detected",
+      "reasoning": "security signal raised by the vision model"
+    },
+    {
+      "frame_id": "frame_047",
+      "timestamp": "16:54:26",
+      "location": "Restricted Zone",
+      "severity": "MEDIUM",
+      "alert_type": "vehicle_context_signal",
+      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+    },
+    {
+      "frame_id": "frame_039",
+      "timestamp": "16:44:58",
+      "location": "Back Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "restricted_zone_person"
+    },
+    {
+      "frame_id": "frame_040",
+      "timestamp": "16:46:09",
+      "location": "Restricted Zone",
+      "severity": "MEDIUM",
+      "alert_type": "restricted_zone_person"
+    }
+  ],
+  "running_narrative": "Analyzed 200 frames. Alerts: 16 total, 4 high, 12 medium, 0 low.",
+  "alert_processed_frames": [
+    "frame_001",
+    "frame_002",
+    "frame_003",
+    "frame_004",
+    "frame_005",
+    "frame_006",
+    "frame_007",
+    "frame_008",
+    "frame_009",
+    "frame_010",
+    "frame_011",
+    "frame_012",
+    "frame_013",
+    "frame_014",
+    "frame_015",
+    "frame_016",
+    "frame_017",
+    "frame_018",
+    "frame_019",
+    "frame_020",
+    "frame_021",
+    "frame_022",
+    "frame_023",
+    "frame_024",
+    "frame_025",
+    "frame_026",
+    "frame_027",
+    "frame_028",
+    "frame_029",
+    "frame_030",
+    "frame_031",
+    "frame_032",
+    "frame_033",
+    "frame_034",
+    "frame_035",
+    "frame_036",
+    "frame_037",
+    "frame_038",
+    "frame_039",
+    "frame_040",
+    "frame_041",
+    "frame_042",
+    "frame_043",
+    "frame_044",
+    "frame_045",
+    "frame_046",
+    "frame_047",
+    "frame_048",
+    "frame_049",
+    "frame_050"
+  ]
+}

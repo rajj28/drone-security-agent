@@ -1,0 +1,22 @@
+{
+  "frame_id": "frame_015",
+  "timestamp": "16:16:34",
+  "unix_time": 1675268194,
+  "drone": {
+    "latitude": 18.5204,
+    "longitude": 73.8567,
+    "altitude_m": 15.0,
+    "battery_pct": 72.0,
+    "heading_degrees": 90,
+    "speed_ms": 0.0,
+    "status": "patrolling",
+    "signal_strength": "strong"
+  },
+  "location": "Main Gate",
+  "zone": "public",
+  "weather": "clear",
+  "temperature_c": 24.5,
+  "visibility": "good",
+  "is_restricted_zone": false,
+  "is_after_hours": false
+}

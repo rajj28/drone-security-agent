@@ -1,0 +1,46 @@
+{
+  "query": "What was the most suspicious event today?",
+  "timestamp": "2026-04-26T03:03:29",
+  "results": [
+    {
+      "frame_id": "frame_030",
+      "similarity_score": 0.2906,
+      "timestamp": "16:34:19",
+      "location": "Perimeter North",
+      "description": "SUV,shoes,door,steps,door mat",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_027",
+      "similarity_score": 0.2761,
+      "timestamp": "16:30:46",
+      "location": "Driveway",
+      "description": "person,two vehicles,shoes,steps",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_025",
+      "similarity_score": 0.2716,
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "description": "SUV,shoes,staircase,door,potted plant",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_022",
+      "similarity_score": 0.2595,
+      "timestamp": "16:24:51",
+      "location": "Main Gate",
+      "description": "SUV,shoes,door",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_014",
+      "similarity_score": 0.258,
+      "timestamp": "16:15:23",
+      "location": "Side Entrance",
+      "description": "SUV,car,shoes,door",
+      "threat_assessment": "low"
+    }
+  ]
+}

@@ -1,0 +1,1405 @@
+{
+  "session_id": "SESSION_20260426_000000",
+  "summaries": [
+    {
+      "after_frame": "frame_001",
+      "timestamp": "16:00:00",
+      "frames_analyzed": 51,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_001 reviewed at Main Gate (16:00:00). Cumulative status: 51 frames, 1 alerts, 7 people, 56 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 56,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 51 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_002",
+      "timestamp": "16:01:11",
+      "frames_analyzed": 52,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_002 reviewed at Perimeter North (16:01:11). Cumulative status: 52 frames, 1 alerts, 7 people, 57 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 57,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 52 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_003",
+      "timestamp": "16:02:22",
+      "frames_analyzed": 53,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_003 reviewed at Garage (16:02:22). Cumulative status: 53 frames, 1 alerts, 7 people, 58 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 58,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 53 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_004",
+      "timestamp": "16:03:33",
+      "frames_analyzed": 54,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_004 reviewed at Back Entrance (16:03:33). Cumulative status: 54 frames, 1 alerts, 7 people, 59 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 59,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 54 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_005",
+      "timestamp": "16:04:44",
+      "frames_analyzed": 55,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_005 reviewed at Restricted Zone (16:04:44). Cumulative status: 55 frames, 1 alerts, 7 people, 60 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 60,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 55 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_006",
+      "timestamp": "16:05:55",
+      "frames_analyzed": 56,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_006 reviewed at Driveway (16:05:55). Cumulative status: 56 frames, 1 alerts, 7 people, 61 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 61,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 56 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_007",
+      "timestamp": "16:07:06",
+      "frames_analyzed": 57,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_007 reviewed at Side Entrance (16:07:06). Cumulative status: 57 frames, 1 alerts, 7 people, 62 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 62,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 57 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_008",
+      "timestamp": "16:08:17",
+      "frames_analyzed": 58,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_008 reviewed at Main Gate (16:08:17). Cumulative status: 58 frames, 1 alerts, 7 people, 62 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 62,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 58 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_009",
+      "timestamp": "16:09:28",
+      "frames_analyzed": 59,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_009 reviewed at Perimeter North (16:09:28). Cumulative status: 59 frames, 1 alerts, 7 people, 63 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 7,
+        "vehicles_detected": 63,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 59 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_010",
+      "timestamp": "16:10:39",
+      "frames_analyzed": 60,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_010 reviewed at Garage (16:10:39). Cumulative status: 60 frames, 1 alerts, 8 people, 64 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 64,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 60 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_011",
+      "timestamp": "16:11:50",
+      "frames_analyzed": 61,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_011 reviewed at Back Entrance (16:11:50). Cumulative status: 61 frames, 1 alerts, 8 people, 65 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 65,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 61 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_012",
+      "timestamp": "16:13:01",
+      "frames_analyzed": 62,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_012 reviewed at Restricted Zone (16:13:01). Cumulative status: 62 frames, 1 alerts, 8 people, 66 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 66,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 62 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_013",
+      "timestamp": "16:14:12",
+      "frames_analyzed": 63,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_013 reviewed at Driveway (16:14:12). Cumulative status: 63 frames, 1 alerts, 8 people, 67 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 67,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 63 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_014",
+      "timestamp": "16:15:23",
+      "frames_analyzed": 64,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_014 reviewed at Side Entrance (16:15:23). Cumulative status: 64 frames, 1 alerts, 8 people, 69 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 69,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 64 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_015",
+      "timestamp": "16:16:34",
+      "frames_analyzed": 65,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_015 reviewed at Main Gate (16:16:34). Cumulative status: 65 frames, 1 alerts, 8 people, 70 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 70,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 65 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_016",
+      "timestamp": "16:17:45",
+      "frames_analyzed": 66,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_016 reviewed at Perimeter North (16:17:45). Cumulative status: 66 frames, 1 alerts, 8 people, 71 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 71,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 66 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_017",
+      "timestamp": "16:18:56",
+      "frames_analyzed": 67,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_017 reviewed at Garage (16:18:56). Cumulative status: 67 frames, 1 alerts, 8 people, 72 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 72,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 67 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_018",
+      "timestamp": "16:20:07",
+      "frames_analyzed": 68,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_018 reviewed at Back Entrance (16:20:07). Cumulative status: 68 frames, 1 alerts, 8 people, 73 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 73,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 68 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_019",
+      "timestamp": "16:21:18",
+      "frames_analyzed": 69,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_019 reviewed at Restricted Zone (16:21:18). Cumulative status: 69 frames, 1 alerts, 8 people, 74 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 74,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 69 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_020",
+      "timestamp": "16:22:29",
+      "frames_analyzed": 70,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_020 reviewed at Driveway (16:22:29). Cumulative status: 70 frames, 1 alerts, 8 people, 75 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 75,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 70 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_021",
+      "timestamp": "16:23:40",
+      "frames_analyzed": 71,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_021 reviewed at Side Entrance (16:23:40). Cumulative status: 71 frames, 1 alerts, 8 people, 76 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 76,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 71 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_022",
+      "timestamp": "16:24:51",
+      "frames_analyzed": 72,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_022 reviewed at Main Gate (16:24:51). Cumulative status: 72 frames, 1 alerts, 8 people, 77 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 77,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 72 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_023",
+      "timestamp": "16:26:02",
+      "frames_analyzed": 73,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_023 reviewed at Perimeter North (16:26:02). Cumulative status: 73 frames, 1 alerts, 8 people, 78 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 78,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 73 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_024",
+      "timestamp": "16:27:13",
+      "frames_analyzed": 74,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_024 reviewed at Garage (16:27:13). Cumulative status: 74 frames, 1 alerts, 8 people, 79 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 79,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 74 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_025",
+      "timestamp": "16:28:24",
+      "frames_analyzed": 75,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_025 reviewed at Back Entrance (16:28:24). Cumulative status: 75 frames, 1 alerts, 8 people, 80 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 80,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 75 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_026",
+      "timestamp": "16:29:35",
+      "frames_analyzed": 76,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_026 reviewed at Restricted Zone (16:29:35). Cumulative status: 76 frames, 1 alerts, 8 people, 82 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 8,
+        "vehicles_detected": 82,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 76 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_027",
+      "timestamp": "16:30:46",
+      "frames_analyzed": 77,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_027 reviewed at Driveway (16:30:46). Cumulative status: 77 frames, 1 alerts, 9 people, 84 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 84,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 77 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_028",
+      "timestamp": "16:31:57",
+      "frames_analyzed": 78,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_028 reviewed at Side Entrance (16:31:57). Cumulative status: 78 frames, 1 alerts, 9 people, 84 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 84,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 78 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_029",
+      "timestamp": "16:33:08",
+      "frames_analyzed": 79,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_029 reviewed at Main Gate (16:33:08). Cumulative status: 79 frames, 1 alerts, 9 people, 85 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 85,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 79 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_030",
+      "timestamp": "16:34:19",
+      "frames_analyzed": 80,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_030 reviewed at Perimeter North (16:34:19). Cumulative status: 80 frames, 1 alerts, 9 people, 86 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 86,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 80 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_031",
+      "timestamp": "16:35:30",
+      "frames_analyzed": 81,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_031 reviewed at Garage (16:35:30). Cumulative status: 81 frames, 1 alerts, 9 people, 87 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 87,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 81 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_032",
+      "timestamp": "16:36:41",
+      "frames_analyzed": 82,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_032 reviewed at Back Entrance (16:36:41). Cumulative status: 82 frames, 1 alerts, 9 people, 88 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 88,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 82 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_033",
+      "timestamp": "16:37:52",
+      "frames_analyzed": 83,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_033 reviewed at Restricted Zone (16:37:52). Cumulative status: 83 frames, 1 alerts, 9 people, 89 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 89,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 83 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_034",
+      "timestamp": "16:39:03",
+      "frames_analyzed": 84,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_034 reviewed at Driveway (16:39:03). Cumulative status: 84 frames, 1 alerts, 9 people, 90 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 90,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 84 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_035",
+      "timestamp": "16:40:14",
+      "frames_analyzed": 85,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_035 reviewed at Side Entrance (16:40:14). Cumulative status: 85 frames, 1 alerts, 9 people, 91 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 9,
+        "vehicles_detected": 91,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 85 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_036",
+      "timestamp": "16:41:25",
+      "frames_analyzed": 86,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_036 reviewed at Main Gate (16:41:25). Cumulative status: 86 frames, 1 alerts, 10 people, 93 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 10,
+        "vehicles_detected": 93,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 86 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_037",
+      "timestamp": "16:42:36",
+      "frames_analyzed": 87,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_037 reviewed at Perimeter North (16:42:36). Cumulative status: 87 frames, 1 alerts, 12 people, 94 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 12,
+        "vehicles_detected": 94,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 87 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_038",
+      "timestamp": "16:43:47",
+      "frames_analyzed": 88,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_038 reviewed at Garage (16:43:47). Cumulative status: 88 frames, 1 alerts, 12 people, 96 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 1,
+        "people_detected": 12,
+        "vehicles_detected": 96,
+        "high_severity_events": 1
+      },
+      "agent_memory_snapshot": "Analyzed 88 frames. Alerts: 1 total, 1 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_039",
+      "timestamp": "16:44:58",
+      "frames_analyzed": 89,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_039 reviewed at Back Entrance (16:44:58). Cumulative status: 89 frames, 2 alerts, 13 people, 98 vehicles. Current alert: HIGH restricted_zone_person.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 13,
+        "vehicles_detected": 98,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 89 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_040",
+      "timestamp": "16:46:09",
+      "frames_analyzed": 90,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_040 reviewed at Restricted Zone (16:46:09). Cumulative status: 90 frames, 2 alerts, 13 people, 100 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 13,
+        "vehicles_detected": 100,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 90 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_041",
+      "timestamp": "16:47:20",
+      "frames_analyzed": 91,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_041 reviewed at Driveway (16:47:20). Cumulative status: 91 frames, 2 alerts, 14 people, 101 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 101,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 91 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_042",
+      "timestamp": "16:48:31",
+      "frames_analyzed": 92,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_042 reviewed at Side Entrance (16:48:31). Cumulative status: 92 frames, 2 alerts, 14 people, 102 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 102,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 92 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_043",
+      "timestamp": "16:49:42",
+      "frames_analyzed": 93,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_043 reviewed at Main Gate (16:49:42). Cumulative status: 93 frames, 2 alerts, 14 people, 103 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 103,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 93 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_044",
+      "timestamp": "16:50:53",
+      "frames_analyzed": 94,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_044 reviewed at Perimeter North (16:50:53). Cumulative status: 94 frames, 2 alerts, 14 people, 104 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 104,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 94 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_045",
+      "timestamp": "16:52:04",
+      "frames_analyzed": 95,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_045 reviewed at Garage (16:52:04). Cumulative status: 95 frames, 2 alerts, 14 people, 105 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 105,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 95 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_046",
+      "timestamp": "16:53:15",
+      "frames_analyzed": 96,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_046 reviewed at Back Entrance (16:53:15). Cumulative status: 96 frames, 2 alerts, 14 people, 106 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 106,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 96 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_047",
+      "timestamp": "16:54:26",
+      "frames_analyzed": 97,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_047 reviewed at Restricted Zone (16:54:26). Cumulative status: 97 frames, 2 alerts, 14 people, 107 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 107,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 97 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_048",
+      "timestamp": "16:55:37",
+      "frames_analyzed": 98,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_048 reviewed at Driveway (16:55:37). Cumulative status: 98 frames, 2 alerts, 14 people, 108 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 108,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 98 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_049",
+      "timestamp": "16:56:48",
+      "frames_analyzed": 99,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_049 reviewed at Side Entrance (16:56:48). Cumulative status: 99 frames, 2 alerts, 14 people, 109 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 109,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 99 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_050",
+      "timestamp": "16:57:59",
+      "frames_analyzed": 100,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_050 reviewed at Main Gate (16:57:59). Cumulative status: 100 frames, 2 alerts, 14 people, 110 vehicles. Current alert: NONE None.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 110,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 100 frames. Alerts: 2 total, 2 high, 0 medium, 0 low."
+    },
+    {
+      "after_frame": "frame_001",
+      "timestamp": "16:00:00",
+      "frames_analyzed": 101,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_001 analyzed at Main Gate (16:00:00). Cumulative status: 101 frames, 2 alerts, 14 people, 111 vehicles. Current frame activity: No significant activity detected; vehicle is stationary.. No alert triggered for this frame. Vision reasoning: No suspicious activity or unauthorized access observed..",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 111,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 101 frames so far. 14 people detected, 111 vehicles detected, 2 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_002",
+      "timestamp": "16:01:11",
+      "frames_analyzed": 102,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_002 analyzed at Perimeter North (16:01:11). Cumulative status: 102 frames, 2 alerts, 14 people, 112 vehicles. Current frame activity: Vehicle is parked at the residential entrance. No people are present.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected; normal residential scene..",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 112,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 102 frames so far. 14 people detected, 112 vehicles detected, 2 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_003",
+      "timestamp": "16:02:22",
+      "frames_analyzed": 103,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_003 analyzed at Garage (16:02:22). Cumulative status: 103 frames, 2 alerts, 14 people, 113 vehicles. Current frame activity: The vehicle is parked; multiple shoes near a doorway suggest possible human presence.. No alert triggered for this frame. Threat assessment for this frame: low. Vision reasoning: The zone is not restricted and it is not after hours. Observed objects are typical for a residential parking area..",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 113,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 103 frames so far. 14 people detected, 113 vehicles detected, 2 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_004",
+      "timestamp": "16:03:33",
+      "frames_analyzed": 104,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_004 analyzed at Back Entrance (16:03:33). Cumulative status: 104 frames, 2 alerts, 14 people, 113 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 2,
+        "people_detected": 14,
+        "vehicles_detected": 113,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 104 frames so far. 14 people detected, 113 vehicles detected, 2 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_005",
+      "timestamp": "16:04:44",
+      "frames_analyzed": 105,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_005 analyzed at Restricted Zone (16:04:44). Cumulative status: 105 frames, 3 alerts, 14 people, 114 vehicles. Current frame activity: A vehicle is parked in a residential driveway, no visible human activity.. Alert: MEDIUM security_signal_detected triggered. Alert reasoning: security signal raised by the vision model. Threat assessment for this frame: low. Vision reasoning: Vehicle presence in restricted zone but no after-hours activity detected..",
+      "running_stats": {
+        "total_alerts": 3,
+        "people_detected": 14,
+        "vehicles_detected": 114,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 105 frames so far. 14 people detected, 114 vehicles detected, 3 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_006",
+      "timestamp": "16:05:55",
+      "frames_analyzed": 106,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_006 analyzed at Driveway (16:05:55). Cumulative status: 106 frames, 3 alerts, 14 people, 114 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 3,
+        "people_detected": 14,
+        "vehicles_detected": 114,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 106 frames so far. 14 people detected, 114 vehicles detected, 3 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_007",
+      "timestamp": "16:07:06",
+      "frames_analyzed": 107,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_007 analyzed at Side Entrance (16:07:06). Cumulative status: 107 frames, 3 alerts, 14 people, 115 vehicles. Current frame activity: No human activity detected; parked vehicle near the entrance.. No alert triggered for this frame. Vision reasoning: No suspicious activity or unauthorized access detected..",
+      "running_stats": {
+        "total_alerts": 3,
+        "people_detected": 14,
+        "vehicles_detected": 115,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 107 frames so far. 14 people detected, 115 vehicles detected, 3 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_008",
+      "timestamp": "16:08:17",
+      "frames_analyzed": 108,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_008 analyzed at Main Gate (16:08:17). Cumulative status: 108 frames, 3 alerts, 14 people, 116 vehicles. Current frame activity: A vehicle is parked at the entrance, with no visible people in the vicinity.. No alert triggered for this frame. Vision reasoning: The threat level is low due to the absence of people and the vehicle being stationary without any suspicious elements..",
+      "running_stats": {
+        "total_alerts": 3,
+        "people_detected": 14,
+        "vehicles_detected": 116,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 108 frames so far. 14 people detected, 116 vehicles detected, 3 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_009",
+      "timestamp": "16:09:28",
+      "frames_analyzed": 109,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_009 analyzed at Perimeter North (16:09:28). Cumulative status: 109 frames, 3 alerts, 14 people, 116 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 3,
+        "people_detected": 14,
+        "vehicles_detected": 116,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 109 frames so far. 14 people detected, 116 vehicles detected, 3 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_010",
+      "timestamp": "16:10:39",
+      "frames_analyzed": 110,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_010 analyzed at Garage (16:10:39). Cumulative status: 110 frames, 4 alerts, 15 people, 117 vehicles. Current frame activity: Person interacting with a parked vehicle.. Alert: MEDIUM person_behavior_signal triggered. Alert reasoning: person appearance is security-relevant. Vision reasoning: Activity within normal parameters for residential area during public hours..",
+      "running_stats": {
+        "total_alerts": 4,
+        "people_detected": 15,
+        "vehicles_detected": 117,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 110 frames so far. 15 people detected, 117 vehicles detected, 4 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_011",
+      "timestamp": "16:11:50",
+      "frames_analyzed": 111,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_011 analyzed at Back Entrance (16:11:50). Cumulative status: 111 frames, 5 alerts, 15 people, 118 vehicles. Current frame activity: A vehicle is parked near a residential entrance, no visible activity from people.. Alert: MEDIUM security_signal_detected triggered. Alert reasoning: security signal raised by the vision model. Threat assessment for this frame: low. Vision reasoning: Low threat level due to absence of people in a restricted zone with a parked vehicle.. Priority signals: restricted_zone_vehicle.",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 118,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 111 frames so far. 15 people detected, 118 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_012",
+      "timestamp": "16:13:01",
+      "frames_analyzed": 112,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_012 analyzed at Restricted Zone (16:13:01). Cumulative status: 112 frames, 5 alerts, 15 people, 118 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 118,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 112 frames so far. 15 people detected, 118 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_013",
+      "timestamp": "16:14:12",
+      "frames_analyzed": 113,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_013 analyzed at Driveway (16:14:12). Cumulative status: 113 frames, 5 alerts, 15 people, 119 vehicles. Current frame activity: Parked vehicle with no visible people, open entrance, shoes placed outside.. No alert triggered for this frame. Threat assessment for this frame: low. Vision reasoning: Parked vehicle with no immediate suspicious activity noted..",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 119,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 113 frames so far. 15 people detected, 119 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_014",
+      "timestamp": "16:15:23",
+      "frames_analyzed": 114,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_014 analyzed at Side Entrance (16:15:23). Cumulative status: 114 frames, 5 alerts, 15 people, 120 vehicles. Current frame activity: No visible human activity; vehicle is stationary.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected during daylight hours in a non-restricted zone..",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 120,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 114 frames so far. 15 people detected, 120 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_015",
+      "timestamp": "16:16:34",
+      "frames_analyzed": 115,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_015 analyzed at Main Gate (16:16:34). Cumulative status: 115 frames, 5 alerts, 15 people, 121 vehicles. Current frame activity: No significant activity detected. No alert triggered for this frame. Vision reasoning: No suspicious activity or unauthorized presence detected in the entrance area..",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 121,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 115 frames so far. 15 people detected, 121 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_016",
+      "timestamp": "16:17:45",
+      "frames_analyzed": 116,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_016 analyzed at Perimeter North (16:17:45). Cumulative status: 116 frames, 5 alerts, 15 people, 122 vehicles. Current frame activity: A vehicle is parked at the residential entrance. The presence of shoes suggests residents are home.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected. Scene matches typical residential behavior during clear daylight..",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 122,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 116 frames so far. 15 people detected, 122 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_017",
+      "timestamp": "16:18:56",
+      "frames_analyzed": 117,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_017 analyzed at Garage (16:18:56). Cumulative status: 117 frames, 5 alerts, 15 people, 123 vehicles. Current frame activity: No unusual activity detected in the residential area.. No alert triggered for this frame. Vision reasoning: The area appears normal with no signs of intrusion or suspicious activity..",
+      "running_stats": {
+        "total_alerts": 5,
+        "people_detected": 15,
+        "vehicles_detected": 123,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 117 frames so far. 15 people detected, 123 vehicles detected, 5 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_018",
+      "timestamp": "16:20:07",
+      "frames_analyzed": 118,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_018 analyzed at Back Entrance (16:20:07). Cumulative status: 118 frames, 6 alerts, 15 people, 124 vehicles. Current frame activity: Vehicle is parked and entryway shows outdoor footwear, indicating possible presence.. Alert: MEDIUM security_signal_detected triggered. Alert reasoning: security signal raised by the vision model. Threat assessment for this frame: low. Vision reasoning: Low threat level due to absence of people and normal activity indications.. Priority signals: vehicle_loitering.",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 124,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 118 frames so far. 15 people detected, 124 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_019",
+      "timestamp": "16:21:18",
+      "frames_analyzed": 119,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_019 analyzed at Restricted Zone (16:21:18). Cumulative status: 119 frames, 6 alerts, 15 people, 124 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 124,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 119 frames so far. 15 people detected, 124 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_020",
+      "timestamp": "16:22:29",
+      "frames_analyzed": 120,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_020 analyzed at Driveway (16:22:29). Cumulative status: 120 frames, 6 alerts, 15 people, 124 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 124,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 120 frames so far. 15 people detected, 124 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_021",
+      "timestamp": "16:23:40",
+      "frames_analyzed": 121,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_021 analyzed at Side Entrance (16:23:40). Cumulative status: 121 frames, 6 alerts, 15 people, 125 vehicles. Current frame activity: A vehicle is parked near the entrance. No suspicious activity detected.. No alert triggered for this frame. Vision reasoning: There are no visible threats or suspicious activities. The area is open and during normal hours..",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 125,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 121 frames so far. 15 people detected, 125 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_022",
+      "timestamp": "16:24:51",
+      "frames_analyzed": 122,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_022 analyzed at Main Gate (16:24:51). Cumulative status: 122 frames, 6 alerts, 15 people, 126 vehicles. Current frame activity: A vehicle is parked outside a residential entrance.. No alert triggered for this frame. Threat assessment for this frame: low. Vision reasoning: No suspicious activity or presence is observed in a non-restricted and active zone..",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 126,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 122 frames so far. 15 people detected, 126 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_023",
+      "timestamp": "16:26:02",
+      "frames_analyzed": 123,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_023 analyzed at Perimeter North (16:26:02). Cumulative status: 123 frames, 6 alerts, 15 people, 126 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 126,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 123 frames so far. 15 people detected, 126 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_024",
+      "timestamp": "16:27:13",
+      "frames_analyzed": 124,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_024 analyzed at Garage (16:27:13). Cumulative status: 124 frames, 6 alerts, 15 people, 127 vehicles. Current frame activity: No noticeable activity, the vehicle is parked.. No alert triggered for this frame. Vision reasoning: The scene is typical for a residential area with no signs of intrusion or unusual activity..",
+      "running_stats": {
+        "total_alerts": 6,
+        "people_detected": 15,
+        "vehicles_detected": 127,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 124 frames so far. 15 people detected, 127 vehicles detected, 6 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_025",
+      "timestamp": "16:28:24",
+      "frames_analyzed": 125,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_025 analyzed at Back Entrance (16:28:24). Cumulative status: 125 frames, 7 alerts, 15 people, 128 vehicles. Current frame activity: Vehicle parked in the designated area with no visible person in the vicinity.. Alert: MEDIUM vehicle_context_signal triggered. Alert reasoning: vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv. Vision reasoning: There are no suspicious activities or elements present. The vehicle is parked appropriately..",
+      "running_stats": {
+        "total_alerts": 7,
+        "people_detected": 15,
+        "vehicles_detected": 128,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 125 frames so far. 15 people detected, 128 vehicles detected, 7 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_026",
+      "timestamp": "16:29:35",
+      "frames_analyzed": 126,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_026 analyzed at Restricted Zone (16:29:35). Cumulative status: 126 frames, 8 alerts, 15 people, 129 vehicles. Current frame activity: No significant activity; vehicles are parked.. Alert: MEDIUM vehicle_context_signal triggered. Alert reasoning: vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv. Vision reasoning: Scene is static with no unusual activity detected..",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 15,
+        "vehicles_detected": 129,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 126 frames so far. 15 people detected, 129 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_027",
+      "timestamp": "16:30:46",
+      "frames_analyzed": 127,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_027 analyzed at Driveway (16:30:46). Cumulative status: 127 frames, 8 alerts, 16 people, 130 vehicles. Current frame activity: A person walking near the entrance of the house.. No alert triggered for this frame. Threat assessment for this frame: low. Vision reasoning: The scene appears typical for a residential area during daytime hours..",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 130,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 127 frames so far. 16 people detected, 130 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_028",
+      "timestamp": "16:31:57",
+      "frames_analyzed": 128,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_028 analyzed at Side Entrance (16:31:57). Cumulative status: 128 frames, 8 alerts, 16 people, 130 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 130,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 128 frames so far. 16 people detected, 130 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_029",
+      "timestamp": "16:33:08",
+      "frames_analyzed": 129,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_029 analyzed at Main Gate (16:33:08). Cumulative status: 129 frames, 8 alerts, 16 people, 131 vehicles. Current frame activity: The vehicle is stationary, likely belonging to the residents.. No alert triggered for this frame. Vision reasoning: Normal residential scene with no suspicious activity or unauthorized presence..",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 131,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 129 frames so far. 16 people detected, 131 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_030",
+      "timestamp": "16:34:19",
+      "frames_analyzed": 130,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_030 analyzed at Perimeter North (16:34:19). Cumulative status: 130 frames, 8 alerts, 16 people, 132 vehicles. Current frame activity: A vehicle is parked outside a residential house.. No alert triggered for this frame. Vision reasoning: Scene is typical for a residential area with no suspicious activity observed..",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 132,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 130 frames so far. 16 people detected, 132 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_031",
+      "timestamp": "16:35:30",
+      "frames_analyzed": 131,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_031 analyzed at Garage (16:35:30). Cumulative status: 131 frames, 8 alerts, 16 people, 133 vehicles. Current frame activity: Vehicle parked in a residential garage area.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected. Normal residential scene with parked vehicle..",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 133,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 131 frames so far. 16 people detected, 133 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_032",
+      "timestamp": "16:36:41",
+      "frames_analyzed": 132,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_032 analyzed at Back Entrance (16:36:41). Cumulative status: 132 frames, 8 alerts, 16 people, 133 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 8,
+        "people_detected": 16,
+        "vehicles_detected": 133,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 132 frames so far. 16 people detected, 133 vehicles detected, 8 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_033",
+      "timestamp": "16:37:52",
+      "frames_analyzed": 133,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_033 analyzed at Restricted Zone (16:37:52). Cumulative status: 133 frames, 9 alerts, 16 people, 134 vehicles. Current frame activity: A vehicle is parked outside a residential entrance with shoes placed nearby, suggesting usual residential activity.. Alert: MEDIUM vehicle_context_signal triggered. Alert reasoning: vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv. Vision reasoning: The vehicle's presence is consistent with expected activity in a residential zone during non-restricted hours..",
+      "running_stats": {
+        "total_alerts": 9,
+        "people_detected": 16,
+        "vehicles_detected": 134,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 133 frames so far. 16 people detected, 134 vehicles detected, 9 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_034",
+      "timestamp": "16:39:03",
+      "frames_analyzed": 134,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_034 analyzed at Driveway (16:39:03). Cumulative status: 134 frames, 9 alerts, 16 people, 135 vehicles. Current frame activity: A vehicle is parked in the driveway, no active movement or people detected.. No alert triggered for this frame. Vision reasoning: No suspicious activity or individuals detected in the scene..",
+      "running_stats": {
+        "total_alerts": 9,
+        "people_detected": 16,
+        "vehicles_detected": 135,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 134 frames so far. 16 people detected, 135 vehicles detected, 9 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_035",
+      "timestamp": "16:40:14",
+      "frames_analyzed": 135,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_035 analyzed at Side Entrance (16:40:14). Cumulative status: 135 frames, 9 alerts, 16 people, 136 vehicles. Current frame activity: No significant activity observed. No alert triggered for this frame. Vision reasoning: No unusual or suspicious activity detected..",
+      "running_stats": {
+        "total_alerts": 9,
+        "people_detected": 16,
+        "vehicles_detected": 136,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 135 frames so far. 16 people detected, 136 vehicles detected, 9 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_036",
+      "timestamp": "16:41:25",
+      "frames_analyzed": 136,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_036 analyzed at Main Gate (16:41:25). Cumulative status: 136 frames, 9 alerts, 18 people, 137 vehicles. Current frame activity: Two individuals are standing near a parked vehicle at the entrance of a residential area.. No alert triggered for this frame. Vision reasoning: The presence of individuals near a parked vehicle in a residential area during permitted hours does not indicate a threat..",
+      "running_stats": {
+        "total_alerts": 9,
+        "people_detected": 18,
+        "vehicles_detected": 137,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 136 frames so far. 18 people detected, 137 vehicles detected, 9 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_037",
+      "timestamp": "16:42:36",
+      "frames_analyzed": 137,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_037 analyzed at Perimeter North (16:42:36). Cumulative status: 137 frames, 9 alerts, 20 people, 138 vehicles. Current frame activity: Normal residential activity with people moving around and a vehicle parked.. No alert triggered for this frame. Vision reasoning: Normal activity observed during daytime hours in a non-restricted zone..",
+      "running_stats": {
+        "total_alerts": 9,
+        "people_detected": 20,
+        "vehicles_detected": 138,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 137 frames so far. 20 people detected, 138 vehicles detected, 9 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_038",
+      "timestamp": "16:43:47",
+      "frames_analyzed": 138,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_038 analyzed at Garage (16:43:47). Cumulative status: 138 frames, 10 alerts, 21 people, 139 vehicles. Current frame activity: A person is present near a parked vehicle.. Alert: MEDIUM person_behavior_signal triggered. Alert reasoning: person appearance is security-relevant. Threat assessment for this frame: low. Vision reasoning: Presence in a non-restricted, public zone during acceptable hours..",
+      "running_stats": {
+        "total_alerts": 10,
+        "people_detected": 21,
+        "vehicles_detected": 139,
+        "high_severity_events": 2
+      },
+      "agent_memory_snapshot": "Analyzed 138 frames so far. 21 people detected, 139 vehicles detected, 10 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_039",
+      "timestamp": "16:44:58",
+      "frames_analyzed": 139,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_039 analyzed at Back Entrance (16:44:58). Cumulative status: 139 frames, 11 alerts, 22 people, 141 vehicles. Current frame activity: A person is standing near the parked vehicles.. Alert: HIGH restricted_zone_person triggered. Alert reasoning: person detected in restricted zone. Threat assessment for this frame: low. Vision reasoning: Presence of vehicles in a restricted zone during monitored hours.. Priority signals: vehicle_loitering.",
+      "running_stats": {
+        "total_alerts": 11,
+        "people_detected": 22,
+        "vehicles_detected": 141,
+        "high_severity_events": 3
+      },
+      "agent_memory_snapshot": "Analyzed 139 frames so far. 22 people detected, 141 vehicles detected, 11 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_040",
+      "timestamp": "16:46:09",
+      "frames_analyzed": 140,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_040 analyzed at Restricted Zone (16:46:09). Cumulative status: 140 frames, 12 alerts, 23 people, 142 vehicles. Current frame activity: Person standing near a parked vehicle with its door open.. Alert: HIGH restricted_zone_person triggered. Alert reasoning: person detected in restricted zone. Threat assessment for this frame: medium. Vision reasoning: Presence of a person near an open vehicle door in a restricted area may indicate potential unauthorized access.. Priority signals: vehicle_loitering.",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 23,
+        "vehicles_detected": 142,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 140 frames so far. 23 people detected, 142 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_041",
+      "timestamp": "16:47:20",
+      "frames_analyzed": 141,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_041 analyzed at Driveway (16:47:20). Cumulative status: 141 frames, 12 alerts, 24 people, 142 vehicles. Current frame activity: A person standing next to a parked vehicle.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected; normal residential presence during clear weather..",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 24,
+        "vehicles_detected": 142,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 141 frames so far. 24 people detected, 142 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_042",
+      "timestamp": "16:48:31",
+      "frames_analyzed": 142,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_042 analyzed at Side Entrance (16:48:31). Cumulative status: 142 frames, 12 alerts, 24 people, 142 vehicles. Current frame activity: No active movement detected. The scene suggests potential upcoming activity due to presence of footwear.. No alert triggered for this frame. Vision reasoning: The environment appears calm with no presence of people or activities indicating threats..",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 24,
+        "vehicles_detected": 142,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 142 frames so far. 24 people detected, 142 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_043",
+      "timestamp": "16:49:42",
+      "frames_analyzed": 143,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_043 analyzed at Main Gate (16:49:42). Cumulative status: 143 frames, 12 alerts, 24 people, 143 vehicles. Current frame activity: No significant activity observed.. No alert triggered for this frame. Vision reasoning: No suspicious activity detected. Vehicle is parked, and no people are present..",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 24,
+        "vehicles_detected": 143,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 143 frames so far. 24 people detected, 143 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_044",
+      "timestamp": "16:50:53",
+      "frames_analyzed": 144,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_044 analyzed at Perimeter North (16:50:53). Cumulative status: 144 frames, 12 alerts, 24 people, 144 vehicles. Current frame activity: No human activity detected. The vehicle is stationary.. No alert triggered for this frame. Vision reasoning: The area appears secure with no suspicious behavior detected..",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 24,
+        "vehicles_detected": 144,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 144 frames so far. 24 people detected, 144 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_045",
+      "timestamp": "16:52:04",
+      "frames_analyzed": 145,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_045 analyzed at Garage (16:52:04). Cumulative status: 145 frames, 12 alerts, 24 people, 144 vehicles. Current frame activity: Unknown activity. No alert triggered for this frame. Vision reasoning: Review frame manually.",
+      "running_stats": {
+        "total_alerts": 12,
+        "people_detected": 24,
+        "vehicles_detected": 144,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 145 frames so far. 24 people detected, 144 vehicles detected, 12 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_046",
+      "timestamp": "16:53:15",
+      "frames_analyzed": 146,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_046 analyzed at Back Entrance (16:53:15). Cumulative status: 146 frames, 13 alerts, 24 people, 145 vehicles. Current frame activity: Shoes are placed at the entrance, indicating possible human presence.. Alert: MEDIUM security_signal_detected triggered. Alert reasoning: security signal raised by the vision model. Threat assessment for this frame: low. Vision reasoning: A vehicle is parked in a restricted zone, but there is no immediate evidence of threat or unauthorized access after hours.. Priority signals: vehicle_loitering.",
+      "running_stats": {
+        "total_alerts": 13,
+        "people_detected": 24,
+        "vehicles_detected": 145,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 146 frames so far. 24 people detected, 145 vehicles detected, 13 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_047",
+      "timestamp": "16:54:26",
+      "frames_analyzed": 147,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_047 analyzed at Restricted Zone (16:54:26). Cumulative status: 147 frames, 14 alerts, 24 people, 146 vehicles. Current frame activity: No human activity detected, vehicle parked.. Alert: MEDIUM vehicle_context_signal triggered. Alert reasoning: vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv. Vision reasoning: No unusual activity or unauthorized presence detected..",
+      "running_stats": {
+        "total_alerts": 14,
+        "people_detected": 24,
+        "vehicles_detected": 146,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 147 frames so far. 24 people detected, 146 vehicles detected, 14 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_048",
+      "timestamp": "16:55:37",
+      "frames_analyzed": 148,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_048 analyzed at Driveway (16:55:37). Cumulative status: 148 frames, 14 alerts, 24 people, 147 vehicles. Current frame activity: Vehicle is parked; no visible human activity.. No alert triggered for this frame. Vision reasoning: Normal scene with no visible human presence or suspicious activity..",
+      "running_stats": {
+        "total_alerts": 14,
+        "people_detected": 24,
+        "vehicles_detected": 147,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 148 frames so far. 24 people detected, 147 vehicles detected, 14 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_049",
+      "timestamp": "16:56:48",
+      "frames_analyzed": 149,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_049 analyzed at Side Entrance (16:56:48). Cumulative status: 149 frames, 14 alerts, 24 people, 148 vehicles. Current frame activity: No human activity detected. The vehicle is parked, and sandals are scattered near the entrance.. No alert triggered for this frame. Vision reasoning: No suspicious activities or presence detected. Everything appears normal for the time and location..",
+      "running_stats": {
+        "total_alerts": 14,
+        "people_detected": 24,
+        "vehicles_detected": 148,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 149 frames so far. 24 people detected, 148 vehicles detected, 14 alerts generated across 7 locations."
+    },
+    {
+      "after_frame": "frame_050",
+      "timestamp": "16:57:59",
+      "frames_analyzed": 150,
+      "frames_remaining": 0,
+      "context_summary": "Frame frame_050 analyzed at Main Gate (16:57:59). Cumulative status: 150 frames, 14 alerts, 24 people, 149 vehicles. Current frame activity: Vehicle is parked, no people present. No alert triggered for this frame. Vision reasoning: No suspicious activity or objects detected..",
+      "running_stats": {
+        "total_alerts": 14,
+        "people_detected": 24,
+        "vehicles_detected": 149,
+        "high_severity_events": 4
+      },
+      "agent_memory_snapshot": "Analyzed 150 frames so far. 24 people detected, 149 vehicles detected, 14 alerts generated across 7 locations."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "alert_id": "ALT_20260425_016",
+  "frame_id": "frame_016",
+  "timestamp": "16:17:45",
+  "location": "Perimeter North",
+  "alert_triggered": false,
+  "severity": "NONE",
+  "alert_type": null,
+  "message": "Alert for frame_016 at Perimeter North 16:17:45",
+  "objects_involved": [
+    "vehicle",
+    "shoes"
+  ],
+  "rule_triggered": null,
+  "llm_validated": false,
+  "llm_reasoning": "",
+  "recommended_action": "No action required",
+  "acknowledged": false,
+  "auto_escalate": false,
+  "structured_reasoning": {
+    "severity": "NONE",
+    "alert_triggered": false,
+    "llm_validated": false,
+    "llm_reasoning": "",
+    "recommended_action": "No action required",
+    "confidence": 0.0,
+    "context_signal": ""
+  }
+}

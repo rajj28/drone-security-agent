@@ -1,0 +1,306 @@
+{
+  "session_id": "SESSION_20260426_050918",
+  "total_runs": 50,
+  "runs": [
+    {
+      "frame_id": "frame_001",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 286
+    },
+    {
+      "frame_id": "frame_002",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 23
+    },
+    {
+      "frame_id": "frame_003",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 26
+    },
+    {
+      "frame_id": "frame_004",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 26
+    },
+    {
+      "frame_id": "frame_005",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 18
+    },
+    {
+      "frame_id": "frame_006",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 24
+    },
+    {
+      "frame_id": "frame_007",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 31
+    },
+    {
+      "frame_id": "frame_008",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 29
+    },
+    {
+      "frame_id": "frame_009",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 29
+    },
+    {
+      "frame_id": "frame_010",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 26
+    },
+    {
+      "frame_id": "frame_011",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 24
+    },
+    {
+      "frame_id": "frame_012",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 26
+    },
+    {
+      "frame_id": "frame_013",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 26
+    },
+    {
+      "frame_id": "frame_014",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_015",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_016",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 32
+    },
+    {
+      "frame_id": "frame_017",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 28
+    },
+    {
+      "frame_id": "frame_018",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 30
+    },
+    {
+      "frame_id": "frame_019",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 37
+    },
+    {
+      "frame_id": "frame_020",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 29
+    },
+    {
+      "frame_id": "frame_021",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_022",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 37
+    },
+    {
+      "frame_id": "frame_023",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 31
+    },
+    {
+      "frame_id": "frame_024",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 37
+    },
+    {
+      "frame_id": "frame_025",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 31
+    },
+    {
+      "frame_id": "frame_026",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_027",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_028",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 38
+    },
+    {
+      "frame_id": "frame_029",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 39
+    },
+    {
+      "frame_id": "frame_030",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 35
+    },
+    {
+      "frame_id": "frame_031",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 34
+    },
+    {
+      "frame_id": "frame_032",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 30
+    },
+    {
+      "frame_id": "frame_033",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_034",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 33
+    },
+    {
+      "frame_id": "frame_035",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 30
+    },
+    {
+      "frame_id": "frame_036",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 34
+    },
+    {
+      "frame_id": "frame_037",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 31
+    },
+    {
+      "frame_id": "frame_038",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 35
+    },
+    {
+      "frame_id": "frame_039",
+      "severity": "MEDIUM",
+      "alert_triggered": true,
+      "processing_time_ms": 2215
+    },
+    {
+      "frame_id": "frame_040",
+      "severity": "MEDIUM",
+      "alert_triggered": true,
+      "processing_time_ms": 1639
+    },
+    {
+      "frame_id": "frame_041",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 17
+    },
+    {
+      "frame_id": "frame_042",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 19
+    },
+    {
+      "frame_id": "frame_043",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 18
+    },
+    {
+      "frame_id": "frame_044",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 35
+    },
+    {
+      "frame_id": "frame_045",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 36
+    },
+    {
+      "frame_id": "frame_046",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 32
+    },
+    {
+      "frame_id": "frame_047",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 37
+    },
+    {
+      "frame_id": "frame_048",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 39
+    },
+    {
+      "frame_id": "frame_049",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 44
+    },
+    {
+      "frame_id": "frame_050",
+      "severity": "NONE",
+      "alert_triggered": false,
+      "processing_time_ms": 37
+    }
+  ]
+}

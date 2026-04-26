@@ -1,0 +1,49 @@
+{
+  "frame_id": "frame_047",
+  "timestamp": "16:54:26",
+  "location": "Restricted Zone",
+  "vlm_description": "detailed description of the scene",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoes",
+    "door"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.85,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "No human activity detected, vehicle parked.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action required.",
+  "alert_reasoning": "No unusual activity or unauthorized presence detected.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3616
+}

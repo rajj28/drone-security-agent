@@ -1,0 +1,258 @@
+{
+  "total_indexed": 50,
+  "index_name": "flytbase",
+  "embedding_model": "text-embedding-3-large",
+  "dimensions": 1024,
+  "frames": [
+    {
+      "frame_id": "frame_001",
+      "status": "success",
+      "processing_time_ms": 2359
+    },
+    {
+      "frame_id": "frame_002",
+      "status": "success",
+      "processing_time_ms": 682
+    },
+    {
+      "frame_id": "frame_003",
+      "status": "success",
+      "processing_time_ms": 1175
+    },
+    {
+      "frame_id": "frame_004",
+      "status": "success",
+      "processing_time_ms": 814
+    },
+    {
+      "frame_id": "frame_005",
+      "status": "success",
+      "processing_time_ms": 637
+    },
+    {
+      "frame_id": "frame_006",
+      "status": "success",
+      "processing_time_ms": 643
+    },
+    {
+      "frame_id": "frame_007",
+      "status": "success",
+      "processing_time_ms": 1472
+    },
+    {
+      "frame_id": "frame_008",
+      "status": "success",
+      "processing_time_ms": 1190
+    },
+    {
+      "frame_id": "frame_009",
+      "status": "success",
+      "processing_time_ms": 2074
+    },
+    {
+      "frame_id": "frame_010",
+      "status": "success",
+      "processing_time_ms": 638
+    },
+    {
+      "frame_id": "frame_011",
+      "status": "success",
+      "processing_time_ms": 633
+    },
+    {
+      "frame_id": "frame_012",
+      "status": "success",
+      "processing_time_ms": 713
+    },
+    {
+      "frame_id": "frame_013",
+      "status": "success",
+      "processing_time_ms": 647
+    },
+    {
+      "frame_id": "frame_014",
+      "status": "success",
+      "processing_time_ms": 639
+    },
+    {
+      "frame_id": "frame_015",
+      "status": "success",
+      "processing_time_ms": 653
+    },
+    {
+      "frame_id": "frame_016",
+      "status": "success",
+      "processing_time_ms": 654
+    },
+    {
+      "frame_id": "frame_017",
+      "status": "success",
+      "processing_time_ms": 853
+    },
+    {
+      "frame_id": "frame_018",
+      "status": "success",
+      "processing_time_ms": 811
+    },
+    {
+      "frame_id": "frame_019",
+      "status": "success",
+      "processing_time_ms": 643
+    },
+    {
+      "frame_id": "frame_020",
+      "status": "success",
+      "processing_time_ms": 1125
+    },
+    {
+      "frame_id": "frame_021",
+      "status": "success",
+      "processing_time_ms": 647
+    },
+    {
+      "frame_id": "frame_022",
+      "status": "success",
+      "processing_time_ms": 650
+    },
+    {
+      "frame_id": "frame_023",
+      "status": "success",
+      "processing_time_ms": 793
+    },
+    {
+      "frame_id": "frame_024",
+      "status": "success",
+      "processing_time_ms": 665
+    },
+    {
+      "frame_id": "frame_025",
+      "status": "success",
+      "processing_time_ms": 631
+    },
+    {
+      "frame_id": "frame_026",
+      "status": "success",
+      "processing_time_ms": 634
+    },
+    {
+      "frame_id": "frame_027",
+      "status": "success",
+      "processing_time_ms": 679
+    },
+    {
+      "frame_id": "frame_028",
+      "status": "success",
+      "processing_time_ms": 686
+    },
+    {
+      "frame_id": "frame_029",
+      "status": "success",
+      "processing_time_ms": 659
+    },
+    {
+      "frame_id": "frame_030",
+      "status": "success",
+      "processing_time_ms": 663
+    },
+    {
+      "frame_id": "frame_031",
+      "status": "success",
+      "processing_time_ms": 690
+    },
+    {
+      "frame_id": "frame_032",
+      "status": "success",
+      "processing_time_ms": 664
+    },
+    {
+      "frame_id": "frame_033",
+      "status": "success",
+      "processing_time_ms": 894
+    },
+    {
+      "frame_id": "frame_034",
+      "status": "success",
+      "processing_time_ms": 639
+    },
+    {
+      "frame_id": "frame_035",
+      "status": "success",
+      "processing_time_ms": 675
+    },
+    {
+      "frame_id": "frame_036",
+      "status": "success",
+      "processing_time_ms": 1198
+    },
+    {
+      "frame_id": "frame_037",
+      "status": "success",
+      "processing_time_ms": 680
+    },
+    {
+      "frame_id": "frame_038",
+      "status": "success",
+      "processing_time_ms": 640
+    },
+    {
+      "frame_id": "frame_039",
+      "status": "success",
+      "processing_time_ms": 663
+    },
+    {
+      "frame_id": "frame_040",
+      "status": "success",
+      "processing_time_ms": 708
+    },
+    {
+      "frame_id": "frame_041",
+      "status": "success",
+      "processing_time_ms": 655
+    },
+    {
+      "frame_id": "frame_042",
+      "status": "success",
+      "processing_time_ms": 730
+    },
+    {
+      "frame_id": "frame_043",
+      "status": "success",
+      "processing_time_ms": 662
+    },
+    {
+      "frame_id": "frame_044",
+      "status": "success",
+      "processing_time_ms": 667
+    },
+    {
+      "frame_id": "frame_045",
+      "status": "success",
+      "processing_time_ms": 669
+    },
+    {
+      "frame_id": "frame_046",
+      "status": "success",
+      "processing_time_ms": 707
+    },
+    {
+      "frame_id": "frame_047",
+      "status": "success",
+      "processing_time_ms": 1412
+    },
+    {
+      "frame_id": "frame_048",
+      "status": "success",
+      "processing_time_ms": 889
+    },
+    {
+      "frame_id": "frame_049",
+      "status": "success",
+      "processing_time_ms": 875
+    },
+    {
+      "frame_id": "frame_050",
+      "status": "success",
+      "processing_time_ms": 660
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# .gitignore
+venv/
+.env
+__pycache__/
+*.pyc
+.DS_Store
+data/frames/*
+data/extracted/*
+# don't push local datasets/videos
+data/*.pdf
+*.jpg
+*.jpeg
+*.png
+.pytest_cache/
+dist/
+build/
+evaluation_output.txt

@@ -1,0 +1,56 @@
+{
+  "frame_id": "frame_016",
+  "timestamp": "16:17:45",
+  "location": "Perimeter North",
+  "vlm_description": "The scene shows a residential entrance with a vehicle parked. Several pairs of shoes are placed near the entrance, indicating residential activity.",
+  "scene_type": "residential",
+  "objects_detected": [
+    "vehicle",
+    "shoes"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    },
+    {
+      "label": "shoes",
+      "count": 4,
+      "confidence": 0.8,
+      "attributes": [
+        "mixed"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "SUV"
+  ],
+  "vehicle_details": [
+    {
+      "type": "SUV",
+      "color": "white",
+      "position": "parked",
+      "direction": "unknown",
+      "occupancy": "unknown",
+      "plate_visible": false
+    }
+  ],
+  "activity": "A vehicle is parked at the residential entrance. The presence of shoes suggests residents are home.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "Continue regular monitoring. No immediate action is needed.",
+  "alert_reasoning": "No suspicious activity detected. Scene matches typical residential behavior during clear daylight.",
+  "alert_priority_signals": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 4086
+}

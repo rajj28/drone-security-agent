@@ -1,0 +1,98 @@
+{
+  "evaluation_type": "hard_assignment_audit",
+  "rubric_source": "FlytBase AI Engineer assignment requirements + weighted assessment metrics",
+  "scores": {
+    "correctness_and_model_performance_25": 21.67,
+    "reasoning_and_scalability_25": 18.75,
+    "experimentation_and_innovation_30": 30.0,
+    "documentation_and_code_quality_20": 20.0,
+    "total_100": 90.42
+  },
+  "requirement_checks": [
+    {
+      "id": "R1",
+      "title": "Feature spec exists with value + key requirements",
+      "status": "pass",
+      "points_earned": 5,
+      "points_max": 5,
+      "severity": "info",
+      "evidence": "Feature spec language found in README.",
+      "why_it_matters": "Assignment explicitly asks for a short feature spec.",
+      "recommendation": "Add a dedicated 'Feature Spec' section: value proposition + 3 measurable requirements."
+    },
+    {
+      "id": "R2",
+      "title": "Architecture/design artifact present",
+      "status": "pass",
+      "points_earned": 5,
+      "points_max": 5,
+      "severity": "info",
+      "evidence": "Architecture document is populated.",
+      "why_it_matters": "Design/architecture carries report and documentation weight.",
+      "recommendation": "Populate architecture with data flow, storage, alert flow, and reasoning loop."
+    },
+    {
+      "id": "R3",
+      "title": "Prototype development pipeline implemented",
+      "status": "pass",
+      "points_earned": 5,
+      "points_max": 5,
+      "severity": "info",
+      "evidence": "extracted_frames=50, telemetry_records=50, analysis_records=50, alerts=50",
+      "why_it_matters": "Core pipeline functionality is foundational to correctness.",
+      "recommendation": "Ensure all stages are reproducible in a single command/script."
+    },
+    {
+      "id": "R4",
+      "title": "Cross-domain frame indexing implemented",
+      "status": "pass",
+      "points_earned": 5,
+      "points_max": 5,
+      "severity": "info",
+      "evidence": "index_frames/search_frames found=True, total_indexed=50",
+      "why_it_matters": "Cross-domain requirement is explicitly mandatory in assignment.",
+      "recommendation": "Keep query examples in report showing object/time retrieval."
+    },
+    {
+      "id": "R5",
+      "title": "QA test cases are robust and reproducible",
+      "status": "pass",
+      "points_earned": 5,
+      "points_max": 5,
+      "severity": "info",
+      "evidence": "Test suite appears robust and self-contained.",
+      "why_it_matters": "Assignment requires QA scenarios; weak tests reduce confidence and score.",
+      "recommendation": "Replace stubs with assertive tests and use FastAPI TestClient instead of external server."
+    }
+  ],
+  "artifact_snapshot": {
+    "extracted_frames": 50,
+    "telemetry_records": 50,
+    "analysis_records": 50,
+    "alerts_records": 50,
+    "indexed_total": 50,
+    "context_summaries": 100,
+    "session_summary_has_raw_response_only": false
+  },
+  "findings_ordered": [
+    {
+      "severity": "critical",
+      "check_id": "D1",
+      "issue": "Submission report PDF is missing from repository.",
+      "evidence": "Repository artifact audit",
+      "improvement": "Include missing deliverable before submission or provide accessible link."
+    },
+    {
+      "severity": "major",
+      "check_id": "D1",
+      "issue": "Demo video artifact not found in repository (can be link-only at submission time).",
+      "evidence": "Repository artifact audit",
+      "improvement": "Include missing deliverable before submission or provide accessible link."
+    }
+  ],
+  "top_improvements": [
+    "Convert docs/final_report.md to PDF and include it in submission artifacts.",
+    "Record voiceover demo video and include a shareable link with correct access permissions."
+  ],
+  "submission_readiness": "ready_with_major_gaps"
+}

@@ -1,0 +1,39 @@
+{
+  "frame_id": "frame_021",
+  "timestamp": "16:23:40",
+  "location": "Side Entrance",
+  "vlm_description": "The scene captures a residential entrance area with a vehicle parked nearby. There are no visible people present.",
+  "scene_type": "entrance",
+  "objects_detected": [
+    "vehicle",
+    "shoe"
+  ],
+  "object_details": [
+    {
+      "label": "vehicle",
+      "count": 1,
+      "confidence": 0.9,
+      "attributes": [
+        "SUV",
+        "parked"
+      ]
+    }
+  ],
+  "people_count": 0,
+  "person_features": [],
+  "vehicles_detected": [
+    "{'type': 'SUV', 'color': 'white', 'position': 'parked', 'direction': 'unknown', 'occupancy': 'unknown', 'plate_visible': False}"
+  ],
+  "activity": "A vehicle is parked near the entrance. No suspicious activity detected.",
+  "security_signals": [],
+  "suspicious_elements": [],
+  "threat_assessment": "none",
+  "confidence": 0.95,
+  "recommended_action": "No action needed.",
+  "alert_reasoning": "There are no visible threats or suspicious activities. The area is open and during normal hours.",
+  "alert_priority_signals": [],
+  "vehicle_details": [],
+  "reasoning_signals": [],
+  "model_used": "gpt-4o",
+  "processing_time_ms": 3437
+}

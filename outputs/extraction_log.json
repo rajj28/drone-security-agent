@@ -1,0 +1,409 @@
+{
+  "total_frames": 50,
+  "video_duration_seconds": 3599,
+  "fps": 15,
+  "resolution": "1920x1080",
+  "codec": "hevc",
+  "frames": [
+    {
+      "frame_number": 1,
+      "filename": "frame_001.jpg",
+      "timestamp_seconds": 0,
+      "timestamp_formatted": "00:00:00",
+      "file_size_kb": 378.6,
+      "extraction_time_ms": 1545
+    },
+    {
+      "frame_number": 2,
+      "filename": "frame_002.jpg",
+      "timestamp_seconds": 71,
+      "timestamp_formatted": "00:01:11",
+      "file_size_kb": 365.9,
+      "extraction_time_ms": 109
+    },
+    {
+      "frame_number": 3,
+      "filename": "frame_003.jpg",
+      "timestamp_seconds": 142,
+      "timestamp_formatted": "00:02:22",
+      "file_size_kb": 366.4,
+      "extraction_time_ms": 108
+    },
+    {
+      "frame_number": 4,
+      "filename": "frame_004.jpg",
+      "timestamp_seconds": 213,
+      "timestamp_formatted": "00:03:33",
+      "file_size_kb": 356.3,
+      "extraction_time_ms": 118
+    },
+    {
+      "frame_number": 5,
+      "filename": "frame_005.jpg",
+      "timestamp_seconds": 284,
+      "timestamp_formatted": "00:04:44",
+      "file_size_kb": 360.1,
+      "extraction_time_ms": 123
+    },
+    {
+      "frame_number": 6,
+      "filename": "frame_006.jpg",
+      "timestamp_seconds": 355,
+      "timestamp_formatted": "00:05:55",
+      "file_size_kb": 367.7,
+      "extraction_time_ms": 117
+    },
+    {
+      "frame_number": 7,
+      "filename": "frame_007.jpg",
+      "timestamp_seconds": 426,
+      "timestamp_formatted": "00:07:06",
+      "file_size_kb": 371.4,
+      "extraction_time_ms": 118
+    },
+    {
+      "frame_number": 8,
+      "filename": "frame_008.jpg",
+      "timestamp_seconds": 497,
+      "timestamp_formatted": "00:08:17",
+      "file_size_kb": 353.2,
+      "extraction_time_ms": 116
+    },
+    {
+      "frame_number": 9,
+      "filename": "frame_009.jpg",
+      "timestamp_seconds": 568,
+      "timestamp_formatted": "00:09:28",
+      "file_size_kb": 361.9,
+      "extraction_time_ms": 130
+    },
+    {
+      "frame_number": 10,
+      "filename": "frame_010.jpg",
+      "timestamp_seconds": 639,
+      "timestamp_formatted": "00:10:39",
+      "file_size_kb": 363.2,
+      "extraction_time_ms": 122
+    },
+    {
+      "frame_number": 11,
+      "filename": "frame_011.jpg",
+      "timestamp_seconds": 710,
+      "timestamp_formatted": "00:11:50",
+      "file_size_kb": 362.0,
+      "extraction_time_ms": 131
+    },
+    {
+      "frame_number": 12,
+      "filename": "frame_012.jpg",
+      "timestamp_seconds": 781,
+      "timestamp_formatted": "00:13:01",
+      "file_size_kb": 363.7,
+      "extraction_time_ms": 150
+    },
+    {
+      "frame_number": 13,
+      "filename": "frame_013.jpg",
+      "timestamp_seconds": 852,
+      "timestamp_formatted": "00:14:12",
+      "file_size_kb": 353.6,
+      "extraction_time_ms": 124
+    },
+    {
+      "frame_number": 14,
+      "filename": "frame_014.jpg",
+      "timestamp_seconds": 923,
+      "timestamp_formatted": "00:15:23",
+      "file_size_kb": 360.9,
+      "extraction_time_ms": 128
+    },
+    {
+      "frame_number": 15,
+      "filename": "frame_015.jpg",
+      "timestamp_seconds": 994,
+      "timestamp_formatted": "00:16:34",
+      "file_size_kb": 359.7,
+      "extraction_time_ms": 125
+    },
+    {
+      "frame_number": 16,
+      "filename": "frame_016.jpg",
+      "timestamp_seconds": 1065,
+      "timestamp_formatted": "00:17:45",
+      "file_size_kb": 352.2,
+      "extraction_time_ms": 128
+    },
+    {
+      "frame_number": 17,
+      "filename": "frame_017.jpg",
+      "timestamp_seconds": 1136,
+      "timestamp_formatted": "00:18:56",
+      "file_size_kb": 352.8,
+      "extraction_time_ms": 135
+    },
+    {
+      "frame_number": 18,
+      "filename": "frame_018.jpg",
+      "timestamp_seconds": 1207,
+      "timestamp_formatted": "00:20:07",
+      "file_size_kb": 359.7,
+      "extraction_time_ms": 145
+    },
+    {
+      "frame_number": 19,
+      "filename": "frame_019.jpg",
+      "timestamp_seconds": 1278,
+      "timestamp_formatted": "00:21:18",
+      "file_size_kb": 355.2,
+      "extraction_time_ms": 157
+    },
+    {
+      "frame_number": 20,
+      "filename": "frame_020.jpg",
+      "timestamp_seconds": 1349,
+      "timestamp_formatted": "00:22:29",
+      "file_size_kb": 348.1,
+      "extraction_time_ms": 146
+    },
+    {
+      "frame_number": 21,
+      "filename": "frame_021.jpg",
+      "timestamp_seconds": 1420,
+      "timestamp_formatted": "00:23:40",
+      "file_size_kb": 351.4,
+      "extraction_time_ms": 146
+    },
+    {
+      "frame_number": 22,
+      "filename": "frame_022.jpg",
+      "timestamp_seconds": 1491,
+      "timestamp_formatted": "00:24:51",
+      "file_size_kb": 351.4,
+      "extraction_time_ms": 145
+    },
+    {
+      "frame_number": 23,
+      "filename": "frame_023.jpg",
+      "timestamp_seconds": 1562,
+      "timestamp_formatted": "00:26:02",
+      "file_size_kb": 355.8,
+      "extraction_time_ms": 161
+    },
+    {
+      "frame_number": 24,
+      "filename": "frame_024.jpg",
+      "timestamp_seconds": 1633,
+      "timestamp_formatted": "00:27:13",
+      "file_size_kb": 363.1,
+      "extraction_time_ms": 149
+    },
+    {
+      "frame_number": 25,
+      "filename": "frame_025.jpg",
+      "timestamp_seconds": 1704,
+      "timestamp_formatted": "00:28:24",
+      "file_size_kb": 348.9,
+      "extraction_time_ms": 161
+    },
+    {
+      "frame_number": 26,
+      "filename": "frame_026.jpg",
+      "timestamp_seconds": 1775,
+      "timestamp_formatted": "00:29:35",
+      "file_size_kb": 366.2,
+      "extraction_time_ms": 151
+    },
+    {
+      "frame_number": 27,
+      "filename": "frame_027.jpg",
+      "timestamp_seconds": 1846,
+      "timestamp_formatted": "00:30:46",
+      "file_size_kb": 347.1,
+      "extraction_time_ms": 159
+    },
+    {
+      "frame_number": 28,
+      "filename": "frame_028.jpg",
+      "timestamp_seconds": 1917,
+      "timestamp_formatted": "00:31:57",
+      "file_size_kb": 336.7,
+      "extraction_time_ms": 168
+    },
+    {
+      "frame_number": 29,
+      "filename": "frame_029.jpg",
+      "timestamp_seconds": 1988,
+      "timestamp_formatted": "00:33:08",
+      "file_size_kb": 349.7,
+      "extraction_time_ms": 167
+    },
+    {
+      "frame_number": 30,
+      "filename": "frame_030.jpg",
+      "timestamp_seconds": 2059,
+      "timestamp_formatted": "00:34:19",
+      "file_size_kb": 350.3,
+      "extraction_time_ms": 162
+    },
+    {
+      "frame_number": 31,
+      "filename": "frame_031.jpg",
+      "timestamp_seconds": 2130,
+      "timestamp_formatted": "00:35:30",
+      "file_size_kb": 349.4,
+      "extraction_time_ms": 186
+    },
+    {
+      "frame_number": 32,
+      "filename": "frame_032.jpg",
+      "timestamp_seconds": 2201,
+      "timestamp_formatted": "00:36:41",
+      "file_size_kb": 341.4,
+      "extraction_time_ms": 184
+    },
+    {
+      "frame_number": 33,
+      "filename": "frame_033.jpg",
+      "timestamp_seconds": 2272,
+      "timestamp_formatted": "00:37:52",
+      "file_size_kb": 339.6,
+      "extraction_time_ms": 182
+    },
+    {
+      "frame_number": 34,
+      "filename": "frame_034.jpg",
+      "timestamp_seconds": 2343,
+      "timestamp_formatted": "00:39:03",
+      "file_size_kb": 346.0,
+      "extraction_time_ms": 179
+    },
+    {
+      "frame_number": 35,
+      "filename": "frame_035.jpg",
+      "timestamp_seconds": 2414,
+      "timestamp_formatted": "00:40:14",
+      "file_size_kb": 337.0,
+      "extraction_time_ms": 181
+    },
+    {
+      "frame_number": 36,
+      "filename": "frame_036.jpg",
+      "timestamp_seconds": 2485,
+      "timestamp_formatted": "00:41:25",
+      "file_size_kb": 331.2,
+      "extraction_time_ms": 177
+    },
+    {
+      "frame_number": 37,
+      "filename": "frame_037.jpg",
+      "timestamp_seconds": 2556,
+      "timestamp_formatted": "00:42:36",
+      "file_size_kb": 333.4,
+      "extraction_time_ms": 183
+    },
+    {
+      "frame_number": 38,
+      "filename": "frame_038.jpg",
+      "timestamp_seconds": 2627,
+      "timestamp_formatted": "00:43:47",
+      "file_size_kb": 311.7,
+      "extraction_time_ms": 190
+    },
+    {
+      "frame_number": 39,
+      "filename": "frame_039.jpg",
+      "timestamp_seconds": 2698,
+      "timestamp_formatted": "00:44:58",
+      "file_size_kb": 331.3,
+      "extraction_time_ms": 188
+    },
+    {
+      "frame_number": 40,
+      "filename": "frame_040.jpg",
+      "timestamp_seconds": 2769,
+      "timestamp_formatted": "00:46:09",
+      "file_size_kb": 331.6,
+      "extraction_time_ms": 186
+    },
+    {
+      "frame_number": 41,
+      "filename": "frame_041.jpg",
+      "timestamp_seconds": 2840,
+      "timestamp_formatted": "00:47:20",
+      "file_size_kb": 327.3,
+      "extraction_time_ms": 203
+    },
+    {
+      "frame_number": 42,
+      "filename": "frame_042.jpg",
+      "timestamp_seconds": 2911,
+      "timestamp_formatted": "00:48:31",
+      "file_size_kb": 328.3,
+      "extraction_time_ms": 192
+    },
+    {
+      "frame_number": 43,
+      "filename": "frame_043.jpg",
+      "timestamp_seconds": 2982,
+      "timestamp_formatted": "00:49:42",
+      "file_size_kb": 341.5,
+      "extraction_time_ms": 200
+    },
+    {
+      "frame_number": 44,
+      "filename": "frame_044.jpg",
+      "timestamp_seconds": 3053,
+      "timestamp_formatted": "00:50:53",
+      "file_size_kb": 326.2,
+      "extraction_time_ms": 206
+    },
+    {
+      "frame_number": 45,
+      "filename": "frame_045.jpg",
+      "timestamp_seconds": 3124,
+      "timestamp_formatted": "00:52:04",
+      "file_size_kb": 320.7,
+      "extraction_time_ms": 207
+    },
+    {
+      "frame_number": 46,
+      "filename": "frame_046.jpg",
+      "timestamp_seconds": 3195,
+      "timestamp_formatted": "00:53:15",
+      "file_size_kb": 337.1,
+      "extraction_time_ms": 214
+    },
+    {
+      "frame_number": 47,
+      "filename": "frame_047.jpg",
+      "timestamp_seconds": 3266,
+      "timestamp_formatted": "00:54:26",
+      "file_size_kb": 322.2,
+      "extraction_time_ms": 199
+    },
+    {
+      "frame_number": 48,
+      "filename": "frame_048.jpg",
+      "timestamp_seconds": 3337,
+      "timestamp_formatted": "00:55:37",
+      "file_size_kb": 329.2,
+      "extraction_time_ms": 217
+    },
+    {
+      "frame_number": 49,
+      "filename": "frame_049.jpg",
+      "timestamp_seconds": 3408,
+      "timestamp_formatted": "00:56:48",
+      "file_size_kb": 334.1,
+      "extraction_time_ms": 226
+    },
+    {
+      "frame_number": 50,
+      "filename": "frame_050.jpg",
+      "timestamp_seconds": 3479,
+      "timestamp_formatted": "00:57:59",
+      "file_size_kb": 331.5,
+      "extraction_time_ms": 220
+    }
+  ]
+}

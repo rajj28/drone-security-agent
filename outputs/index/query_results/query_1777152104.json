@@ -1,0 +1,46 @@
+{
+  "query": "What happened at the restricted zone?",
+  "timestamp": "2026-04-26T02:51:44",
+  "results": [
+    {
+      "frame_id": "frame_042",
+      "similarity_score": 0.3154,
+      "timestamp": "16:48:31",
+      "location": "Side Entrance",
+      "description": "car,shoes,water bottles,wooden cabinet",
+      "threat_assessment": "none"
+    },
+    {
+      "frame_id": "frame_038",
+      "similarity_score": 0.3022,
+      "timestamp": "16:43:47",
+      "location": "Garage",
+      "description": "two cars,building entrance,door,shoes,table",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_030",
+      "similarity_score": 0.2614,
+      "timestamp": "16:34:19",
+      "location": "Perimeter North",
+      "description": "SUV,shoes,door,steps,door mat",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_025",
+      "similarity_score": 0.2571,
+      "timestamp": "16:28:24",
+      "location": "Back Entrance",
+      "description": "SUV,shoes,staircase,door,potted plant",
+      "threat_assessment": "low"
+    },
+    {
+      "frame_id": "frame_002",
+      "similarity_score": 0.2502,
+      "timestamp": "16:01:11",
+      "location": "Perimeter North",
+      "description": "car,shoes,door,gate",
+      "threat_assessment": "low"
+    }
+  ]
+}
