@@ -61,6 +61,9 @@ drone-security-agent/
 └── README.md
 ```
 
+## Systerm Acrhitecture
+<img width="1617" height="768" alt="image" src="https://github.com/user-attachments/assets/e44b54a6-f2f9-4dcb-952d-bcea89b0a950" />
+
 ---
 
 ## Setup
