@@ -122,7 +122,4 @@ All outputs are saved as JSON in the `outputs/` directory. Judges can inspect th
 - Progress and errors are logged with emojis.
 - Bonus features (session summary, Q&A) are included.
 
----
 
-## License
-MIT
