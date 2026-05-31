@@ -284,17 +284,39 @@ def list_sessions():
     
     return {"sessions": sessions}
 
+async def keep_alive_heartbeat(session_id: str, interval: int = 60):
+    """
+    Keep-alive heartbeat to prevent Render free tier from sleeping during long operations.
+    Logs activity every `interval` seconds to keep the service awake.
+    """
+    import asyncio
+    heartbeat_count = 0
+    while processing_status.get(session_id, {}).get("status") == "processing":
+        await asyncio.sleep(interval)
+        heartbeat_count += 1
+        logger.info(f"[{session_id}] Keep-alive heartbeat #{heartbeat_count} - service active, status: {processing_status[session_id].get('current_step', 'unknown')}")
+        # Update timestamp to show activity
+        processing_status[session_id]["last_heartbeat"] = time.time()
+
+
 async def process_video_pipeline(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
     """
     Background task to process uploaded video through the complete pipeline with intelligent frame extraction.
+    Includes keep-alive heartbeat to prevent service sleep during long operations.
     """
     try:
         import sys
         import subprocess
+        import asyncio
         
         # Update status
         processing_status[session_id]["status"] = "processing"
         processing_status[session_id]["current_step"] = "extracting_frames"
+        processing_status[session_id]["start_time"] = time.time()
+        
+        # Start keep-alive heartbeat to prevent Render sleep (every 60 seconds)
+        heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
+        logger.info(f"[{session_id}] Started keep-alive heartbeat for long processing")
         
         # Step 1: Extract frames using intelligent extractor
         logger.info(f"Extracting frames for session {session_id} using {extraction_strategy} strategy")
@@ -441,11 +463,25 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         logger.info(f"Processing completed for session {session_id}")
         
+        # Cancel keep-alive heartbeat
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass
+        
     except Exception as e:
         logger.error(f"Processing failed for session {session_id}: {str(e)}")
         processing_status[session_id]["status"] = "failed"
         processing_status[session_id]["error"] = str(e)
         processing_status[session_id]["current_step"] = "failed"
+        
+        # Cancel keep-alive heartbeat on failure
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass
 
 @app.get("/frames")
 def list_frames():
