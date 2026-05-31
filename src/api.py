@@ -369,9 +369,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             
             # Get frames from fallback extraction
             fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("*.jpg")])
+            logger.info(f"[FALLBACK] Found {len(fallback_frames)} frames in {session_dir}/extracted")
             processing_status[session_id]["extracted_frames"] = fallback_frames
             processing_status[session_id]["frame_count"] = len(fallback_frames)
             processing_status[session_id]["session_dir"] = str(session_dir)
+            logger.info(f"[FALLBACK] Stored {len(fallback_frames)} frames in processing_status")
         
         finally:
             # Restore original settings
@@ -535,14 +537,19 @@ def get_frame_alert(frame_id: str):
 @app.get("/sessions/{session_id}/frames")
 def get_session_frames(session_id: str):
     """Get frames for a specific session"""
+    logger.info(f"[FRAMES API] Request for session: {session_id}")
+    logger.info(f"[FRAMES API] processing_status keys: {list(processing_status.keys())}")
     
     # 1. Check processing_status first (Railway persistence)
     if session_id in processing_status:
         stored_frames = processing_status[session_id].get("extracted_frames", [])
+        logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
         if stored_frames:
             # Extract just the filename from full paths
             frame_names = [Path(f).name for f in stored_frames]
             return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
+    else:
+        logger.warning(f"[FRAMES API] Session {session_id} not found in processing_status")
     
     # 2. Session-specific extracted directory (fallback)
     session_extracted_dir = Path("data") / "sessions" / session_id / "extracted"
