@@ -21,8 +21,8 @@ from src.config import settings
 from src.qa_agent import SecurityQAAgent
 from src.pinecone_indexer import search_frames
 
-# API configuration
-API_BASE = "http://localhost:8000"
+# API configuration - use environment variable or default to localhost
+API_BASE = os.environ.get("API_URL", "http://localhost:8000")
 
 # Streamlit compatibility function for image display
 def display_image(image_path, caption=None, width=None):
