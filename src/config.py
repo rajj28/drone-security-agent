@@ -28,9 +28,9 @@ class Settings(BaseSettings):
     PINECONE_DIMENSION: int = Field(1024, env="PINECONE_DIMENSION")
     PINECONE_METRIC: str = Field("cosine", env="PINECONE_METRIC")
 
-    # LangChain
-    LANGCHAIN_API_KEY: str = Field(..., env="LANGCHAIN_API_KEY")
-    LANGCHAIN_TRACING_V2: bool = Field(True, env="LANGCHAIN_TRACING_V2")
+    # LangChain (optional - only needed for tracing)
+    LANGCHAIN_API_KEY: str = Field("", env="LANGCHAIN_API_KEY")
+    LANGCHAIN_TRACING_V2: bool = Field(False, env="LANGCHAIN_TRACING_V2")
     LANGCHAIN_PROJECT: str = Field("drone-security-agent", env="LANGCHAIN_PROJECT")
     
     # Hugging Face (for Cloud Enhanced Analyzer)
