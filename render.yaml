@@ -10,7 +10,7 @@ services:
       pip install -r requirements.txt
       echo "✅ API dependencies installed"
     startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT --workers 1 --log-level info --timeout-keep-alive 75
-    healthCheckPath: /health
+    healthCheckPath: /health  # Matches FastAPI endpoint
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.13
