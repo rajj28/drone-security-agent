@@ -9,7 +9,7 @@ services:
       pip install --upgrade pip
       pip install -r requirements.txt
       echo "✅ API dependencies installed"
-    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT --workers 1 --log-level info
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT --workers 1 --log-level info --timeout-keep-alive 75
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
@@ -21,9 +21,11 @@ services:
       - key: USE_CLOUD_ANALYZER
         value: "true"
       - key: MAX_FRAMES
-        value: 30
+        value: 10  # Reduced for free tier memory limits
       - key: API_ENV
         value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
       - key: LOG_LEVEL
         value: INFO
 
