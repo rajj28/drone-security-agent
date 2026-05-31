@@ -3,26 +3,48 @@ services:
     name: drone-security-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    buildCommand: |
+      echo "🔧 API Service Build Starting..."
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      echo "✅ API dependencies installed"
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT --workers 1 --log-level info
+    healthCheckPath: /health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
       - key: OPENAI_API_KEY
         sync: false  # Set in Render dashboard
       - key: PINECONE_API_KEY
         sync: false
       - key: USE_CLOUD_ANALYZER
-        value: true
+        value: "true"
       - key: MAX_FRAMES
         value: 30
+      - key: API_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
 
   - type: web
     name: drone-security-dashboard
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run demo/dashboard.py --server.port $PORT
+    autoDeploy: true
+    buildCommand: |
+      echo "📊 Dashboard Service Build Starting..."
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      echo "✅ Dashboard dependencies installed"
+    startCommand: streamlit run demo/dashboard.py --server.port $PORT --server.headless true --server.enableCORS false
+    healthCheckPath: /_stcore/health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
       - key: API_URL
         value: https://drone-security-api.onrender.com
       - key: PINECONE_API_KEY
         sync: false
+      - key: DASHBOARD_ENV
+        value: production
