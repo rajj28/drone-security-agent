@@ -160,25 +160,37 @@ def load_json(path: Path):
     return None
 
 def get_api_data(endpoint: str) -> Dict[str, Any]:
-    """Get data from API with retry logic."""
-    max_retries = 3
-    retry_delay = 2
+    """Get data from API with retry logic for Render free tier sleep mode."""
+    max_retries = 5  # Increased for Render sleep wake-up
+    retry_delay = 3  # Longer delay for service wake-up
     
     for attempt in range(max_retries):
         try:
-            # Use the API_BASE URL defined above
             url = f"{API_BASE}/{endpoint}"
-            response = requests.get(url, timeout=60)
+            # Longer timeout for Render free tier wake-up (can take 10-30s)
+            response = requests.get(url, timeout=30)
             if response.status_code == 200:
                 return response.json()
+            elif response.status_code == 502:
+                # Service is waking up, retry without spamming errors
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+                    continue
+                # Only show error on final attempt
+                st.warning(f"⚠️ API waking up from sleep... (attempt {attempt + 1}/{max_retries})")
             else:
                 st.error(f"API returned status {response.status_code} for {endpoint}")
                 
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.Timeout:
             if attempt < max_retries - 1:
                 time.sleep(retry_delay)
                 continue
-            st.error(f"API connection error: {e}")
+            st.error(f"⏱️ API timeout - service may be starting up")
+        except requests.exceptions.ConnectionError:
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+                continue
+            st.error(f"🔌 API connection refused - service waking up")
         except Exception as e:
             st.error(f"Unexpected error loading {endpoint}: {e}")
     return {}
