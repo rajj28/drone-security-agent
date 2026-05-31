@@ -44,7 +44,13 @@ services:
         value: 3.10.13
       - key: API_URL
         value: https://drone-security-api.onrender.com
+      - key: OPENAI_API_KEY
+        sync: false  # CRITICAL: Add in Render dashboard!
       - key: PINECONE_API_KEY
         sync: false
+      - key: LANGCHAIN_API_KEY
+        sync: false  # CRITICAL: Add in Render dashboard!
+      - key: USE_CLOUD_ANALYZER
+        value: "true"
       - key: DASHBOARD_ENV
         value: production
