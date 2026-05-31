@@ -1,49 +1,40 @@
 {
   "frame_id": "frame_029",
-  "timestamp": "16:33:08",
+  "timestamp": "16:00:28",
   "location": "Main Gate",
-  "vlm_description": "The scene depicts a residential entrance area with one parked white vehicle. There are several pairs of shoes near the entrance, suggesting typical residential activity.",
-  "scene_type": "residential",
+  "vlm_description": "The scene is set in a small retail store, likely a mobile phone shop, with display counters and promotional posters visible. Four people are present. One person is standing in front of the counter, holding a phone and showing it to the others. Two individuals are leaning over the counter, closely observing the phone. The fourth person is partially visible, standing behind the counter. The individuals appear engaged in a discussion about the phone.",
+  "scene_type": "retail",
+  "people_count": 4,
+  "person_features": [
+    "Person_1: Standing in front of the counter, holding a phone, showing it to others.",
+    "Person_2: Leaning over the counter, observing the phone closely.",
+    "Person_3: Leaning over the counter, engaged in discussion.",
+    "Person_4: Partially visible, standing behind the counter."
+  ],
   "objects_detected": [
-    "vehicle",
-    "shoes",
-    "door"
+    "phone",
+    "display counters",
+    "promotional posters",
+    "chairs"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "person_features": [],
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "The vehicle is stationary, likely belonging to the residents.",
+  "activity": "Discussion and demonstration of a phone.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "No security threat detected. Continue monitoring the area.",
-  "alert_reasoning": "Normal residential scene with no suspicious activity or unauthorized presence.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 3896
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 3296
 }

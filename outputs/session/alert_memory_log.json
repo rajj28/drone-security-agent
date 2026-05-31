@@ -1,8 +1,17 @@
 {
-  "session_id": "SESSION_20260426_050911",
+  "session_id": "SESSION_20260529_221751",
   "events": [
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-29 22:17:51",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 0 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-30 00:56:53",
       "role": "alert_agent",
       "input": "Process alert for frame_001",
       "output": "Processed frame_001 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -11,7 +20,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-30 00:56:53",
       "role": "alert",
       "input": "Process alert for frame_001",
       "output": "Processed frame_001 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -23,7 +32,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-30 00:56:53",
       "role": "alert_agent",
       "input": "Process alert for frame_002",
       "output": "Processed frame_002 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -32,7 +41,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-30 00:56:53",
       "role": "alert",
       "input": "Process alert for frame_002",
       "output": "Processed frame_002 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -44,28 +53,28 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_003",
-      "output": "Processed frame_003 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
+      "output": "Processed frame_003 at Garage with severity MEDIUM. Trigger: suspicious_behavior. Reasoning: While the rule-based alert was triggered with high severity due to suspicious behavior, the recent context shows no prior alerts or high severity events. The person's activities are unknown, and the vehicle is simply parked, which suggests a medium level of concern..",
       "metadata": {
         "source": "conversation_memory"
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:11",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_003",
-      "output": "Processed frame_003 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
+      "output": "Processed frame_003 at Garage with severity MEDIUM. Trigger: suspicious_behavior. Reasoning: While the rule-based alert was triggered with high severity due to suspicious behavior, the recent context shows no prior alerts or high severity events. The person's activities are unknown, and the vehicle is simply parked, which suggests a medium level of concern..",
       "metadata": {
         "frame_id": "frame_003",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "alert_type": "suspicious_behavior"
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_004",
       "output": "Processed frame_004 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -74,7 +83,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_004",
       "output": "Processed frame_004 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -86,7 +95,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_005",
       "output": "Processed frame_005 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -95,7 +104,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_005",
       "output": "Processed frame_005 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -107,7 +116,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_006",
       "output": "Processed frame_006 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -116,7 +125,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_006",
       "output": "Processed frame_006 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -128,7 +137,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_007",
       "output": "Processed frame_007 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -137,7 +146,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_007",
       "output": "Processed frame_007 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -149,7 +158,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_008",
       "output": "Processed frame_008 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -158,7 +167,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_008",
       "output": "Processed frame_008 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -170,7 +179,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_009",
       "output": "Processed frame_009 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -179,7 +188,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_009",
       "output": "Processed frame_009 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -191,7 +200,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_010",
       "output": "Processed frame_010 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -200,7 +209,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_010",
       "output": "Processed frame_010 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -212,7 +221,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_011",
       "output": "Processed frame_011 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -221,7 +230,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_011",
       "output": "Processed frame_011 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -233,7 +242,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_012",
       "output": "Processed frame_012 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -242,7 +251,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_012",
       "output": "Processed frame_012 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -254,7 +263,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_013",
       "output": "Processed frame_013 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -263,7 +272,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_013",
       "output": "Processed frame_013 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -275,7 +284,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_014",
       "output": "Processed frame_014 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -284,7 +293,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_014",
       "output": "Processed frame_014 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -296,7 +305,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert_agent",
       "input": "Process alert for frame_015",
       "output": "Processed frame_015 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -305,7 +314,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:55",
       "role": "alert",
       "input": "Process alert for frame_015",
       "output": "Processed frame_015 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -317,7 +326,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_016",
       "output": "Processed frame_016 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -326,7 +335,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_016",
       "output": "Processed frame_016 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -338,7 +347,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_017",
       "output": "Processed frame_017 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -347,7 +356,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_017",
       "output": "Processed frame_017 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -359,7 +368,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_018",
       "output": "Processed frame_018 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -368,7 +377,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_018",
       "output": "Processed frame_018 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -380,7 +389,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_019",
       "output": "Processed frame_019 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -389,7 +398,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_019",
       "output": "Processed frame_019 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -401,7 +410,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_020",
       "output": "Processed frame_020 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -410,7 +419,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_020",
       "output": "Processed frame_020 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -422,7 +431,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_021",
       "output": "Processed frame_021 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -431,7 +440,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_021",
       "output": "Processed frame_021 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -443,7 +452,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_022",
       "output": "Processed frame_022 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -452,7 +461,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_022",
       "output": "Processed frame_022 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -464,7 +473,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_023",
       "output": "Processed frame_023 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -473,7 +482,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:12",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_023",
       "output": "Processed frame_023 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -485,7 +494,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_024",
       "output": "Processed frame_024 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -494,7 +503,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_024",
       "output": "Processed frame_024 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -506,7 +515,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert_agent",
       "input": "Process alert for frame_025",
       "output": "Processed frame_025 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -515,7 +524,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:56",
       "role": "alert",
       "input": "Process alert for frame_025",
       "output": "Processed frame_025 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -527,49 +536,28 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
-      "input": "Process alert for frame_026",
-      "output": "Processed frame_026 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
+      "input": "Process alert for frame_027",
+      "output": "Processed frame_027 at Driveway with severity MEDIUM. Trigger: suspicious_hand_actions. Reasoning: The activity of leaning and reaching over the counter suggests potential unauthorized access, but there is no immediate threat or high-risk behavior observed. The lack of prior alerts in similar scenarios indicates that the situation may not warrant a high-severity alert..",
       "metadata": {
         "source": "conversation_memory"
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_026",
-      "output": "Processed frame_026 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_026",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_027",
-      "output": "Processed frame_027 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_027",
-      "output": "Processed frame_027 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
+      "output": "Processed frame_027 at Driveway with severity MEDIUM. Trigger: suspicious_hand_actions. Reasoning: The activity of leaning and reaching over the counter suggests potential unauthorized access, but there is no immediate threat or high-risk behavior observed. The lack of prior alerts in similar scenarios indicates that the situation may not warrant a high-severity alert..",
       "metadata": {
         "frame_id": "frame_027",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "alert_type": "suspicious_hand_actions"
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process alert for frame_028",
       "output": "Processed frame_028 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -578,7 +566,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_028",
       "output": "Processed frame_028 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -590,7 +578,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process alert for frame_029",
       "output": "Processed frame_029 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -599,7 +587,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_029",
       "output": "Processed frame_029 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -611,28 +599,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_030",
-      "output": "Processed frame_030 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_030",
-      "output": "Processed frame_030 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_030",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process alert for frame_031",
       "output": "Processed frame_031 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -641,7 +608,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_031",
       "output": "Processed frame_031 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -653,28 +620,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_032",
-      "output": "Processed frame_032 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_032",
-      "output": "Processed frame_032 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_032",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process alert for frame_033",
       "output": "Processed frame_033 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -683,7 +629,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_033",
       "output": "Processed frame_033 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -695,196 +641,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_034",
-      "output": "Processed frame_034 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_034",
-      "output": "Processed frame_034 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_034",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_035",
-      "output": "Processed frame_035 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_035",
-      "output": "Processed frame_035 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_035",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_036",
-      "output": "Processed frame_036 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_036",
-      "output": "Processed frame_036 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_036",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_037",
-      "output": "Processed frame_037 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_037",
-      "output": "Processed frame_037 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_037",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert_agent",
-      "input": "Process alert for frame_038",
-      "output": "Processed frame_038 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:13",
-      "role": "alert",
-      "input": "Process alert for frame_038",
-      "output": "Processed frame_038 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_038",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:16",
-      "role": "alert_agent",
-      "input": "Process alert for frame_039",
-      "output": "Processed frame_039 at Back Entrance with severity MEDIUM. Trigger: restricted_zone_person. Reasoning: The presence of a person near vehicles in a restricted zone during monitored hours warrants attention, but there is no indication of unauthorized access or unusual behavior. Previous frames show normal vehicle activity without suspicious human presence..",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:16",
-      "role": "alert",
-      "input": "Process alert for frame_039",
-      "output": "Processed frame_039 at Back Entrance with severity MEDIUM. Trigger: restricted_zone_person. Reasoning: The presence of a person near vehicles in a restricted zone during monitored hours warrants attention, but there is no indication of unauthorized access or unusual behavior. Previous frames show normal vehicle activity without suspicious human presence..",
-      "metadata": {
-        "frame_id": "frame_039",
-        "severity": "MEDIUM",
-        "alert_triggered": true,
-        "alert_type": "restricted_zone_person"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_040",
-      "output": "Processed frame_040 at Restricted Zone with severity MEDIUM. Trigger: restricted_zone_person. Reasoning: The presence of a person near an open vehicle door in a restricted area is concerning, but the lack of additional suspicious activity or unauthorized access in recent frames suggests the threat level is not high..",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_040",
-      "output": "Processed frame_040 at Restricted Zone with severity MEDIUM. Trigger: restricted_zone_person. Reasoning: The presence of a person near an open vehicle door in a restricted area is concerning, but the lack of additional suspicious activity or unauthorized access in recent frames suggests the threat level is not high..",
-      "metadata": {
-        "frame_id": "frame_040",
-        "severity": "MEDIUM",
-        "alert_triggered": true,
-        "alert_type": "restricted_zone_person"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_041",
-      "output": "Processed frame_041 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_041",
-      "output": "Processed frame_041 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_041",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_042",
-      "output": "Processed frame_042 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_042",
-      "output": "Processed frame_042 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_042",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process alert for frame_043",
       "output": "Processed frame_043 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -893,7 +650,7 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:17",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert",
       "input": "Process alert for frame_043",
       "output": "Processed frame_043 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
@@ -905,157 +662,136 @@
       }
     },
     {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_044",
-      "output": "Processed frame_044 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_044",
-      "output": "Processed frame_044 at Perimeter North with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_044",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_045",
-      "output": "Processed frame_045 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_045",
-      "output": "Processed frame_045 at Garage with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_045",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert_agent",
-      "input": "Process alert for frame_046",
-      "output": "Processed frame_046 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:17",
-      "role": "alert",
-      "input": "Process alert for frame_046",
-      "output": "Processed frame_046 at Back Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_046",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert_agent",
-      "input": "Process alert for frame_047",
-      "output": "Processed frame_047 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert",
-      "input": "Process alert for frame_047",
-      "output": "Processed frame_047 at Restricted Zone with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_047",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert_agent",
-      "input": "Process alert for frame_048",
-      "output": "Processed frame_048 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert",
-      "input": "Process alert for frame_048",
-      "output": "Processed frame_048 at Driveway with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_048",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert_agent",
-      "input": "Process alert for frame_049",
-      "output": "Processed frame_049 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert",
-      "input": "Process alert for frame_049",
-      "output": "Processed frame_049 at Side Entrance with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_049",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert_agent",
-      "input": "Process alert for frame_050",
-      "output": "Processed frame_050 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "source": "conversation_memory"
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
-      "role": "alert",
-      "input": "Process alert for frame_050",
-      "output": "Processed frame_050 at Main Gate with severity NONE. Trigger: none. Reasoning: rule-based only.",
-      "metadata": {
-        "frame_id": "frame_050",
-        "severity": "NONE",
-        "alert_triggered": false,
-        "alert_type": null
-      }
-    },
-    {
-      "timestamp": "2026-04-26 05:09:18",
+      "timestamp": "2026-05-30 00:56:58",
       "role": "alert_agent",
       "input": "Process all alerts",
-      "output": "Generated 2 alerts across 50 frames.",
+      "output": "Generated 2 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-30 13:28:57",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 3 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-30 13:49:07",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 3 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-30 17:56:53",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 3 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-30 23:46:31",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 3 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 00:23:09",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 3 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 01:02:15",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 01:52:06",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 01:58:46",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 02:30:36",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 6 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 11:38:03",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 11:44:09",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 12:11:37",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 12:27:35",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-05-31 12:58:50",
+      "role": "alert_agent",
+      "input": "Process all alerts",
+      "output": "Generated 0 alerts across 31 frames.",
       "metadata": {
         "source": "conversation_memory"
       }

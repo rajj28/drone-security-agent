@@ -1,43 +1,30 @@
 {
   "frame_id": "frame_011",
-  "timestamp": "16:11:50",
+  "timestamp": "16:00:10",
   "location": "Back Entrance",
-  "vlm_description": "The scene shows a residential entrance area with a vehicle parked nearby. There are stairs and a door leading to the interior.",
-  "scene_type": "entrance",
-  "objects_detected": [
-    "vehicle",
-    "shoes"
-  ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
+  "raw_response": "I'm unable to analyze the content of the video frame directly. Please provide a detailed description or another type of image for analysis.",
+  "_parsing_failed": true,
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "scene_type": "unknown",
+  "object_details": [],
   "person_features": [],
-  "vehicles_detected": [
-    "{'type': 'SUV', 'color': 'white', 'position': 'parked', 'direction': 'unknown', 'occupancy': 'unknown', 'plate_visible': False}"
-  ],
-  "activity": "A vehicle is parked near a residential entrance, no visible activity from people.",
-  "security_signals": [
-    "restricted_zone_vehicle"
-  ],
-  "suspicious_elements": [],
-  "threat_assessment": "low",
-  "confidence": 0.95,
-  "recommended_action": "Monitor for any unauthorized individuals approaching the entrance.",
-  "alert_reasoning": "Low threat level due to absence of people in a restricted zone with a parked vehicle.",
-  "alert_priority_signals": [
-    "restricted_zone_vehicle"
-  ],
   "vehicle_details": [],
+  "security_signals": [],
+  "alert_reasoning": "Review frame manually",
+  "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "suspicious_elements": [],
+  "people_count": 0,
+  "vlm_description": "Scene analysis unavailable.",
+  "activity": "Unknown activity",
+  "recommended_action": "Review frame manually",
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4593
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 1684
 }

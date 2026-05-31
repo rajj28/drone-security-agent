@@ -1,60 +1,38 @@
 {
   "frame_id": "frame_018",
-  "timestamp": "16:20:07",
+  "timestamp": "16:00:17",
   "location": "Back Entrance",
-  "vlm_description": "The scene depicts a back entrance with a visible parked vehicle and a residential entryway.",
-  "scene_type": "entrance",
+  "vlm_description": "The scene is inside a retail store, likely a mobile phone shop, with display counters and promotional posters. One person is visible, standing behind a glass display counter. The person is wearing a grey sweater and appears to be interacting with their hands, possibly holding or examining an object. The counter contains several mobile phones and accessories. The person is positioned near the center of the frame, facing the display. No unusual or suspicious behavior is observed.",
+  "scene_type": "retail",
+  "people_count": 1,
+  "person_features": [
+    "Person_1: Standing behind the counter, interacting with hands, possibly examining an object."
+  ],
   "objects_detected": [
-    "vehicle",
-    "shoes"
+    "glass display counter",
+    "mobile phones",
+    "promotional posters",
+    "orange chair",
+    "water dispenser"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    },
-    {
-      "label": "shoes",
-      "count": 3,
-      "confidence": 0.8,
-      "attributes": [
-        "outdoor"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "Vehicle is parked and entryway shows outdoor footwear, indicating possible presence.",
-  "security_signals": [
-    "restricted_zone_vehicle"
-  ],
+  "activity": "Person is standing and interacting with items on the counter.",
+  "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "low",
-  "confidence": 0.95,
-  "recommended_action": "Monitor for movement or unauthorized entry.",
-  "alert_reasoning": "Low threat level due to absence of people and normal activity indications.",
-  "alert_priority_signals": [
-    "vehicle_loitering"
-  ],
-  "person_features": [],
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
+  "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 6694
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 4133
 }

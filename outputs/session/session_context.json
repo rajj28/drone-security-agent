@@ -1,10 +1,10 @@
 {
-  "frames_analyzed": 200,
-  "total_alerts": 16,
-  "high_alerts": 4,
-  "medium_alerts": 12,
-  "people_detected": 34,
-  "vehicles_detected": 188,
+  "frames_analyzed": 496,
+  "total_alerts": 89,
+  "high_alerts": 20,
+  "medium_alerts": 69,
+  "people_detected": 356,
+  "vehicles_detected": 0,
   "locations_visited": [
     "Main Gate",
     "Perimeter North",
@@ -16,131 +16,717 @@
   ],
   "incidents": [
     {
-      "frame_id": "frame_039",
-      "timestamp": "16:44:58",
-      "location": "Back Entrance",
-      "severity": "HIGH",
-      "alert_type": "restricted_zone_person"
-    },
-    {
-      "frame_id": "frame_039",
-      "timestamp": "16:44:58",
-      "location": "Back Entrance",
-      "severity": "HIGH",
-      "alert_type": "restricted_zone_person"
-    },
-    {
-      "frame_id": "frame_005",
-      "timestamp": "16:04:44",
-      "location": "Restricted Zone",
-      "severity": "MEDIUM",
-      "alert_type": "security_signal_detected",
-      "reasoning": "security signal raised by the vision model"
-    },
-    {
-      "frame_id": "frame_010",
-      "timestamp": "16:10:39",
+      "frame_id": "frame_003",
+      "timestamp": "16:00:02",
       "location": "Garage",
       "severity": "MEDIUM",
-      "alert_type": "person_behavior_signal",
-      "reasoning": "person appearance is security-relevant"
+      "alert_type": "suspicious_behavior"
     },
     {
-      "frame_id": "frame_011",
-      "timestamp": "16:11:50",
-      "location": "Back Entrance",
+      "frame_id": "frame_027",
+      "timestamp": "16:00:26",
+      "location": "Driveway",
       "severity": "MEDIUM",
-      "alert_type": "security_signal_detected",
-      "reasoning": "security signal raised by the vision model"
-    },
-    {
-      "frame_id": "frame_018",
-      "timestamp": "16:20:07",
-      "location": "Back Entrance",
-      "severity": "MEDIUM",
-      "alert_type": "security_signal_detected",
-      "reasoning": "security signal raised by the vision model"
+      "alert_type": "suspicious_hand_actions"
     },
     {
       "frame_id": "frame_025",
-      "timestamp": "16:28:24",
+      "timestamp": "16:00:24",
       "location": "Back Entrance",
-      "severity": "MEDIUM",
-      "alert_type": "vehicle_context_signal",
-      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_026",
-      "timestamp": "16:29:35",
-      "location": "Restricted Zone",
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
       "severity": "MEDIUM",
-      "alert_type": "vehicle_context_signal",
-      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
     },
     {
       "frame_id": "frame_033",
-      "timestamp": "16:37:52",
+      "timestamp": "16:00:32",
       "location": "Restricted Zone",
-      "severity": "MEDIUM",
-      "alert_type": "vehicle_context_signal",
-      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_038",
-      "timestamp": "16:43:47",
+      "frame_id": "frame_019",
+      "timestamp": "16:00:18",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_025",
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_033",
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
       "location": "Garage",
       "severity": "MEDIUM",
-      "alert_type": "person_behavior_signal",
-      "reasoning": "person appearance is security-relevant"
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
     },
     {
-      "frame_id": "frame_039",
-      "timestamp": "16:44:58",
+      "frame_id": "frame_019",
+      "timestamp": "16:00:18",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "threat_assessment_high",
+      "reasoning": "model threat assessment is high"
+    },
+    {
+      "frame_id": "frame_020",
+      "timestamp": "16:00:19",
+      "location": "Driveway",
+      "severity": "HIGH",
+      "alert_type": "threat_assessment_high",
+      "reasoning": "model threat assessment is high"
+    },
+    {
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_022",
+      "timestamp": "16:00:21",
+      "location": "Main Gate",
+      "severity": "HIGH",
+      "alert_type": "threat_assessment_high",
+      "reasoning": "model threat assessment is high"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_026",
+      "timestamp": "16:00:24",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_030",
+      "timestamp": "16:00:29",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_019",
+      "timestamp": "16:00:18",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_025",
+      "timestamp": "16:00:24",
       "location": "Back Entrance",
       "severity": "HIGH",
       "alert_type": "restricted_zone_person",
       "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_040",
-      "timestamp": "16:46:09",
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_033",
+      "timestamp": "16:00:32",
       "location": "Restricted Zone",
       "severity": "HIGH",
       "alert_type": "restricted_zone_person",
       "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_046",
-      "timestamp": "16:53:15",
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_018",
+      "timestamp": "16:00:17",
       "location": "Back Entrance",
-      "severity": "MEDIUM",
-      "alert_type": "security_signal_detected",
-      "reasoning": "security signal raised by the vision model"
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_047",
-      "timestamp": "16:54:26",
+      "frame_id": "frame_019",
+      "timestamp": "16:00:18",
       "location": "Restricted Zone",
-      "severity": "MEDIUM",
-      "alert_type": "vehicle_context_signal",
-      "reasoning": "vehicle color observed: white; plate not visible in restricted zone; vehicle type: suv"
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_039",
-      "timestamp": "16:44:58",
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_025",
+      "timestamp": "16:00:24",
       "location": "Back Entrance",
-      "severity": "MEDIUM",
-      "alert_type": "restricted_zone_person"
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
     },
     {
-      "frame_id": "frame_040",
-      "timestamp": "16:46:09",
-      "location": "Restricted Zone",
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
       "severity": "MEDIUM",
-      "alert_type": "restricted_zone_person"
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_033",
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_018",
+      "timestamp": "16:00:17",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_019",
+      "timestamp": "16:00:18",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_025",
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_033",
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "reasoning": "person detected in restricted zone"
+    },
+    {
+      "frame_id": "frame_009",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_014",
+      "timestamp": "16:00:13",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_015",
+      "timestamp": "16:00:14",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_016",
+      "timestamp": "16:00:14",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_017",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_021",
+      "timestamp": "16:00:20",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_023",
+      "timestamp": "16:00:22",
+      "location": "Perimeter North",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_024",
+      "timestamp": "16:00:23",
+      "location": "Garage",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_028",
+      "timestamp": "16:00:27",
+      "location": "Side Entrance",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
+    },
+    {
+      "frame_id": "frame_029",
+      "timestamp": "16:00:28",
+      "location": "Main Gate",
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "reasoning": "crowd detected"
     }
   ],
-  "running_narrative": "Analyzed 200 frames. Alerts: 16 total, 4 high, 12 medium, 0 low.",
+  "running_narrative": "Analyzed 496 frames so far. 356 people detected, 0 vehicles detected, 89 alerts generated across 7 locations.",
   "alert_processed_frames": [
     "frame_001",
     "frame_002",
@@ -167,30 +753,11 @@
     "frame_023",
     "frame_024",
     "frame_025",
-    "frame_026",
     "frame_027",
     "frame_028",
     "frame_029",
-    "frame_030",
     "frame_031",
-    "frame_032",
     "frame_033",
-    "frame_034",
-    "frame_035",
-    "frame_036",
-    "frame_037",
-    "frame_038",
-    "frame_039",
-    "frame_040",
-    "frame_041",
-    "frame_042",
-    "frame_043",
-    "frame_044",
-    "frame_045",
-    "frame_046",
-    "frame_047",
-    "frame_048",
-    "frame_049",
-    "frame_050"
+    "frame_043"
   ]
 }

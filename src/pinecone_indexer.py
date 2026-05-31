@@ -53,7 +53,7 @@ def embed_text(text: str, client: OpenAI) -> List[float]:
     return resp.data[0].embedding
 
 def index_frames():
-    print("\n📦 Indexing frame descriptions in Pinecone...")
+    print("\nIndexing frame descriptions in Pinecone...")
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     index = init_pinecone()
     analysis_path = settings.ANALYSIS_DIR / "all_analysis.json"
@@ -62,6 +62,9 @@ def index_frames():
     frames = []
     success_count = 0
     for frame in all_analysis:
+        # Skip None entries (from vision analyzer skipping missing frames)
+        if frame is None:
+            continue
         frame_id = frame["frame_id"]
         desc = frame.get("vlm_description", "")
         meta = {
@@ -90,10 +93,10 @@ def index_frames():
             elapsed = int((time.time() - start) * 1000)
             success_count += 1
             frames.append({"frame_id": frame_id, "status": "success", "processing_time_ms": elapsed})
-            print(f"✅ Indexed {frame_id}")
+            print(f"Indexed {frame_id}")
         except Exception as e:
             frames.append({"frame_id": frame_id, "status": f"error: {e}"})
-            print(f"❌ Failed to index {frame_id}: {e}")
+            print(f"Failed to index {frame_id}: {e}")
     log = {
         "total_indexed": success_count,
         "index_name": INDEX_NAME,
@@ -104,11 +107,11 @@ def index_frames():
     log_path = settings.INDEX_DIR / "indexing_log.json"
     with open(log_path, "w", encoding="utf-8") as f:
         json.dump(log, f, indent=2)
-    print(f"\n📄 Indexing log saved to {log_path}")
+    print(f"\nIndexing log saved to {log_path}")
     return log
 
 def search_frames(query: str, top_k: int = 5) -> Dict[str, Any]:
-    print(f"\n🔍 Searching Pinecone for: '{query}' (top_k={top_k})")
+    print(f"\nSearching Pinecone for: '{query}' (top_k={top_k})")
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     index = init_pinecone()
     embedding = embed_text(query, client)
@@ -135,7 +138,7 @@ def search_frames(query: str, top_k: int = 5) -> Dict[str, Any]:
     qfile = qdir / f"query_{int(time.time())}.json"
     with open(qfile, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=2)
-    print(f"✅ Query results saved to {qfile}")
+    print(f"Query results saved to {qfile}")
     return out
 
 if __name__ == "__main__":

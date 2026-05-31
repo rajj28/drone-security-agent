@@ -390,7 +390,7 @@ def _generate_summary_with_retries(
     return _enforce_summary_schema(fallback, all_analysis, all_alerts, session_context)
 
 def generate_session_summary():
-    print("\n📝 Generating session summary...")
+    print("\nGenerating session summary...")
     with open(settings.ANALYSIS_DIR / "all_analysis.json", "r", encoding="utf-8") as f:
         all_analysis = json.load(f)
     with open(settings.ALERTS_DIR / "all_alerts.json", "r", encoding="utf-8") as f:
@@ -415,7 +415,7 @@ def generate_session_summary():
     summary["one_line_summary"] = generate_one_line_summary(session_context)
     with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
-    print(f"✅ Session summary saved to {SUMMARY_PATH}")
+    print(f"Session summary saved to {SUMMARY_PATH}")
     return summary
 
 if __name__ == "__main__":

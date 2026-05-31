@@ -29,3 +29,16 @@ opencv-python==4.9.0.80
 # Testing
 pytest==7.4.0
 pytest-asyncio==0.23.0
+
+# Production enhancements
+numpy==1.26.0
+psutil==5.9.0
+pandas==2.1.0
+python-multipart==0.0.6
+aiofiles==23.2.0
+
+# Vision models
+torch==2.1.0
+torchvision==0.16.0
+transformers==4.26.0
+accelerate==0.25.0

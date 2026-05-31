@@ -1,8 +1,11 @@
 {
   "frame_id": "frame_006",
-  "timestamp": "16:05:55",
+  "timestamp": "16:00:05",
   "location": "Driveway",
-  "raw_response": "I'm unable to analyze the content of this image or recognize details about individuals or vehicles in it.",
+  "raw_response": "I'm unable to analyze the content of the image provided. If you have any questions or need assistance with something else, feel free to ask!",
+  "_parsing_failed": true,
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
   "scene_type": "unknown",
   "object_details": [],
   "person_features": [],
@@ -18,6 +21,10 @@
   "activity": "Unknown activity",
   "recommended_action": "Review frame manually",
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 2043
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 1682
 }

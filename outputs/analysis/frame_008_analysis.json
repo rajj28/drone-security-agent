@@ -1,48 +1,37 @@
 {
   "frame_id": "frame_008",
-  "timestamp": "16:08:17",
+  "timestamp": "16:00:07",
   "location": "Main Gate",
-  "vlm_description": "The scene depicts a residential entrance area with a parked vehicle and shoes placed near the entrance steps.",
-  "scene_type": "entrance",
-  "objects_detected": [
-    "vehicle",
-    "shoes"
-  ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "sedan",
-        "parked"
-      ]
-    }
-  ],
+  "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are display counters with mobile phones and accessories visible. The store appears organized with promotional posters on the walls.",
+  "scene_type": "retail",
   "people_count": 0,
   "person_features": [],
-  "vehicles_detected": [
-    "vehicle"
+  "objects_detected": [
+    "display counters",
+    "mobile phones",
+    "accessories",
+    "chairs",
+    "table",
+    "water dispenser"
   ],
-  "vehicle_details": [
-    {
-      "type": "sedan",
-      "color": "black",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": true
-    }
-  ],
-  "activity": "A vehicle is parked at the entrance, with no visible people in the vicinity.",
+  "activity": "The store is currently empty with no visible activity.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "No immediate action required. Continue regular monitoring.",
-  "alert_reasoning": "The threat level is low due to the absence of people and the vehicle being stationary without any suspicious elements.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 3869
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 2406
 }

@@ -1,12 +1,12 @@
 {
   "frame_id": "frame_042",
-  "timestamp": "16:48:31",
-  "unix_time": 1675270111,
+  "timestamp": "16:01:36",
+  "unix_time": 1675267296.4,
   "drone": {
     "latitude": 18.5204,
     "longitude": 73.8567,
     "altitude_m": 15.0,
-    "battery_pct": 18.0,
+    "battery_pct": 21.2,
     "heading_degrees": 90,
     "speed_ms": 0.0,
     "status": "patrolling",

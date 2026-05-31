@@ -28,7 +28,7 @@ def extract_frames(
     Extracts frames from the video using ffmpeg and saves them as JPGs.
     Returns a list of frame metadata dicts.
     """
-    print("\n🎬 Starting frame extraction...")
+    print("\nStarting frame extraction...")
     output_dir.mkdir(parents=True, exist_ok=True)
     frame_interval = duration // num_frames
     frame_metadata = []
@@ -64,9 +64,9 @@ def extract_frames(
                 "file_size_kb": file_size_kb,
                 "extraction_time_ms": elapsed
             })
-            print(f"✅ Extracted {frame_name} at {ts_formatted} ({file_size_kb} KB)")
+            print(f"Extracted {frame_name} at {ts_formatted} ({file_size_kb} KB)")
         except Exception as e:
-            print(f"❌ Failed to extract {frame_name} at {ts_formatted}: {e}")
+            print(f"Failed to extract {frame_name} at {ts_formatted}: {e}")
     return frame_metadata
 
 def save_extraction_log(
@@ -90,7 +90,7 @@ def save_extraction_log(
     }
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(log, f, indent=2)
-    print(f"\n📄 Extraction log saved to {output_path}")
+    print(f"\nExtraction log saved to {output_path}")
 
 if __name__ == "__main__":
     meta = extract_frames()

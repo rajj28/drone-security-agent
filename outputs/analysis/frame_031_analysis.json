@@ -1,49 +1,38 @@
 {
   "frame_id": "frame_031",
-  "timestamp": "16:35:30",
+  "timestamp": "16:00:30",
   "location": "Garage",
-  "vlm_description": "The scene depicts a garage area with a parked white vehicle. The entrance area is visible, with several pairs of shoes placed near the steps leading to the door.",
-  "scene_type": "residential",
+  "vlm_description": "The scene is set in a retail environment, specifically a mobile phone shop. There is one person visible in the frame, standing behind a glass display counter. The individual appears to be looking at something on the counter. Their hands are clasped together, resting on the counter. The shop is equipped with various mobile phone displays and promotional posters on the walls.",
+  "scene_type": "retail",
+  "people_count": 1,
+  "person_features": [
+    "Person_1: Standing behind the counter, looking down, hands clasped together on the counter."
+  ],
   "objects_detected": [
-    "vehicle",
-    "entrance",
-    "shoes"
+    "glass display counter",
+    "mobile phones",
+    "promotional posters",
+    "chairs",
+    "water cooler"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.95,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "person_features": [],
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "Vehicle parked in a residential garage area.",
+  "activity": "The person is standing and observing the display area.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "Monitor for any unexpected activity or unauthorized access.",
-  "alert_reasoning": "No suspicious activity detected. Normal residential scene with parked vehicle.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4175
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 3683
 }

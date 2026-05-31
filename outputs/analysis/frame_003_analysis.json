@@ -1,49 +1,30 @@
 {
   "frame_id": "frame_003",
-  "timestamp": "16:02:22",
+  "timestamp": "16:00:02",
   "location": "Garage",
-  "vlm_description": "The scene depicts a garage area with a parked vehicle and a residential entrance.",
-  "scene_type": "garage",
-  "objects_detected": [
-    "vehicle",
-    "shoes",
-    "door"
-  ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.95,
-      "attributes": [
-        "sedan",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
+  "raw_response": "I'm unable to view or analyze images directly. However, if you provide a description of the scene, I can help you interpret or analyze it based on the details you give.",
+  "_parsing_failed": true,
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "scene_type": "unknown",
+  "object_details": [],
   "person_features": [],
-  "vehicles_detected": [
-    "vehicle"
-  ],
-  "vehicle_details": [
-    {
-      "type": "sedan",
-      "color": "dark",
-      "position": "parked",
-      "direction": "facing inward",
-      "occupancy": "unknown",
-      "plate_visible": true
-    }
-  ],
-  "activity": "The vehicle is parked; multiple shoes near a doorway suggest possible human presence.",
+  "vehicle_details": [],
   "security_signals": [],
-  "suspicious_elements": [],
-  "threat_assessment": "low",
-  "confidence": 0.95,
-  "recommended_action": "No immediate action required. Continue monitoring for unusual activities.",
-  "alert_reasoning": "The zone is not restricted and it is not after hours. Observed objects are typical for a residential parking area.",
+  "alert_reasoning": "Review frame manually",
   "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "suspicious_elements": [],
+  "people_count": 0,
+  "vlm_description": "Scene analysis unavailable.",
+  "activity": "Unknown activity",
+  "recommended_action": "Review frame manually",
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 3598
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 1980
 }

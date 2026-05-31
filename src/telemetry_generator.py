@@ -22,14 +22,15 @@ def generate_telemetry(
     Generates telemetry for each frame and saves per-frame JSON.
     Returns list of all telemetry dicts.
     """
-    print("\n📡 Generating telemetry for frames...")
+    print("\nGenerating telemetry for frames...")
     locations = settings.LOCATIONS
     battery = 100.0
     battery_drop = 100.0 / max(1, len(frame_metadata))
     all_telemetry = []
     for i, frame in enumerate(frame_metadata):
         frame_id = f"frame_{i+1:03}"
-        ts_seconds = frame["timestamp_seconds"]
+        # Handle both 'timestamp_seconds' and 'timestamp' field names
+        ts_seconds = frame.get("timestamp_seconds") or frame.get("timestamp", 0)
         unix_time = start_unix + ts_seconds
         dt = datetime.utcfromtimestamp(unix_time)
         timestamp = dt.strftime("%H:%M:%S")
@@ -64,17 +65,50 @@ def generate_telemetry(
             json.dump(telemetry, f, indent=2)
         all_telemetry.append(telemetry)
         battery = max(0.0, battery - battery_drop)
-        print(f"✅ Telemetry for {frame_id} at {timestamp} ({location})")
+        print(f"Telemetry for {frame_id} at {timestamp} ({location})")
     # Save combined
     combined_path = output_dir / "all_telemetry.json"
     with open(combined_path, "w", encoding="utf-8") as f:
         json.dump(all_telemetry, f, indent=2)
-    print(f"\n📄 Combined telemetry saved to {combined_path}")
+    print(f"\nCombined telemetry saved to {combined_path}")
     return all_telemetry
 
 if __name__ == "__main__":
     # Load extraction log
     meta_path = settings.OUTPUTS_DIR / "extraction_log.json"
-    with open(meta_path, "r", encoding="utf-8") as f:
-        frame_meta = json.load(f)["frames"]
-    generate_telemetry(frame_meta)
+    
+    # Check if extraction log exists
+    if not meta_path.exists():
+        print(f"Extraction log not found at: {meta_path}")
+        print("Please run frame extraction first to generate the extraction log.")
+        exit(1)
+    
+    try:
+        with open(meta_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Check if the data has the expected structure
+        if "frames" not in data:
+            print("Extraction log does not contain 'frames' key")
+            print("Available keys:", list(data.keys()))
+            exit(1)
+        
+        frame_meta = data["frames"]
+        
+        # Verify frame metadata structure
+        if frame_meta:
+            # Check for either 'timestamp_seconds' or 'timestamp' key
+            if "timestamp_seconds" not in frame_meta[0] and "timestamp" not in frame_meta[0]:
+                print("Frame metadata does not contain 'timestamp_seconds' or 'timestamp' key")
+                print("Available keys:", list(frame_meta[0].keys()))
+                exit(1)
+        
+        print(f"Loaded {len(frame_meta)} frames from extraction log")
+        generate_telemetry(frame_meta)
+        
+    except json.JSONDecodeError as e:
+        print(f"Failed to parse extraction log: {e}")
+        exit(1)
+    except Exception as e:
+        print(f"Error loading extraction log: {e}")
+        exit(1)

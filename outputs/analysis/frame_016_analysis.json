@@ -1,56 +1,39 @@
 {
   "frame_id": "frame_016",
-  "timestamp": "16:17:45",
+  "timestamp": "16:00:14",
   "location": "Perimeter North",
-  "vlm_description": "The scene shows a residential entrance with a vehicle parked. Several pairs of shoes are placed near the entrance, indicating residential activity.",
-  "scene_type": "residential",
+  "vlm_description": "The scene is set in a retail environment, likely a mobile phone shop. Four individuals are present. One person, possibly a store employee, is standing behind a glass counter. He is holding a phone and appears to be showing it to the other three individuals who are standing on the opposite side of the counter. The individuals are closely observing the phone. The counter displays various electronic items.",
+  "scene_type": "retail",
+  "people_count": 4,
+  "person_features": [
+    "Person_1: Standing behind the counter, holding a phone, showing it to others.",
+    "Person_2: Leaning over the counter, closely observing the phone.",
+    "Person_3: Standing next to Person_2, also observing the phone.",
+    "Person_4: Standing slightly behind Persons 2 and 3, looking towards the phone."
+  ],
   "objects_detected": [
-    "vehicle",
-    "shoes"
+    "phone",
+    "glass counter",
+    "electronic items"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.9,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    },
-    {
-      "label": "shoes",
-      "count": 4,
-      "confidence": 0.8,
-      "attributes": [
-        "mixed"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "person_features": [],
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "A vehicle is parked at the residential entrance. The presence of shoes suggests residents are home.",
+  "activity": "A group of people is engaged in examining a phone, possibly a sales demonstration.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "Continue regular monitoring. No immediate action is needed.",
-  "alert_reasoning": "No suspicious activity detected. Scene matches typical residential behavior during clear daylight.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4086
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 3219
 }

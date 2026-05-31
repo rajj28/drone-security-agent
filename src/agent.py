@@ -417,7 +417,6 @@ Return JSON with keys:
         if not self._mark_frame_processed(frame_id):
             existing = _load_json_file(ANALYSIS_DIR / f"{frame_id}_analysis.json", {})
             existing["duplicate"] = True
-            existing["agent_reasoning"] = existing.get("agent_reasoning", {})
             return existing
 
         telemetry = self.get_telemetry(frame_id)
@@ -433,7 +432,7 @@ Return JSON with keys:
                 message=f"{alert_summary.get('rule_triggered', 'alert')} detected for {frame_id}",
             )
 
-        reasoning = self._generate_reasoning(frame_id, telemetry, analysis, alert_summary)
+        # Agent reasoning feature removed - direct analysis only
         self._sync_session_context_from_frame(frame_id, telemetry, analysis, alert_summary)
         _persist_context_summary(frame_id, telemetry, analysis, self.session_context, alert_summary)
 
@@ -441,8 +440,7 @@ Return JSON with keys:
             f"Frame {frame_id} analyzed at {telemetry.get('location', 'unknown location')}. "
             f"People: {analysis.get('people_count', 0)}. "
             f"Vehicles: {len(analysis.get('vehicles_detected', []) or [])}. "
-            f"Alert: {alert_summary.get('severity', 'NONE')}. "
-            f"Assessment: {reasoning.get('security_assessment', 'normal')}"
+            f"Alert: {alert_summary.get('severity', 'NONE')}."
         )
         self._record_memory(f"Analyze {frame_id}", summary)
         _append_memory_log(

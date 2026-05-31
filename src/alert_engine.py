@@ -15,6 +15,7 @@ from datetime import datetime
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain_openai import ChatOpenAI
 from src.config import settings
+from src.behavioral_analyzer import analyze_behavioral_threats
 
 RULES = [
     (lambda a, t: t["is_after_hours"] and "person" in a.get("objects_detected", []), "HIGH", "after_hours_person"),
@@ -23,6 +24,15 @@ RULES = [
     (lambda a, t: t["is_after_hours"] and any(v not in ["sedan","SUV"] for v in a.get("vehicles_detected", [])), "HIGH", "unknown_vehicle_after_hours"),
     (lambda a, t: "loitering" in a.get("activity", "").lower(), "MEDIUM", "loitering_detected"),
     (lambda a, t: a.get("threat_assessment") == "high", "HIGH", "threat_assessment_high"),
+    # Enhanced theft detection rules
+    (lambda a, t: a.get("people_count", 0) >= 2 and "shop" in a.get("vlm_description", "").lower(), "MEDIUM", "potential_theft_scenario"),
+    (lambda a, t: any(action in str(a.get("person_features", [])).lower() for action in ["pocket", "conceal", "hide", "reach"]), "HIGH", "suspicious_hand_actions"),
+    (lambda a, t: any(word in a.get("vlm_description", "").lower() for word in ["phone", "mobile", "electronics"]) and a.get("people_count", 0) >= 2, "MEDIUM", "electronics_theft_risk"),
+    (lambda a, t: any(word in a.get("activity", "").lower() for word in ["distract", "avoid", "nervous", "suspicious"]), "HIGH", "suspicious_behavior"),
+    (lambda a, t: a.get("people_count", 0) >= 4 and "interior" in a.get("scene_type", "").lower(), "HIGH", "multiple_persons_interior"),
+    # Behavioral analysis rules
+    (lambda a, t: _behavioral_threat_check(a, t), "HIGH", "behavioral_threat_detected"),
+    (lambda a, t: _shoplifting_pattern_check(a, t), "HIGH", "shoplifting_pattern_detected"),
 ]
 
 BORDERLINE = ["MEDIUM", "threat_assessment:medium"]
@@ -43,6 +53,24 @@ def rule_based_alert(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> Dic
             return {"alert_triggered": True, "severity": severity, "rule_triggered": rule_name}
     return {"alert_triggered": False, "severity": "NONE", "rule_triggered": None}
 
+
+def _behavioral_threat_check(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> bool:
+    """Check for behavioral threats using the behavioral analyzer."""
+    try:
+        behavioral_result = analyze_behavioral_threats(analysis)
+        overall_threat = behavioral_result.get('overall_threat_level', 'low')
+        return overall_threat in ['high', 'medium']
+    except Exception:
+        return False
+
+def _shoplifting_pattern_check(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> bool:
+    """Check specifically for shoplifting patterns."""
+    try:
+        behavioral_result = analyze_behavioral_threats(analysis)
+        shoplifting = behavioral_result.get('shoplifting_detection', {})
+        return shoplifting.get('shoplifting_risk', False) or shoplifting.get('risk_level') == 'high'
+    except Exception:
+        return False
 
 def _load_json_file(path: Path, default: Any) -> Any:
     """Loads JSON from disk with a fallback default."""
@@ -457,19 +485,22 @@ Return JSON with keys:
 
     def process_all(self) -> List[Dict[str, Any]]:
         """Processes all available analysis frames and writes the combined log."""
-        print("\n🚨 AlertEngineAgent processing all frames...")
+        print("\nAlertEngineAgent processing all frames...")
         all_analysis = _load_json_file(settings.ANALYSIS_DIR / "all_analysis.json", [])
         results: List[Dict[str, Any]] = []
         for frame in all_analysis:
+            # Skip None entries (from vision analyzer skipping missing frames)
+            if frame is None:
+                continue
             frame_id = frame.get("frame_id")
             if not frame_id:
                 continue
             try:
                 result = self.process_frame(frame_id)
                 results.append(result)
-                print(f"{'✅' if result['alert_triggered'] else '⚠️'} Alert processed for {frame_id} ({result['severity']})")
+                print(f"{'Alert' if result['alert_triggered'] else 'Warning'} Alert processed for {frame_id} ({result['severity']})")
             except Exception as exc:
-                print(f"❌ Failed to process {frame_id}: {exc}")
+                print(f"Failed to process {frame_id}: {exc}")
 
         combined = {
             "session_date": time.strftime("%Y-%m-%d"),
@@ -487,7 +518,7 @@ Return JSON with keys:
         )
 
         self._write_agent_runs()
-        print(f"\n📄 Combined alerts saved to {settings.ALERTS_DIR / 'all_alerts.json'}")
+        print(f"\nCombined alerts saved to {settings.ALERTS_DIR / 'all_alerts.json'}")
         return results
 
     def _write_agent_runs(self) -> None:
@@ -508,10 +539,10 @@ def process_alerts():
 def run_demo() -> None:
     """Runs a small demo so the module produces visible output when executed."""
     agent = AlertEngineAgent()
-    print("\n🤖 Running AlertEngineAgent demo...")
-    print(f"📍 Session context: {json.dumps(agent.session_context, indent=2)}")
+    print("\nRunning AlertEngineAgent demo...")
+    print(f"Session context: {json.dumps(agent.session_context, indent=2)}")
     results = agent.process_all()
-    print(f"✅ Alert demo complete. Processed {len(results)} frames.")
+    print(f"Alert demo complete. Processed {len(results)} frames.")
 
 if __name__ == "__main__":
     run_demo()

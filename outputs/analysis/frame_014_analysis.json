@@ -1,47 +1,40 @@
 {
   "frame_id": "frame_014",
-  "timestamp": "16:15:23",
+  "timestamp": "16:00:13",
   "location": "Side Entrance",
-  "vlm_description": "The scene shows a side entrance area with a white SUV parked near the entrance. There are multiple pairs of shoes outside, indicating potential presence inside.",
-  "scene_type": "entrance",
+  "vlm_description": "The scene is inside a small retail store, likely a mobile phone shop. There are four people visible. One person is holding a phone, showing it to the others. Two individuals are leaning over the counter, appearing to be engaged in conversation or examining the phone. Another person is standing behind the counter, possibly a store employee.",
+  "scene_type": "retail",
+  "people_count": 4,
+  "person_features": [
+    "Person_1: Holding a phone, showing it to others.",
+    "Person_2: Leaning over the counter, looking at the phone.",
+    "Person_3: Leaning over the counter, engaged in conversation.",
+    "Person_4: Standing behind the counter, possibly a store employee."
+  ],
   "objects_detected": [
-    "vehicle"
+    "phone",
+    "counter",
+    "display cases",
+    "chairs"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "person_features": [],
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "No visible human activity; vehicle is stationary.",
+  "activity": "Individuals are examining a phone and conversing.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "Continue monitoring as part of routine patrol.",
-  "alert_reasoning": "No suspicious activity detected during daylight hours in a non-restricted zone.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 3398
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 4434
 }

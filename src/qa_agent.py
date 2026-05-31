@@ -44,7 +44,7 @@ class SecurityQAAgent:
     def answer(self, question: str) -> Dict[str, Any]:
         relevant = search_frames(question, top_k=5)
         frame_ids = [r["frame_id"] for r in relevant["results"]]
-        frame_details = [a for a in self.all_analyses if a["frame_id"] in frame_ids]
+        frame_details = [a for a in self.all_analyses if a is not None and a["frame_id"] in frame_ids]
         context = {
             "question": question,
             "session_stats": self.session_context,
@@ -103,17 +103,17 @@ class SecurityQAAgent:
 
 def run_demo_questions() -> None:
     """Runs predefined demo questions and stores results in qa_log.json."""
-    print("\n💬 Running demo Q&A session...")
+    print("\nRunning demo Q&A session...")
     agent = SecurityQAAgent()
     for i, question in enumerate(DEMO_QUESTIONS, start=1):
         try:
             result = agent.answer(question)
-            print(f"✅ Q{i}: {question}")
+            print(f"Q{i}: {question}")
             print(f"   Sources: {', '.join(result.get('sources', [])) if result.get('sources') else 'none'}")
         except Exception as exc:
-            print(f"❌ Q{i} failed: {exc}")
+            print(f"Q{i} failed: {exc}")
 
-    print(f"📄 QA log saved to {QA_LOG_PATH}")
+    print(f"QA log saved to {QA_LOG_PATH}")
 
 
 if __name__ == "__main__":

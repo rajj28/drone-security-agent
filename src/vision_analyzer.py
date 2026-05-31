@@ -4,56 +4,101 @@ vision_analyzer.py — Analyzes each frame using GPT-4o Vision and generates str
 - Loads JPG image, encodes to base64
 - Sends to GPT-4o Vision with security prompt and telemetry context
 - Parses and saves analysis JSON per frame
+- OPTIMIZED: Supports multi-model analysis (CLIP, BLIP, GPT-4o) for enhanced accuracy
 """
 
 import base64
 import json
+import re
 import time
 from pathlib import Path
 from typing import Dict, Any
 from PIL import Image
 from openai import OpenAI
 from src.config import settings
+from src.api import get_latest_extracted_folder
+import os
 
 SESSION_CONTEXT_PATH = settings.SESSION_DIR / "session_context.json"
 CONTEXT_SUMMARIES_PATH = settings.SESSION_DIR / "context_summaries.json"
 
-# System and user prompts
-SYSTEM_PROMPT = (
-    "You are an expert drone security analyst AI. Analyze this CCTV frame and provide a detailed security assessment. "
-    "Focus on security-relevant evidence, not generic descriptions. "
-    "Always respond in valid JSON format only."
-)
-USER_PROMPT_TEMPLATE = (
-    "Analyze this security camera frame. Telemetry context: {telemetry}. "
-    "Return rich, structured security metadata that supports later alert reasoning. "
-    "Use the exact JSON format below and include only fields you can support from the image.\n"
-    "{{\n"
-    "  'vlm_description': 'detailed description of the scene',\n"
-    "  'scene_type': 'parking_lot|road|entrance|warehouse|residential|interior|unknown',\n"
-    "  'objects_detected': ['list', 'of', 'object labels'],\n"
-    "  'object_details': [\n"
-    "    {'label': 'person', 'count': 1, 'confidence': 0.9, 'attributes': ['standing', 'near_vehicle']},\n"
-    "    {'label': 'vehicle', 'count': 1, 'confidence': 0.85, 'attributes': ['sedan', 'parked']}\n"
-    "  ],\n"
-    "  'people_count': 0,\n"
-    "  'person_features': [\n"
-    "    {'id': 'person_1', 'appearance': ['dark_clothes', 'hood'], 'face_visible': false, 'actions': ['loitering']}\n"
-    "  ],\n"
-    "  'vehicles_detected': [],\n"
-    "  'vehicle_details': [\n"
-    "    {'type': 'sedan', 'color': 'white', 'position': 'parked', 'direction': 'north', 'occupancy': 'unknown', 'plate_visible': false}\n"
-    "  ],\n"
-    "  'activity': 'description of activity',\n"
-    "  'security_signals': ['after_hours_presence', 'restricted_zone_vehicle'],\n"
-    "  'suspicious_elements': ['list of suspicious observations'],\n"
-    "  'threat_assessment': 'none/low/medium/high',\n"
-    "  'confidence': 0.95,\n"
-    "  'recommended_action': 'description',\n"
-    "  'alert_reasoning': 'why the threat level was chosen',\n"
-    "  'alert_priority_signals': ['person_after_hours', 'vehicle_loitering']\n"
-    "}}"
-)
+# Configuration for analyzer selection
+USE_ULTIMATE_ANALYZER = os.getenv("USE_ULTIMATE_ANALYZER", "false").lower() == "true"
+USE_BLIP_ANALYZER = os.getenv("USE_BLIP_ANALYZER", "false").lower() == "true"
+USE_CLIP_ANALYZER = os.getenv("USE_CLIP_ANALYZER", "false").lower() == "true"
+USE_CLOUD_ANALYZER = os.getenv("USE_CLOUD_ANALYZER", "false").lower() == "true"
+
+print(f"Analyzer Configuration:")
+print(f"  Ultimate Analyzer (Local CLIP+BLIP+GPT-4o): {USE_ULTIMATE_ANALYZER}")
+print(f"  Cloud Analyzer (HF CLIP+BLIP + Local GPT-4o): {USE_CLOUD_ANALYZER}")
+print(f"  BLIP Analyzer: {USE_BLIP_ANALYZER}")
+print(f"  CLIP Analyzer: {USE_CLIP_ANALYZER}")
+print(f"  Standard GPT-4o Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZER or USE_CLIP_ANALYZER or USE_CLOUD_ANALYZER)}")
+
+# System and user prompts - Universal Security Threat Detection
+SYSTEM_PROMPT = """
+You are an AI security analyst reviewing drone surveillance footage for a property security system. 
+Your job is to detect ANY security threat — not limited to shoplifting.
+
+THREAT LEVELS:
+- CRITICAL: Immediate danger (weapon visible, fire, physical assault, forced entry)
+- HIGH: Active security breach (trespassing, unauthorized access, fence climbing)  
+- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling)
+- LOW: Worth logging but not urgent (unfamiliar person, minor rule violation)
+- CLEAR: No threat detected
+
+UNIVERSAL THREAT SIGNALS (context-independent):
+- Person in area at unusual hours (late night, early morning)
+- Person lingering without clear purpose >30 seconds
+- Person hiding face, wearing concealing clothing in warm weather
+- Person crouching, hiding behind objects
+- Aggressive posture or confrontation between people
+- Running in non-exercise context (fleeing behavior)
+- Vehicle parked in no-parking / restricted zone
+- Vehicle with engine running, no one entering/exiting
+- Unattended bag or object left behind
+- Any visible weapon or tool that could cause harm
+- Damage to property, fences, doors, windows
+- Fire, smoke, or flooding
+
+Respond ONLY with valid JSON matching the exact format specified.
+"""
+USER_PROMPT_TEMPLATE = """
+Analyze this surveillance frame for security threats.
+
+Context:
+- Location: {location}
+- Time: {timestamp}
+- Drone altitude: {altitude}m
+
+Assess ANY security threat present using these categories:
+- CRITICAL: Immediate danger (weapon, fire, assault, forced entry)
+- HIGH: Active security breach (trespassing, fence climbing, unauthorized access)
+- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling)
+- LOW: Worth logging but not urgent (minor rule violation)
+- CLEAR: No threat detected
+
+Respond ONLY with valid JSON:
+{{
+  "threat_level": "CRITICAL|HIGH|MEDIUM|LOW|CLEAR",
+  "threat_type": "loitering|trespassing|unauthorized_vehicle|suspicious_behavior|theft_behavior|confrontation|clear",
+  "vlm_description": "detailed scene description",
+  "scene_type": "parking_lot|warehouse|retail|perimeter|gate|garage|interior|exterior|unknown",
+  "people_count": 0,
+  "objects_detected": ["person", "vehicle", "bag", "phone"],
+  "person_features": [
+    "Person_1: [description with actions like reaching, standing, concealing]",
+    "Person_2: [description with actions]"
+  ],
+  "vehicles_detected": ["white sedan", "blue truck"],
+  "activity": "description of what people are doing",
+  "security_signals": ["reaching_towards_shelf", "loitering_without_purpose"],
+  "suspicious_elements": ["unattended_bag", "person_hiding_face"],
+  "reasoning": "why this is or isn't a threat",
+  "recommended_action": "what security should do",
+  "confidence": 0.85
+}}
+"""
 
 
 def _as_string_list(value: Any) -> list:
@@ -63,9 +108,134 @@ def _as_string_list(value: Any) -> list:
     return [str(item) for item in value if item is not None]
 
 
+def _extract_partial_json(json_str: str) -> Dict[str, Any]:
+    """Extract partial data from truncated/incomplete JSON string."""
+    result = {}
+    
+    # Try to extract vlm_description
+    vlm_match = re.search(r'"vlm_description"\s*:\s*"([^"]*)"', json_str)
+    if vlm_match:
+        result["vlm_description"] = vlm_match.group(1)
+    
+    # Try to extract scene_type
+    scene_match = re.search(r'"scene_type"\s*:\s*"([^"]*)"', json_str)
+    if scene_match:
+        result["scene_type"] = scene_match.group(1)
+    
+    # Try to extract people_count
+    people_match = re.search(r'"people_count"\s*:\s*(\d+)', json_str)
+    if people_match:
+        result["people_count"] = int(people_match.group(1))
+    
+    # Try to extract objects_detected array
+    objects_match = re.search(r'"objects_detected"\s*:\s*\[(.*?)\]', json_str, re.DOTALL)
+    if objects_match:
+        try:
+            objects_str = objects_match.group(1)
+            # Extract quoted strings
+            objects = re.findall(r'"([^"]*)"', objects_str)
+            if objects:
+                result["objects_detected"] = objects
+        except:
+            pass
+    
+    # Try to extract object_details array - handle partial array
+    obj_details_match = re.search(r'"object_details"\s*:\s*(\[.*?\])(?:,\s*"|$)', json_str, re.DOTALL)
+    if obj_details_match:
+        try:
+            details_str = obj_details_match.group(1)
+            # Try to parse as JSON, if fails, try to fix common issues
+            try:
+                result["object_details"] = json.loads(details_str)
+            except:
+                # Extract individual objects with regex as fallback
+                pass
+        except:
+            pass
+    
+    # Try to extract person_features array - handle partial/truncated
+    # Look for opening bracket and capture until next top-level field or end
+    person_match = re.search(r'"person_features"\s*:\s*(\[.*?)(?:,\s*"[a-z_]+"\s*:|\}|$)', json_str, re.DOTALL)
+    if person_match:
+        try:
+            person_str = person_match.group(1).strip()
+            # Try to complete truncated JSON by adding missing brackets
+            if not person_str.endswith(']'):
+                # Count opening brackets and add closing ones
+                open_count = person_str.count('[') + person_str.count('{')
+                close_count = person_str.count(']') + person_str.count('}')
+                person_str += ']' * (open_count - close_count)
+            try:
+                result["person_features"] = json.loads(person_str)
+            except:
+                # Try extracting individual person objects as fallback
+                person_objects = re.findall(r'\{\s*"id"\s*:\s*"([^"]+)".*?\}', person_str, re.DOTALL)
+                if person_objects:
+                    # Build minimal person features from IDs
+                    result["person_features"] = [{"id": pid} for pid in person_objects]
+        except Exception as e:
+            print(f"Failed to extract person_features: {e}")
+    
+    # Try to extract activity
+    activity_match = re.search(r'"activity"\s*:\s*"([^"]*)"', json_str)
+    if activity_match:
+        result["activity"] = activity_match.group(1)
+    
+    # Try to extract recommended_action
+    action_match = re.search(r'"recommended_action"\s*:\s*"([^"]*)"', json_str)
+    if action_match:
+        result["recommended_action"] = action_match.group(1)
+    
+    return result
+
 def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> Dict[str, Any]:
-    """Ensures the analysis payload has the downstream fields needed for reasoning."""
+    """Ensures the analysis payload has the downstream fields needed for reasoning.
+    
+    FIXED: Now properly extracts fields from raw_response if initial parsing failed,
+    including handling truncated/incomplete JSON responses.
+    """
     normalized = dict(analysis)
+    
+    # If parsing failed, try to extract from raw_response
+    if normalized.get("_parsing_failed") and normalized.get("raw_response"):
+        raw = normalized["raw_response"]
+        parsed = None
+        
+        # First try: Extract JSON from markdown fences
+        try:
+            if "```json" in raw:
+                json_str = raw.split("```json")[1].split("```")[0].strip()
+            elif "```" in raw:
+                json_str = raw.split("```")[1].strip()
+            else:
+                start = raw.find("{")
+                end = raw.rfind("}")
+                if start != -1 and end != -1:
+                    json_str = raw[start:end+1]
+                else:
+                    json_str = raw
+            
+            # Try full JSON parse first
+            try:
+                parsed = json.loads(json_str)
+            except json.JSONDecodeError:
+                # Second try: Extract partial data from truncated JSON
+                print(f"JSON truncated, attempting partial extraction...")
+                parsed = _extract_partial_json(json_str)
+                
+        except Exception as e:
+            print(f"Failed to extract from raw_response: {e}")
+        
+        # Merge parsed data with normalized (only for empty/missing fields)
+        if parsed:
+            for key, value in parsed.items():
+                if key not in normalized or not normalized[key] or normalized[key] == "unknown" or normalized[key] == "Scene analysis unavailable.":
+                    normalized[key] = value
+            # Remove _parsing_failed flag since we successfully extracted data
+            if any(k in parsed for k in ["vlm_description", "scene_type", "people_count"]):
+                normalized.pop("_parsing_failed", None)
+    
+    # Set defaults for missing fields
     normalized.setdefault("frame_id", telemetry.get("frame_id"))
     normalized.setdefault("scene_type", "unknown")
     normalized.setdefault("object_details", [])
@@ -74,6 +244,117 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
     normalized.setdefault("security_signals", [])
     normalized.setdefault("alert_reasoning", normalized.get("recommended_action", ""))
     normalized.setdefault("alert_priority_signals", [])
+    
+    # Extract security signals from person_features actions
+    person_features = normalized.get("person_features", [])
+    suspicious_actions = ["reaching", "concealing", "hiding", "grabbing", "palming", "snatching", "pocketing", "loitering", "lurking", "sneaking"]
+    security_signals = []
+    suspicious_elements = []
+    
+    for idx, person in enumerate(person_features):
+        if isinstance(person, dict):
+            actions = person.get("actions", [])
+            person_id = person.get("id", f"person_{idx+1}")
+            
+            for action in actions:
+                action_lower = action.lower() if isinstance(action, str) else ""
+                # Check for suspicious actions
+                for suspicious in suspicious_actions:
+                    if suspicious in action_lower:
+                        signal = f"{person_id}: {action}"
+                        if signal not in security_signals:
+                            security_signals.append(signal)
+                        if action not in suspicious_elements:
+                            suspicious_elements.append(action)
+        elif isinstance(person, str):
+            # Parse string descriptions for suspicious actions
+            person_lower = person.lower()
+            person_id = f"person_{idx+1}"
+            
+            for suspicious in suspicious_actions:
+                if suspicious in person_lower:
+                    # Extract the relevant part of the sentence containing the suspicious action
+                    words = person.split()
+                    for i, word in enumerate(words):
+                        if suspicious in word.lower():
+                            # Get context around the suspicious word (3 words before and after)
+                            start = max(0, i - 3)
+                            end = min(len(words), i + 4)
+                            context = ' '.join(words[start:end])
+                            signal = f"{person_id}: {context}"
+                            if signal not in security_signals:
+                                security_signals.append(signal)
+                            if suspicious not in suspicious_elements:
+                                suspicious_elements.append(suspicious)
+                            break
+    
+    # Merge extracted signals with existing ones
+    if security_signals:
+        existing_signals = normalized.get("security_signals", []) or []
+        for sig in security_signals:
+            if sig not in existing_signals:
+                existing_signals.append(sig)
+        normalized["security_signals"] = existing_signals
+    
+    if suspicious_elements:
+        existing_suspicious = normalized.get("suspicious_elements", []) or []
+        for elem in suspicious_elements:
+            if elem not in existing_suspicious:
+                existing_suspicious.append(elem)
+        normalized["suspicious_elements"] = existing_suspicious
+    
+    # Update alert reasoning if security signals detected
+    current_reasoning = normalized.get("alert_reasoning", "")
+    benign_messages = ["Review frame manually", "No immediate action required", "", "N/A"]
+    
+    if security_signals:
+        if any(msg in current_reasoning for msg in benign_messages) or not current_reasoning:
+            normalized["alert_reasoning"] = f"Security threat detected: {', '.join(security_signals)}. Review frame immediately for suspicious activity."
+    
+    # RULE-BASED ALERT LAYER: Adjust threat level based on telemetry context
+    threat_level = normalized.get("threat_level", "UNKNOWN")
+    threat_type = normalized.get("threat_type", "unknown")
+    is_after_hours = telemetry.get("is_after_hours", False)
+    location = telemetry.get("location", "unknown")
+    timestamp = telemetry.get("timestamp", "")
+    
+    # Rule 0: Convert UNKNOWN to CLEAR or MEDIUM based on security signals
+    if threat_level == "UNKNOWN":
+        if security_signals:
+            threat_level = "MEDIUM"
+            threat_type = "suspicious_behavior"
+        else:
+            threat_level = "CLEAR"
+            threat_type = "clear"
+    
+    # Rule 1: Escalate to HIGH if after hours and any threat detected
+    if is_after_hours and threat_level in ["MEDIUM", "LOW", "UNKNOWN"]:
+        threat_level = "HIGH"
+        threat_type = f"after_hours_{threat_type}" if threat_type != "clear" else "after_hours_activity"
+        normalized["alert_reasoning"] = f"Threat escalated to HIGH due to after-hours activity at {location}. {normalized.get('alert_reasoning', '')}"
+    
+    # Rule 2: CRITICAL for weapons, fire, forced entry (regardless of time)
+    critical_signals = ["weapon", "fire", "assault", "forced entry", "break-in"]
+    if any(sig in str(security_signals).lower() for sig in critical_signals):
+        threat_level = "CRITICAL"
+        normalized["alert_reasoning"] = f"CRITICAL threat detected: Immediate danger at {location}. {normalized.get('alert_reasoning', '')}"
+    
+    # Rule 3: Vehicle in restricted zone = MEDIUM minimum
+    if location in ["restricted_zone", "warehouse", "perimeter"]:
+        vehicles = normalized.get("vehicles_detected", [])
+        if vehicles and threat_level == "CLEAR":
+            threat_level = "MEDIUM"
+            threat_type = "unauthorized_vehicle"
+            normalized["alert_reasoning"] = f"Unauthorized vehicle detected in {location}. Review required."
+    
+    # Rule 4: Loitering across multiple frames = escalate
+    if "loitering" in str(security_signals).lower() and threat_level == "MEDIUM":
+        threat_level = "HIGH"
+        normalized["alert_reasoning"] = f"Persistent loitering detected at {location}. Escalated to HIGH."
+    
+    # Update normalized values
+    normalized["threat_level"] = threat_level
+    normalized["threat_type"] = threat_type
 
     normalized["objects_detected"] = _as_string_list(normalized.get("objects_detected", []))
     normalized["vehicles_detected"] = _as_string_list(normalized.get("vehicles_detected", []))
@@ -107,6 +388,8 @@ def extract_json_payload(content: str) -> Dict[str, Any]:
     The model may wrap JSON in markdown fences or add brief prose around it,
     so this helper strips common wrappers and then falls back to balanced-brace
     extraction before parsing.
+    
+    FIXED: Now properly extracts all fields from raw_response if initial parse fails.
     """
     cleaned = content.strip()
 
@@ -129,7 +412,8 @@ def extract_json_payload(content: str) -> Dict[str, Any]:
         except Exception:
             pass
 
-    raise ValueError("Model response did not contain valid JSON")
+    # If all parsing fails, return raw_response for later extraction
+    return {"raw_response": content, "_parsing_failed": True}
 
 
 def load_session_context() -> Dict[str, Any]:
@@ -415,12 +699,193 @@ def analyze_frame(
     output_dir: Path = settings.ANALYSIS_DIR
 ) -> Dict[str, Any]:
     """
-    Analyzes a frame using GPT-4o Vision and saves the result as JSON.
+    Analyzes a frame using selected analyzer and saves the result as JSON.
     Returns the analysis dict.
+    
+    OPTIMIZED: Supports multiple analyzers based on configuration:
+    - Ultimate: CLIP + BLIP + GPT-4o (most accurate)
+    - BLIP: BLIP + GPT-4o (good balance)
+    - CLIP: CLIP + GPT-4o (fast)
+    - Standard: GPT-4o only (fastest)
     """
-    print(f"\n🧠 Analyzing {frame_id} with GPT-4o Vision...")
+    print(f"\nAnalyzing {frame_id}...")
+    
+    # Use Ultimate Analyzer if configured
+    if USE_ULTIMATE_ANALYZER:
+        try:
+            from src.ultimate_vision_analyzer import analyze_frame_ultimate
+            print("Using Ultimate Analyzer (CLIP + BLIP + GPT-4o)...")
+            result = analyze_frame_ultimate(image_path, telemetry, use_gpt4o=True)
+            
+            # Convert to standard format
+            if result and result.get('gpt4o_analysis', {}).get('success'):
+                gpt4o_content = result['gpt4o_analysis']['gpt4o_analysis']
+                try:
+                    analysis = extract_json_payload(gpt4o_content)
+                except Exception:
+                    analysis = {"raw_response": gpt4o_content}
+                
+                analysis = _normalize_analysis(analysis, telemetry)
+                analysis["alert_reasoning"] = analysis.get("alert_reasoning") or analysis.get("recommended_action", "")
+                analysis["reasoning_signals"] = analysis.get("reasoning_signals", [])
+                
+                # Add multi-model insights
+                analysis["clip_threat_score"] = result['clip_analysis']['threat_score']
+                analysis["blip_caption"] = result['blip_analysis'].get('blip_caption', '')
+                analysis["blip_insights"] = result['blip_analysis'].get('blip_insights', {})
+                analysis["overall_threat_level"] = result['overall_threat_level']
+                
+                final_result = {
+                    "frame_id": frame_id,
+                    "timestamp": telemetry["timestamp"],
+                    "location": telemetry["location"],
+                    **analysis,
+                    "model_used": "ultimate-clip-blip-gpt4o",
+                    "processing_time_ms": 0
+                }
+                
+                out_path = output_dir / f"{frame_id}_analysis.json"
+                with open(out_path, "w", encoding="utf-8") as f:
+                    json.dump(final_result, f, indent=2)
+                print(f"Analysis saved for {frame_id} (Ultimate Analyzer)")
+                return final_result
+        except Exception as e:
+            print(f"Ultimate Analyzer failed, falling back to standard: {e}")
+    
+    # Use Cloud Analyzer if configured (Hugging Face API + Local GPT-4o)
+    if USE_CLOUD_ANALYZER:
+        try:
+            from src.cloud_enhanced_analyzer import analyze_frame_cloud
+            print("[CLOUD] Using Cloud-Enhanced Analyzer (HF CLIP + BLIP + Local GPT-4o)...")
+            print("   Requires HF_API_TOKEN environment variable")
+            result = analyze_frame_cloud(image_path, telemetry)
+            
+            # Convert to standard format
+            if result and result.get('gpt4o_analysis', {}).get('success'):
+                gpt4o_content = result['gpt4o_analysis']['gpt4o_analysis']
+                try:
+                    analysis = extract_json_payload(gpt4o_content)
+                except Exception:
+                    analysis = {"raw_response": gpt4o_content}
+                
+                # Extract threat fields from cloud analyzer response
+                gpt4o_result = result.get('gpt4o_analysis', {})
+                if gpt4o_result.get('threat_level'):
+                    analysis['threat_level'] = gpt4o_result['threat_level']
+                if gpt4o_result.get('threat_type'):
+                    analysis['threat_type'] = gpt4o_result['threat_type']
+                
+                analysis = _normalize_analysis(analysis, telemetry)
+                analysis["alert_reasoning"] = analysis.get("alert_reasoning") or analysis.get("recommended_action", "")
+                analysis["reasoning_signals"] = analysis.get("reasoning_signals", [])
+                
+                # Add cloud insights
+                clip_data = result.get('clip_analysis', {}) or {}
+                blip_data = result.get('blip_analysis', {}) or {}
+                analysis["clip_threat_score"] = clip_data.get('threat_score', 0)
+                analysis["blip_caption"] = blip_data.get('caption', '')
+                analysis["blip_insights"] = blip_data.get('insights', {})
+                analysis["overall_threat_level"] = result.get('overall_threat_level', 'UNKNOWN')
+                
+                final_result = {
+                    "frame_id": frame_id,
+                    "timestamp": telemetry["timestamp"],
+                    "location": telemetry["location"],
+                    **analysis,
+                    "model_used": "cloud-clip-blip-gpt4o",
+                    "processing_time_ms": result.get('processing_time_ms', 0)
+                }
+                
+                out_path = output_dir / f"{frame_id}_analysis.json"
+                with open(out_path, "w", encoding="utf-8") as f:
+                    json.dump(final_result, f, indent=2)
+                print(f"[CLOUD] Cloud analysis saved for {frame_id}")
+                return final_result
+            else:
+                print(f"[WARNING] Cloud analysis GPT-4o failed: {result.get('gpt4o_analysis', {}).get('error', 'Unknown')}")
+        except Exception as e:
+            print(f"[CLOUD] Cloud Analyzer failed, falling back to standard: {e}")
+    
+    # Use BLIP Analyzer if configured
+    if USE_BLIP_ANALYZER:
+        try:
+            from src.blip_vision_analyzer import analyze_with_blip
+            print("Using BLIP Analyzer...")
+            result = analyze_with_blip(image_path, telemetry)
+            
+            # Convert to standard format
+            analysis = {
+                "vlm_description": result.get('blip_caption', ''),
+                "scene_type": result.get('blip_insights', {}).get('location', 'unknown'),
+                "objects_detected": result.get('blip_insights', {}).get('main_objects', []),
+                "people_count": result.get('blip_insights', {}).get('people_count', 0),
+                "activity": result.get('blip_vqa_answers', {}).get('What are the people doing in this image?', ''),
+                "threat_assessment": result.get('blip_threat_level', 'low').lower(),
+                "suspicious_elements": [],
+                "security_signals": []
+            }
+            
+            analysis = _normalize_analysis(analysis, telemetry)
+            analysis["blip_insights"] = result.get('blip_insights', {})
+            analysis["blip_vqa_answers"] = result.get('blip_vqa_answers', {})
+            
+            final_result = {
+                "frame_id": frame_id,
+                "timestamp": telemetry["timestamp"],
+                "location": telemetry["location"],
+                **analysis,
+                "model_used": "blip-gpt4o",
+                "processing_time_ms": 0
+            }
+            
+            out_path = output_dir / f"{frame_id}_analysis.json"
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(final_result, f, indent=2)
+            print(f"Analysis saved for {frame_id} (BLIP Analyzer)")
+            return final_result
+        except Exception as e:
+            print(f"BLIP Analyzer failed, falling back to standard: {e}")
+    
+    # Use CLIP Analyzer if configured
+    if USE_CLIP_ANALYZER:
+        try:
+            from src.full_enhanced_vision_analyzer import analyze_frame_full_enhanced
+            print("Using CLIP + GPT-4o Analyzer...")
+            result = analyze_frame_full_enhanced(image_path, telemetry)
+            
+            # Convert to standard format
+            if result and result.get('gpt4o_enhanced', {}).get('success'):
+                gpt4o_content = result['gpt4o_enhanced']['enhanced_analysis']
+                try:
+                    analysis = extract_json_payload(gpt4o_content)
+                except Exception:
+                    analysis = {"raw_response": gpt4o_content}
+                
+                analysis = _normalize_analysis(analysis, telemetry)
+                analysis["clip_threat_score"] = result['clip_analysis']['threat_score']
+                analysis["overall_threat_level"] = result['overall_threat_level']
+                
+                final_result = {
+                    "frame_id": frame_id,
+                    "timestamp": telemetry["timestamp"],
+                    "location": telemetry["location"],
+                    **analysis,
+                    "model_used": "clip-gpt4o",
+                    "processing_time_ms": 0
+                }
+                
+                out_path = output_dir / f"{frame_id}_analysis.json"
+                with open(out_path, "w", encoding="utf-8") as f:
+                    json.dump(final_result, f, indent=2)
+                print(f"Analysis saved for {frame_id} (CLIP Analyzer)")
+                return final_result
+        except Exception as e:
+            print(f"CLIP Analyzer failed, falling back to standard: {e}")
+    
+    # Standard GPT-4o Vision (default)
+    print("Using Standard GPT-4o Vision...")
     img_b64 = image_to_base64(image_path)
-    user_prompt = USER_PROMPT_TEMPLATE.format(telemetry=json.dumps(telemetry, indent=2))
+    user_prompt = USER_PROMPT_TEMPLATE.replace("{telemetry}", json.dumps(telemetry, indent=2))
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     start = time.time()
     try:
@@ -443,16 +908,14 @@ def analyze_frame(
         )
         elapsed = int((time.time() - start) * 1000)
         content = response.choices[0].message.content
-        # Parse JSON from response.
         try:
             analysis = extract_json_payload(content)
         except Exception:
-            print(f"⚠️ Could not parse JSON for {frame_id}, saving raw content.")
+            print(f"Could not parse JSON for {frame_id}, saving raw content.")
             analysis = {"raw_response": content}
         analysis = _normalize_analysis(analysis, telemetry)
         analysis["alert_reasoning"] = analysis.get("alert_reasoning") or analysis.get("recommended_action", "")
         analysis["reasoning_signals"] = analysis.get("reasoning_signals", [])
-        # Build final analysis dict
         result = {
             "frame_id": frame_id,
             "timestamp": telemetry["timestamp"],
@@ -464,10 +927,10 @@ def analyze_frame(
         out_path = output_dir / f"{frame_id}_analysis.json"
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2)
-        print(f"✅ Analysis saved for {frame_id} ({elapsed} ms)")
+        print(f"Analysis saved for {frame_id} ({elapsed} ms)")
         return result
     except Exception as e:
-        print(f"❌ Vision analysis failed for {frame_id}: {e}")
+        print(f"Vision analysis failed for {frame_id}: {e}")
         return {}
 
 def analyze_all_frames():
@@ -485,8 +948,21 @@ def analyze_all_frames():
     all_results = []
     for i, frame in enumerate(frame_meta):
         frame_id = f"frame_{i+1:03}"
-        image_path = settings.EXTRACTED_DIR / frame["filename"]
+        # Use the latest extracted folder instead of the default extracted directory
+        latest_extracted_folder = get_latest_extracted_folder()
+        image_path = Path(latest_extracted_folder) / frame["filename"]
         telemetry = all_telemetry[i]
+        # Debug: Print the actual path being used
+        print(f"Processing frame {i+1}/{len(frame_meta)}: {frame_id}")
+        print(f"Looking for image at: {image_path}")
+        print(f"Image exists: {image_path.exists()}")
+        
+        if not image_path.exists():
+            print(f"ERROR: Image file not found: {image_path}")
+            # Skip this frame and continue
+            all_results.append(None)
+            continue
+            
         result = analyze_frame(frame_id, image_path, telemetry)
         all_results.append(result)
 
@@ -498,7 +974,7 @@ def analyze_all_frames():
     combined_path = settings.ANALYSIS_DIR / "all_analysis.json"
     with open(combined_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)
-    print(f"\n📄 Combined analysis saved to {combined_path}")
+    print(f"\nCombined analysis saved to {combined_path}")
     return all_results
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: drone-security-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false  # Set in Render dashboard
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: USE_CLOUD_ANALYZER
+        value: true
+      - key: MAX_FRAMES
+        value: 30
+
+  - type: web
+    name: drone-security-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run demo/dashboard.py --server.port $PORT
+    envVars:
+      - key: API_URL
+        value: https://drone-security-api.onrender.com
+      - key: PINECONE_API_KEY
+        sync: false

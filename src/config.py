@@ -32,13 +32,18 @@ class Settings(BaseSettings):
     LANGCHAIN_API_KEY: str = Field(..., env="LANGCHAIN_API_KEY")
     LANGCHAIN_TRACING_V2: bool = Field(True, env="LANGCHAIN_TRACING_V2")
     LANGCHAIN_PROJECT: str = Field("drone-security-agent", env="LANGCHAIN_PROJECT")
+    
+    # Hugging Face (for Cloud Enhanced Analyzer)
+    HF_API_TOKEN: str = Field("", env="HF_API_TOKEN")
+    USE_CLOUD_ANALYZER: bool = Field(False, env="USE_CLOUD_ANALYZER")
 
     # App Config
+    DATA_DIR: Path = Field(Path("data"), env="DATA_DIR")
     FRAMES_DIR: Path = Field(Path("data/frames"), env="FRAMES_DIR")
     EXTRACTED_DIR: Path = Field(Path("data/extracted"), env="EXTRACTED_DIR")
     OUTPUTS_DIR: Path = Field(Path("outputs"), env="OUTPUTS_DIR")
     MAX_FRAMES: int = Field(25, env="MAX_FRAMES")
-    VIDEO_FILE: Path = Field(Path("data/frames/XVR_ch2_main_20230210080000_20230210090000.dav"), env="VIDEO_FILE")
+    VIDEO_FILE: Path = Field(Path("data/video.mp4"), env="VIDEO_FILE")
     VIDEO_DURATION_SECONDS: int = Field(3599, env="VIDEO_DURATION_SECONDS")
     VIDEO_FPS: int = Field(15, env="VIDEO_FPS")
     VIDEO_START_UNIX: int = Field(1675267200, env="VIDEO_START_UNIX")

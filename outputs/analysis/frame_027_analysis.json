@@ -1,68 +1,40 @@
 {
   "frame_id": "frame_027",
-  "timestamp": "16:30:46",
+  "timestamp": "16:00:26",
   "location": "Driveway",
-  "vlm_description": "A residential driveway with a person near the entrance.",
-  "scene_type": "residential",
-  "objects_detected": [
-    "person",
-    "vehicle"
-  ],
-  "object_details": [
-    {
-      "label": "person",
-      "count": 1,
-      "confidence": 0.9,
-      "attributes": [
-        "walking",
-        "holding_item"
-      ]
-    },
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
+  "threat_level": "MEDIUM",
+  "threat_type": "theft_behavior",
+  "vlm_description": "Individual reaching towards items in a display case without staff present.",
+  "scene_type": "retail",
   "people_count": 1,
   "person_features": [
-    {
-      "id": "person_1",
-      "appearance": [
-        "purple_clothes"
-      ],
-      "face_visible": true,
-      "actions": [
-        "walking"
-      ]
-    }
+    "Person_1: reaching towards items, potential concealment"
   ],
-  "vehicles_detected": [
-    "SUV"
+  "security_signals": [
+    "reaching_towards_items",
+    "potential_concealment",
+    "person_1: Person_1: reaching towards items, potential"
   ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
+  "suspicious_elements": [
+    "absence of staff",
+    "reaching into display",
+    "reaching"
   ],
-  "activity": "A person walking near the entrance of the house.",
-  "security_signals": [],
-  "suspicious_elements": [],
-  "threat_assessment": "low",
-  "confidence": 0.95,
-  "recommended_action": "Continue monitoring, no immediate action required.",
-  "alert_reasoning": "The scene appears typical for a residential area during daytime hours.",
+  "reasoning": "The individual is reaching towards items in a display case without staff present, which is a common indicator of theft behavior.",
+  "recommended_action": "Monitor closely and alert security personnel to approach and verify intentions.",
+  "confidence": 0.85,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Security threat detected: person_1: Person_1: reaching towards items, potential. Review frame immediately for suspicious activity.",
   "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "activity": "Unknown activity",
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4058
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "MEDIUM",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 5918
 }

@@ -1,68 +1,30 @@
 {
   "frame_id": "frame_010",
-  "timestamp": "16:10:39",
+  "timestamp": "16:00:09",
   "location": "Garage",
-  "vlm_description": "A person is standing near a white sedan vehicle parked in a residential driveway.",
-  "scene_type": "residential",
-  "objects_detected": [
-    "person",
-    "vehicle"
-  ],
-  "object_details": [
-    {
-      "label": "person",
-      "count": 1,
-      "confidence": 0.9,
-      "attributes": [
-        "standing",
-        "near_vehicle"
-      ]
-    },
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "sedan",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 1,
-  "person_features": [
-    {
-      "id": "person_1",
-      "appearance": [
-        "dark_clothes"
-      ],
-      "face_visible": true,
-      "actions": [
-        "interacting_with_vehicle"
-      ]
-    }
-  ],
-  "vehicles_detected": [
-    "{'type': 'sedan', 'count': 1}"
-  ],
-  "vehicle_details": [
-    {
-      "type": "sedan",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "Person interacting with a parked vehicle.",
+  "raw_response": "I'm unable to analyze the content of the image provided.",
+  "_parsing_failed": true,
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "scene_type": "unknown",
+  "object_details": [],
+  "person_features": [],
+  "vehicle_details": [],
   "security_signals": [],
-  "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "No action required. Normal activity observed.",
-  "alert_reasoning": "Activity within normal parameters for residential area during public hours.",
+  "alert_reasoning": "Review frame manually",
   "alert_priority_signals": [],
+  "objects_detected": [],
+  "vehicles_detected": [],
+  "suspicious_elements": [],
+  "people_count": 0,
+  "vlm_description": "Scene analysis unavailable.",
+  "activity": "Unknown activity",
+  "recommended_action": "Review frame manually",
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4059
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 2128
 }

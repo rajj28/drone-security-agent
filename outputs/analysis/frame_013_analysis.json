@@ -1,64 +1,36 @@
 {
   "frame_id": "frame_013",
-  "timestamp": "16:14:12",
+  "timestamp": "16:00:12",
   "location": "Driveway",
-  "vlm_description": "The scene shows a driveway with multiple pairs of shoes outside the entrance and a white vehicle parked nearby.",
-  "scene_type": "residential",
-  "objects_detected": [
-    "vehicle",
-    "shoes"
-  ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.95,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    },
-    {
-      "label": "shoes",
-      "count": 4,
-      "confidence": 0.9,
-      "attributes": [
-        "various"
-      ]
-    },
-    {
-      "label": "door",
-      "count": 1,
-      "confidence": 0.85,
-      "attributes": [
-        "open"
-      ]
-    }
-  ],
+  "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are display counters with mobile phones and accessories visible. No people are present in the frame.",
+  "scene_type": "retail",
   "people_count": 0,
   "person_features": [],
-  "vehicles_detected": [
-    "SUV"
+  "objects_detected": [
+    "display counters",
+    "mobile phones",
+    "accessories",
+    "orange water dispenser",
+    "chairs"
   ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "Parked vehicle with no visible people, open entrance, shoes placed outside.",
+  "activity": "No activity observed as there are no people present.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "low",
-  "confidence": 0.95,
-  "recommended_action": "Continue monitoring; no immediate threat detected.",
-  "alert_reasoning": "Parked vehicle with no immediate suspicious activity noted.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 4714
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 2384
 }

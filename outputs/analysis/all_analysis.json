@@ -3,226 +3,169 @@
     "frame_id": "frame_001",
     "timestamp": "16:00:00",
     "location": "Main Gate",
-    "vlm_description": "The frame shows a residential entrance with a sedan parked near the main gate. A few pairs of shoes are visible near the steps leading to the front door.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
+    "vlm_description": "The frame is mostly obscured by text and graphics, making it difficult to observe the scene.",
+    "scene_type": "unknown",
     "people_count": 0,
     "person_features": [],
-    "vehicles_detected": [
-      "sedan"
+    "objects_detected": [
+      "text overlay",
+      "graphics"
     ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "dark",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      }
-    ],
-    "activity": "No significant activity detected; vehicle is stationary.",
+    "activity": "No visible activity due to obstruction.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required; normal scene.",
-    "alert_reasoning": "No suspicious activity or unauthorized access observed.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "The frame is obstructed by text and graphics, preventing any detailed observation.",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 7438
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3424
   },
   {
     "frame_id": "frame_002",
-    "timestamp": "16:01:11",
+    "timestamp": "16:00:01",
     "location": "Perimeter North",
-    "vlm_description": "The scene shows a residential entrance with a parked vehicle.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
+    "vlm_description": "The image is overexposed, making it difficult to discern specific details. The scene appears to be outdoors with some greenery visible.",
+    "scene_type": "exterior",
     "people_count": 0,
     "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "black",
-        "position": "parked",
-        "direction": "north",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle is parked at the residential entrance. No people are present.",
+    "objects_detected": [],
+    "activity": "No discernible activity due to overexposure.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required.",
-    "alert_reasoning": "No suspicious activity detected; normal residential scene.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment possible due to image quality.",
+    "recommended_action": "Adjust camera settings to reduce overexposure and continue monitoring.",
+    "confidence": 0.5,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Adjust camera settings to reduce overexposure and continue monitoring.",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3622
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2625
   },
   {
     "frame_id": "frame_003",
-    "timestamp": "16:02:22",
+    "timestamp": "16:00:02",
     "location": "Garage",
-    "vlm_description": "The scene depicts a garage area with a parked vehicle and a residential entrance.",
-    "scene_type": "garage",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
+    "raw_response": "I'm unable to view or analyze images directly. However, if you provide a description of the scene, I can help you interpret or analyze it based on the details you give.",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "scene_type": "unknown",
+    "object_details": [],
     "person_features": [],
-    "vehicles_detected": [
-      "vehicle"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "dark",
-        "position": "parked",
-        "direction": "facing inward",
-        "occupancy": "unknown",
-        "plate_visible": true
-      }
-    ],
-    "activity": "The vehicle is parked; multiple shoes near a doorway suggest possible human presence.",
+    "vehicle_details": [],
     "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required. Continue monitoring for unusual activities.",
-    "alert_reasoning": "The zone is not restricted and it is not after hours. Observed objects are typical for a residential parking area.",
+    "alert_reasoning": "Review frame manually",
     "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "suspicious_elements": [],
+    "people_count": 0,
+    "vlm_description": "Scene analysis unavailable.",
+    "activity": "Unknown activity",
+    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3598
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 1980
   },
   {
     "frame_id": "frame_004",
-    "timestamp": "16:03:33",
+    "timestamp": "16:00:03",
     "location": "Back Entrance",
-    "raw_response": "I'm sorry, but I can't help with that.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The frame shows an exterior scene at the back entrance of a building. There are two people present.",
+    "scene_type": "exterior",
+    "people_count": 2,
+    "person_features": [
+      "Person_1: Standing near the door, looking around.",
+      "Person_2: Walking towards the entrance, holding a bag."
+    ],
+    "objects_detected": [
+      "door",
+      "bag"
+    ],
+    "activity": "One person is approaching the entrance while another is standing by.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 1493
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2665
   },
   {
     "frame_id": "frame_005",
-    "timestamp": "16:04:44",
+    "timestamp": "16:00:04",
     "location": "Restricted Zone",
-    "vlm_description": "The scene shows a driveway with a parked black sedan near the entrance of a house. There are two steps leading up to the door, with various shoes placed on a mat. The area is well-lit, indicating daytime.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "entrance",
-      "footwear"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
+    "raw_response": "I'm unable to analyze the content of the image provided.",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "scene_type": "unknown",
+    "object_details": [],
     "person_features": [],
-    "vehicles_detected": [
-      "sedan"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "black",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      }
-    ],
-    "activity": "A vehicle is parked in a residential driveway, no visible human activity.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
-    "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring the area for any unusual activity.",
-    "alert_reasoning": "Vehicle presence in restricted zone but no after-hours activity detected.",
+    "vehicle_details": [],
+    "security_signals": [],
+    "alert_reasoning": "Review frame manually",
     "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "suspicious_elements": [],
+    "people_count": 0,
+    "vlm_description": "Scene analysis unavailable.",
+    "activity": "Unknown activity",
+    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 5996
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 1507
   },
   {
     "frame_id": "frame_006",
-    "timestamp": "16:05:55",
+    "timestamp": "16:00:05",
     "location": "Driveway",
-    "raw_response": "I'm unable to analyze the content of this image or recognize details about individuals or vehicles in it.",
+    "raw_response": "I'm unable to analyze the content of the image provided. If you have any questions or need assistance with something else, feel free to ask!",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
     "scene_type": "unknown",
     "object_details": [],
     "person_features": [],
@@ -238,246 +181,188 @@
     "activity": "Unknown activity",
     "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2043
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 1682
   },
   {
     "frame_id": "frame_007",
-    "timestamp": "16:07:06",
+    "timestamp": "16:00:06",
     "location": "Side Entrance",
-    "vlm_description": "The scene shows the side entrance of a building with a parked sedan and a small set of steps leading to a door. The area is well-lit by sunlight.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "steps",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
+    "raw_response": "I'm unable to provide a description of the surveillance camera frame based on the image provided. If you have another image or need assistance with something else, feel free to let me know!",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "scene_type": "unknown",
+    "object_details": [],
     "person_features": [],
-    "vehicles_detected": [
-      "sedan"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "black",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      }
-    ],
-    "activity": "No human activity detected; parked vehicle near the entrance.",
+    "vehicle_details": [],
     "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required.",
-    "alert_reasoning": "No suspicious activity or unauthorized access detected.",
+    "alert_reasoning": "Review frame manually",
     "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "suspicious_elements": [],
+    "people_count": 0,
+    "vlm_description": "Scene analysis unavailable.",
+    "activity": "Unknown activity",
+    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4161
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 1884
   },
   {
     "frame_id": "frame_008",
-    "timestamp": "16:08:17",
+    "timestamp": "16:00:07",
     "location": "Main Gate",
-    "vlm_description": "The scene depicts a residential entrance area with a parked vehicle and shoes placed near the entrance steps.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are display counters with mobile phones and accessories visible. The store appears organized with promotional posters on the walls.",
+    "scene_type": "retail",
     "people_count": 0,
     "person_features": [],
-    "vehicles_detected": [
-      "vehicle"
+    "objects_detected": [
+      "display counters",
+      "mobile phones",
+      "accessories",
+      "chairs",
+      "table",
+      "water dispenser"
     ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "black",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      }
-    ],
-    "activity": "A vehicle is parked at the entrance, with no visible people in the vicinity.",
+    "activity": "The store is currently empty with no visible activity.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required. Continue regular monitoring.",
-    "alert_reasoning": "The threat level is low due to the absence of people and the vehicle being stationary without any suspicious elements.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3869
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2406
   },
   {
     "frame_id": "frame_009",
-    "timestamp": "16:09:28",
+    "timestamp": "16:00:08",
     "location": "Perimeter North",
-    "raw_response": "I'm unable to provide a security assessment based on the image.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The scene is set in a retail environment, likely a mobile phone store, with display counters visible. Four people are present. One person is standing on the customer side of the counter, holding a smartphone and appearing to interact with it. Three other individuals are on the opposite side of the counter, observing the person with the phone. The counter displays several mobile phones and promotional materials.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Standing, holding and interacting with a smartphone.",
+      "Person_2: Standing behind the counter, observing Person_1.",
+      "Person_3: Standing behind the counter, observing Person_1.",
+      "Person_4: Standing behind the counter, observing Person_1."
+    ],
+    "objects_detected": [
+      "smartphone",
+      "display counter",
+      "mobile phones",
+      "promotional materials"
+    ],
+    "activity": "Customer interacting with a smartphone while others observe.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2031
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 4013
   },
   {
     "frame_id": "frame_010",
-    "timestamp": "16:10:39",
+    "timestamp": "16:00:09",
     "location": "Garage",
-    "vlm_description": "A person is standing near a white sedan vehicle parked in a residential driveway.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "person",
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 1,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "dark_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "interacting_with_vehicle"
-        ]
-      }
-    ],
-    "vehicles_detected": [
-      "{'type': 'sedan', 'count': 1}"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Person interacting with a parked vehicle.",
+    "raw_response": "I'm unable to analyze the content of the image provided.",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "scene_type": "unknown",
+    "object_details": [],
+    "person_features": [],
+    "vehicle_details": [],
     "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required. Normal activity observed.",
-    "alert_reasoning": "Activity within normal parameters for residential area during public hours.",
+    "alert_reasoning": "Review frame manually",
     "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "suspicious_elements": [],
+    "people_count": 0,
+    "vlm_description": "Scene analysis unavailable.",
+    "activity": "Unknown activity",
+    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4059
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2128
   },
   {
     "frame_id": "frame_011",
-    "timestamp": "16:11:50",
+    "timestamp": "16:00:10",
     "location": "Back Entrance",
-    "vlm_description": "The scene shows a residential entrance area with a vehicle parked nearby. There are stairs and a door leading to the interior.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
+    "raw_response": "I'm unable to analyze the content of the video frame directly. Please provide a detailed description or another type of image for analysis.",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "scene_type": "unknown",
+    "object_details": [],
     "person_features": [],
-    "vehicles_detected": [
-      "{'type': 'SUV', 'color': 'white', 'position': 'parked', 'direction': 'unknown', 'occupancy': 'unknown', 'plate_visible': False}"
-    ],
-    "activity": "A vehicle is parked near a residential entrance, no visible activity from people.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
-    "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for any unauthorized individuals approaching the entrance.",
-    "alert_reasoning": "Low threat level due to absence of people in a restricted zone with a parked vehicle.",
-    "alert_priority_signals": [
-      "restricted_zone_vehicle"
-    ],
     "vehicle_details": [],
+    "security_signals": [],
+    "alert_reasoning": "Review frame manually",
+    "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "suspicious_elements": [],
+    "people_count": 0,
+    "vlm_description": "Scene analysis unavailable.",
+    "activity": "Unknown activity",
+    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4593
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 1684
   },
   {
     "frame_id": "frame_012",
-    "timestamp": "16:13:01",
+    "timestamp": "16:00:11",
     "location": "Restricted Zone",
-    "raw_response": "I'm unable to analyze or identify specific elements related to people or vehicles from the image. Please provide textual information or context that doesn't rely on the image content.",
+    "raw_response": "I'm unable to view or analyze images directly. However, if you have any questions or need assistance with something else, feel free to ask!",
+    "_parsing_failed": true,
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
     "scene_type": "unknown",
     "object_details": [],
     "person_features": [],
@@ -493,1974 +378,770 @@
     "activity": "Unknown activity",
     "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2007
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2562
   },
   {
     "frame_id": "frame_013",
-    "timestamp": "16:14:12",
+    "timestamp": "16:00:12",
     "location": "Driveway",
-    "vlm_description": "The scene shows a driveway with multiple pairs of shoes outside the entrance and a white vehicle parked nearby.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 4,
-        "confidence": 0.9,
-        "attributes": [
-          "various"
-        ]
-      },
-      {
-        "label": "door",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "open"
-        ]
-      }
-    ],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are display counters with mobile phones and accessories visible. No people are present in the frame.",
+    "scene_type": "retail",
     "people_count": 0,
     "person_features": [],
-    "vehicles_detected": [
-      "SUV"
+    "objects_detected": [
+      "display counters",
+      "mobile phones",
+      "accessories",
+      "orange water dispenser",
+      "chairs"
     ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Parked vehicle with no visible people, open entrance, shoes placed outside.",
+    "activity": "No activity observed as there are no people present.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring; no immediate threat detected.",
-    "alert_reasoning": "Parked vehicle with no immediate suspicious activity noted.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4714
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2384
   },
   {
     "frame_id": "frame_014",
-    "timestamp": "16:15:23",
+    "timestamp": "16:00:13",
     "location": "Side Entrance",
-    "vlm_description": "The scene shows a side entrance area with a white SUV parked near the entrance. There are multiple pairs of shoes outside, indicating potential presence inside.",
-    "scene_type": "entrance",
+    "vlm_description": "The scene is inside a small retail store, likely a mobile phone shop. There are four people visible. One person is holding a phone, showing it to the others. Two individuals are leaning over the counter, appearing to be engaged in conversation or examining the phone. Another person is standing behind the counter, possibly a store employee.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Holding a phone, showing it to others.",
+      "Person_2: Leaning over the counter, looking at the phone.",
+      "Person_3: Leaning over the counter, engaged in conversation.",
+      "Person_4: Standing behind the counter, possibly a store employee."
+    ],
     "objects_detected": [
-      "vehicle"
+      "phone",
+      "counter",
+      "display cases",
+      "chairs"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No visible human activity; vehicle is stationary.",
+    "activity": "Individuals are examining a phone and conversing.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring as part of routine patrol.",
-    "alert_reasoning": "No suspicious activity detected during daylight hours in a non-restricted zone.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3398
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 4434
   },
   {
     "frame_id": "frame_015",
-    "timestamp": "16:16:34",
+    "timestamp": "16:00:14",
     "location": "Main Gate",
-    "vlm_description": "A residential entrance area with a parked white SUV near an open door. Several pairs of shoes are visible near the entrance steps.",
-    "scene_type": "entrance",
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are four people visible. One person is holding a phone and appears to be showing it to the others. Two individuals are closely observing the phone, while the fourth person is standing behind them, looking on. The setting includes display counters with various items, possibly phone accessories.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Holding a phone, showing it to others.",
+      "Person_2: Leaning in to look at the phone.",
+      "Person_3: Also observing the phone closely.",
+      "Person_4: Standing behind, watching the interaction."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes"
+      "phone",
+      "display counters",
+      "stools",
+      "bags"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "{'type': 'SUV', 'color': 'white', 'position': 'parked', 'direction': 'unknown', 'occupancy': 'unknown', 'plate_visible': False}"
-    ],
-    "activity": "No significant activity detected",
+    "activity": "One person demonstrating a phone to others.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for any changes or movements in the area.",
-    "alert_reasoning": "No suspicious activity or unauthorized presence detected in the entrance area.",
-    "alert_priority_signals": [],
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
     "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2798
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3654
   },
   {
     "frame_id": "frame_016",
-    "timestamp": "16:17:45",
+    "timestamp": "16:00:14",
     "location": "Perimeter North",
-    "vlm_description": "The scene shows a residential entrance with a vehicle parked. Several pairs of shoes are placed near the entrance, indicating residential activity.",
-    "scene_type": "residential",
+    "vlm_description": "The scene is set in a retail environment, likely a mobile phone shop. Four individuals are present. One person, possibly a store employee, is standing behind a glass counter. He is holding a phone and appears to be showing it to the other three individuals who are standing on the opposite side of the counter. The individuals are closely observing the phone. The counter displays various electronic items.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Standing behind the counter, holding a phone, showing it to others.",
+      "Person_2: Leaning over the counter, closely observing the phone.",
+      "Person_3: Standing next to Person_2, also observing the phone.",
+      "Person_4: Standing slightly behind Persons 2 and 3, looking towards the phone."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes"
+      "phone",
+      "glass counter",
+      "electronic items"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 4,
-        "confidence": 0.8,
-        "attributes": [
-          "mixed"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A vehicle is parked at the residential entrance. The presence of shoes suggests residents are home.",
+    "activity": "A group of people is engaged in examining a phone, possibly a sales demonstration.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Continue regular monitoring. No immediate action is needed.",
-    "alert_reasoning": "No suspicious activity detected. Scene matches typical residential behavior during clear daylight.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4086
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3219
   },
   {
     "frame_id": "frame_017",
-    "timestamp": "16:18:56",
+    "timestamp": "16:00:16",
     "location": "Garage",
-    "vlm_description": "The scene depicts a residential entrance with a parked white SUV. Several pairs of shoes are visible near the door, suggesting normal activity.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
+    "threat_level": "MEDIUM",
+    "threat_type": "theft_behavior",
+    "vlm_description": "Individual reaching towards items without staff attention, potential concealment behavior.",
+    "scene_type": "interior",
+    "people_count": 5,
+    "person_features": [
+      "Person_1: Reaching towards items, potential concealment",
+      "Person_2: Distracting staff",
+      "Person_3: Observing surroundings",
+      "Person_4: Standing close to display",
+      "Person_5: Engaged with staff"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
+    "security_signals": [
+      "reaching_towards_items",
+      "potential_concealment",
+      "person_1: Person_1: Reaching towards items, potential"
     ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "{'type': 'SUV', 'color': 'white', 'position': 'parked'}"
+    "suspicious_elements": [
+      "Reaching without staff attention",
+      "Possible concealment attempt",
+      "reaching"
     ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No unusual activity detected in the residential area.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required.",
-    "alert_reasoning": "The area appears normal with no signs of intrusion or suspicious activity.",
+    "reasoning": "The individual is reaching towards items while the staff is distracted, indicating potential theft behavior.",
+    "recommended_action": "Monitor closely and alert security personnel to observe behavior.",
+    "confidence": 0.85,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Security threat detected: person_1: Person_1: Reaching towards items, potential. Review frame immediately for suspicious activity.",
     "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "activity": "Unknown activity",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4115
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "MEDIUM",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 7359
   },
   {
     "frame_id": "frame_018",
-    "timestamp": "16:20:07",
+    "timestamp": "16:00:17",
     "location": "Back Entrance",
-    "vlm_description": "The scene depicts a back entrance with a visible parked vehicle and a residential entryway.",
-    "scene_type": "entrance",
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop, with display counters and promotional posters. One person is visible, standing behind a glass display counter. The person is wearing a grey sweater and appears to be interacting with their hands, possibly holding or examining an object. The counter contains several mobile phones and accessories. The person is positioned near the center of the frame, facing the display. No unusual or suspicious behavior is observed.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: Standing behind the counter, interacting with hands, possibly examining an object."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes"
+      "glass display counter",
+      "mobile phones",
+      "promotional posters",
+      "orange chair",
+      "water dispenser"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 3,
-        "confidence": 0.8,
-        "attributes": [
-          "outdoor"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle is parked and entryway shows outdoor footwear, indicating possible presence.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
+    "activity": "Person is standing and interacting with items on the counter.",
+    "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for movement or unauthorized entry.",
-    "alert_reasoning": "Low threat level due to absence of people and normal activity indications.",
-    "alert_priority_signals": [
-      "vehicle_loitering"
-    ],
-    "person_features": [],
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 6694
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 4133
   },
   {
     "frame_id": "frame_019",
-    "timestamp": "16:21:18",
+    "timestamp": "16:00:18",
     "location": "Restricted Zone",
-    "raw_response": "I'm sorry, I can't assist with that.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The scene is inside a small retail shop, likely a mobile phone store, based on the branding visible. There is one person present, standing behind a glass display counter. The person appears to be interacting with their hands, possibly examining or handling an object on the counter.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: Standing behind the counter, interacting with hands, possibly handling an object."
+    ],
+    "objects_detected": [
+      "glass display counter",
+      "mobile phones",
+      "orange water cooler",
+      "chairs"
+    ],
+    "activity": "The person is engaged in examining or handling items on the counter.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2185
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2913
   },
   {
     "frame_id": "frame_020",
-    "timestamp": "16:22:29",
+    "timestamp": "16:00:19",
     "location": "Driveway",
-    "raw_response": "I'm sorry, but I can't provide specific security details or analysis based on this image.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The scene is set inside a retail store, likely a mobile phone shop. There is one person visible, standing behind a glass display counter. The individual appears to be looking at the items inside the counter. The person has one hand on their hip and the other arm is not clearly visible. The display counter contains several mobile phones and other small items. There are posters on the wall and a water cooler in the background.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: Standing behind a display counter, looking at items, one hand on hip"
+    ],
+    "objects_detected": [
+      "glass display counter",
+      "mobile phones",
+      "posters",
+      "water cooler",
+      "chairs"
+    ],
+    "activity": "The person is observing items in the display counter.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2077
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3753
   },
   {
     "frame_id": "frame_021",
-    "timestamp": "16:23:40",
+    "timestamp": "16:00:20",
     "location": "Side Entrance",
-    "vlm_description": "The scene captures a residential entrance area with a vehicle parked nearby. There are no visible people present.",
-    "scene_type": "entrance",
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are four people present. One person is behind the counter, appearing to be a store employee, holding a phone and showing it to the other three individuals who are standing on the opposite side of the counter. The three individuals are observing the phone closely.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Behind the counter, holding a phone, showing it to others.",
+      "Person_2: Standing in front of the counter, leaning forward, observing the phone.",
+      "Person_3: Next to Person_2, also leaning forward, observing the phone.",
+      "Person_4: Standing beside Person_3, looking at the phone."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoe"
+      "phone",
+      "counter",
+      "chairs",
+      "display items"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "{'type': 'SUV', 'color': 'white', 'position': 'parked', 'direction': 'unknown', 'occupancy': 'unknown', 'plate_visible': False}"
-    ],
-    "activity": "A vehicle is parked near the entrance. No suspicious activity detected.",
+    "activity": "A store employee is demonstrating a phone to three customers.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action needed.",
-    "alert_reasoning": "There are no visible threats or suspicious activities. The area is open and during normal hours.",
-    "alert_priority_signals": [],
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
     "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3437
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3381
   },
   {
     "frame_id": "frame_022",
-    "timestamp": "16:24:51",
+    "timestamp": "16:00:21",
     "location": "Main Gate",
-    "vlm_description": "The scene depicts an entrance area with a white SUV parked in front of a residential building. The entrance has a set of steps leading up to a door.",
-    "scene_type": "residential",
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There is one person visible in the frame, standing behind a glass display counter. The person appears to be looking towards the camera with their hands clasped together. The counter displays several mobile phones and accessories. The store has promotional posters on the walls and a water dispenser is visible in the background.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: Standing behind the counter, looking towards the camera, hands clasped together."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes"
+      "glass display counter",
+      "mobile phones",
+      "accessories",
+      "promotional posters",
+      "water dispenser"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 3,
-        "confidence": 0.8,
-        "attributes": [
-          "outside"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A vehicle is parked outside a residential entrance.",
+    "activity": "The person is standing and observing, no active engagement with objects.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring the area for unusual activity.",
-    "alert_reasoning": "No suspicious activity or presence is observed in a non-restricted and active zone.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4593
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3317
   },
   {
     "frame_id": "frame_023",
-    "timestamp": "16:26:02",
+    "timestamp": "16:00:22",
     "location": "Perimeter North",
-    "raw_response": "I'm sorry, I can't assist with that.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. Four people are present. One person is holding a smartphone, showing it to another person who is leaning over the counter. Two other individuals are standing behind the counter, observing the interaction. The counter has glass displays with various items inside.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Holding a smartphone, showing it to another person.",
+      "Person_2: Leaning over the counter, looking at the smartphone.",
+      "Person_3: Standing behind the counter, observing.",
+      "Person_4: Standing behind the counter, observing."
+    ],
+    "objects_detected": [
+      "smartphone",
+      "glass display counter",
+      "stools",
+      "shopping bags"
+    ],
+    "activity": "A person is demonstrating a smartphone to another individual while two others observe.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 1912
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3099
   },
   {
     "frame_id": "frame_024",
-    "timestamp": "16:27:13",
+    "timestamp": "16:00:23",
     "location": "Garage",
-    "vlm_description": "The frame shows a residential entrance with a parked white vehicle. Shoes are visible near the steps leading to a door.",
-    "scene_type": "residential",
+    "vlm_description": "The scene is set in a retail environment, specifically a mobile phone store. Four individuals are present, standing around a glass display counter. One person, likely a store employee, is showing a mobile phone to the others. The individuals are engaged in conversation and examining the phone closely.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Standing behind the counter, holding a mobile phone, showing it to others.",
+      "Person_2: Leaning over the counter, closely observing the phone.",
+      "Person_3: Standing next to Person_2, also observing the phone.",
+      "Person_4: Standing slightly behind, watching the interaction."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes"
+      "glass display counter",
+      "mobile phone",
+      "chairs",
+      "posters"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 3,
-        "confidence": 0.9,
-        "attributes": [
-          "various types",
-          "near entrance"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "vehicle"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No noticeable activity, the vehicle is parked.",
+    "activity": "Individuals are engaged in a sales interaction, examining a mobile phone.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required as there is no suspicious activity.",
-    "alert_reasoning": "The scene is typical for a residential area with no signs of intrusion or unusual activity.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3428
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3830
   },
   {
     "frame_id": "frame_025",
-    "timestamp": "16:28:24",
+    "timestamp": "16:00:24",
     "location": "Back Entrance",
-    "vlm_description": "The scene shows a residential entrance area with a white vehicle parked near the entrance steps. Various shoes are visible near the steps.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle parked in the designated area with no visible person in the vicinity.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required. Vehicle is properly parked in a residential area.",
-    "alert_reasoning": "There are no suspicious activities or elements present. The vehicle is parked appropriately.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3851
-  },
-  {
-    "frame_id": "frame_026",
-    "timestamp": "16:29:35",
-    "location": "Restricted Zone",
-    "vlm_description": "Exterior of a residential entrance with parked vehicles.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 2,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No significant activity; vehicles are parked.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action needed; monitor for any changes.",
-    "alert_reasoning": "Scene is static with no unusual activity detected.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3811
-  },
-  {
-    "frame_id": "frame_027",
-    "timestamp": "16:30:46",
-    "location": "Driveway",
-    "vlm_description": "A residential driveway with a person near the entrance.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "person",
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "walking",
-          "holding_item"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There is one person visible, standing behind a glass display counter. The person is facing away from the camera, with hands behind their back. The counter contains several mobile phones and other small electronic items. The store has posters on the walls and a water cooler on a small table.",
+    "scene_type": "retail",
     "people_count": 1,
     "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "purple_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "walking"
-        ]
-      }
+      "Person_1: Standing behind the counter, hands behind back, facing away from the camera"
     ],
-    "vehicles_detected": [
-      "SUV"
+    "objects_detected": [
+      "glass display counter",
+      "mobile phones",
+      "posters",
+      "water cooler",
+      "stool"
     ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A person walking near the entrance of the house.",
+    "activity": "The person appears to be observing the items in the display or waiting for customers.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring, no immediate action required.",
-    "alert_reasoning": "The scene appears typical for a residential area during daytime hours.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4058
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3516
+  },
+  null,
+  {
+    "frame_id": "frame_027",
+    "timestamp": "16:00:26",
+    "location": "Driveway",
+    "threat_level": "MEDIUM",
+    "threat_type": "theft_behavior",
+    "vlm_description": "Individual reaching towards items in a display case without staff present.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: reaching towards items, potential concealment"
+    ],
+    "security_signals": [
+      "reaching_towards_items",
+      "potential_concealment",
+      "person_1: Person_1: reaching towards items, potential"
+    ],
+    "suspicious_elements": [
+      "absence of staff",
+      "reaching into display",
+      "reaching"
+    ],
+    "reasoning": "The individual is reaching towards items in a display case without staff present, which is a common indicator of theft behavior.",
+    "recommended_action": "Monitor closely and alert security personnel to approach and verify intentions.",
+    "confidence": 0.85,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Security threat detected: person_1: Person_1: reaching towards items, potential. Review frame immediately for suspicious activity.",
+    "alert_priority_signals": [],
+    "objects_detected": [],
+    "vehicles_detected": [],
+    "activity": "Unknown activity",
+    "reasoning_signals": [],
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "MEDIUM",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 5918
   },
   {
     "frame_id": "frame_028",
-    "timestamp": "16:31:57",
+    "timestamp": "16:00:27",
     "location": "Side Entrance",
-    "raw_response": "I'm unable to analyze or provide a detailed assessment of the image.",
-    "scene_type": "unknown",
-    "object_details": [],
-    "person_features": [],
-    "vehicle_details": [],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There are four people present. One person is standing behind the counter, possibly a store employee, and three others are on the customer side of the counter. The person behind the counter is gesturing with their right hand on the counter, possibly explaining or discussing something. The three people on the other side are leaning slightly forward, appearing attentive. One of them has their hand on their chin, indicating they are thinking or considering something. There are mobile phones and other small items on the counter.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Standing behind the counter, gesturing with right hand.",
+      "Person_2: Leaning on the counter, hand on chin.",
+      "Person_3: Standing next to Person_2, observing.",
+      "Person_4: Standing next to Person_3, observing."
+    ],
+    "objects_detected": [
+      "mobile phones",
+      "papers",
+      "scissors"
+    ],
+    "activity": "Discussion or transaction at a retail counter.",
     "security_signals": [],
-    "alert_reasoning": "Review frame manually",
-    "alert_priority_signals": [],
-    "objects_detected": [],
-    "vehicles_detected": [],
     "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
+    "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 1522
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3770
   },
   {
     "frame_id": "frame_029",
-    "timestamp": "16:33:08",
+    "timestamp": "16:00:28",
     "location": "Main Gate",
-    "vlm_description": "The scene depicts a residential entrance area with one parked white vehicle. There are several pairs of shoes near the entrance, suggesting typical residential activity.",
-    "scene_type": "residential",
+    "vlm_description": "The scene is set in a small retail store, likely a mobile phone shop, with display counters and promotional posters visible. Four people are present. One person is standing in front of the counter, holding a phone and showing it to the others. Two individuals are leaning over the counter, closely observing the phone. The fourth person is partially visible, standing behind the counter. The individuals appear engaged in a discussion about the phone.",
+    "scene_type": "retail",
+    "people_count": 4,
+    "person_features": [
+      "Person_1: Standing in front of the counter, holding a phone, showing it to others.",
+      "Person_2: Leaning over the counter, observing the phone closely.",
+      "Person_3: Leaning over the counter, engaged in discussion.",
+      "Person_4: Partially visible, standing behind the counter."
+    ],
     "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
+      "phone",
+      "display counters",
+      "promotional posters",
+      "chairs"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "The vehicle is stationary, likely belonging to the residents.",
+    "activity": "Discussion and demonstration of a phone.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No security threat detected. Continue monitoring the area.",
-    "alert_reasoning": "Normal residential scene with no suspicious activity or unauthorized presence.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
+    "vehicles_detected": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3896
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3296
   },
-  {
-    "frame_id": "frame_030",
-    "timestamp": "16:34:19",
-    "location": "Perimeter North",
-    "vlm_description": "The scene shows a residential area with a parked white SUV in front of a house. There are several pairs of shoes near the entrance.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "{'type': 'SUV', 'color': 'white'}"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "not clearly visible",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A vehicle is parked outside a residential house.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action needed. Routine monitoring.",
-    "alert_reasoning": "Scene is typical for a residential area with no suspicious activity observed.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3512
-  },
+  null,
   {
     "frame_id": "frame_031",
-    "timestamp": "16:35:30",
+    "timestamp": "16:00:30",
     "location": "Garage",
-    "vlm_description": "The scene depicts a garage area with a parked white vehicle. The entrance area is visible, with several pairs of shoes placed near the steps leading to the door.",
-    "scene_type": "residential",
+    "vlm_description": "The scene is set in a retail environment, specifically a mobile phone shop. There is one person visible in the frame, standing behind a glass display counter. The individual appears to be looking at something on the counter. Their hands are clasped together, resting on the counter. The shop is equipped with various mobile phone displays and promotional posters on the walls.",
+    "scene_type": "retail",
+    "people_count": 1,
+    "person_features": [
+      "Person_1: Standing behind the counter, looking down, hands clasped together on the counter."
+    ],
     "objects_detected": [
-      "vehicle",
-      "entrance",
-      "shoes"
+      "glass display counter",
+      "mobile phones",
+      "promotional posters",
+      "chairs",
+      "water cooler"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle parked in a residential garage area.",
+    "activity": "The person is standing and observing the display area.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for any unexpected activity or unauthorized access.",
-    "alert_reasoning": "No suspicious activity detected. Normal residential scene with parked vehicle.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4175
-  },
-  {
-    "frame_id": "frame_032",
-    "timestamp": "16:36:41",
-    "location": "Back Entrance",
-    "raw_response": "I'm unable to analyze or identify specific people or objects in the image.",
-    "scene_type": "unknown",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
     "object_details": [],
-    "person_features": [],
     "vehicle_details": [],
-    "security_signals": [],
-    "alert_reasoning": "Review frame manually",
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
-    "objects_detected": [],
     "vehicles_detected": [],
-    "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2139
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3683
   },
+  null,
   {
     "frame_id": "frame_033",
-    "timestamp": "16:37:52",
+    "timestamp": "16:00:32",
     "location": "Restricted Zone",
-    "vlm_description": "A residential area with a parked white SUV in front of a building entrance. Shoes are visible near the entrance, indicating normal activity.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A vehicle is parked outside a residential entrance with shoes placed nearby, suggesting usual residential activity.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action needed, residential area with usual activity observed.",
-    "alert_reasoning": "The vehicle's presence is consistent with expected activity in a residential zone during non-restricted hours.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3518
-  },
-  {
-    "frame_id": "frame_034",
-    "timestamp": "16:39:03",
-    "location": "Driveway",
-    "vlm_description": "The scene captures a driveway area with a parked white SUV, a tiled entrance with shoes visible, and nearby landscaping.",
-    "scene_type": "driveway",
-    "objects_detected": [
-      "vehicle",
-      "doorstep",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A vehicle is parked in the driveway, no active movement or people detected.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required. Continue standard monitoring.",
-    "alert_reasoning": "No suspicious activity or individuals detected in the scene.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3457
-  },
-  {
-    "frame_id": "frame_035",
-    "timestamp": "16:40:14",
-    "location": "Side Entrance",
-    "vlm_description": "The scene shows a side entrance to a building with a parked white vehicle. Some shadowing is visible from nearby structures or foliage.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "entry",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "door",
-          "closed"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No significant activity observed",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring.",
-    "alert_reasoning": "No unusual or suspicious activity detected.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4296
-  },
-  {
-    "frame_id": "frame_036",
-    "timestamp": "16:41:25",
-    "location": "Main Gate",
-    "vlm_description": "The frame captures a residential entrance area with a parked white sedan on the driveway. Two individuals are present by the vehicle. There is a small porch with shoes placed near the door, suggesting recent activity.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "person",
-      "vehicle",
-      "shoe"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 2,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoe",
-        "count": 2,
-        "confidence": 0.8,
-        "attributes": [
-          "near_entrance"
-        ]
-      }
-    ],
-    "people_count": 2,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "casual_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "standing"
-        ]
-      },
-      {
-        "id": "person_2",
-        "appearance": [
-          "casual_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "standing"
-        ]
-      }
-    ],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Two individuals are standing near a parked vehicle at the entrance of a residential area.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action is required as there are no suspicious activities detected.",
-    "alert_reasoning": "The presence of individuals near a parked vehicle in a residential area during permitted hours does not indicate a threat.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4068
-  },
-  {
-    "frame_id": "frame_037",
-    "timestamp": "16:42:36",
-    "location": "Perimeter North",
-    "vlm_description": "The scene shows a residential entrance area with a parked white vehicle and individuals present.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "person",
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 2,
-        "confidence": 0.9,
-        "attributes": [
-          "one near_vehicle",
-          "one walking"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "parked",
-          "white"
-        ]
-      }
-    ],
-    "people_count": 2,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "casual_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "walking"
-        ]
-      },
-      {
-        "id": "person_2",
-        "appearance": [
-          "casual_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "standing_near_vehicle"
-        ]
-      }
-    ],
-    "vehicles_detected": [
-      "vehicle_1"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Normal residential activity with people moving around and a vehicle parked.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action needed, typical residential activity observed.",
-    "alert_reasoning": "Normal activity observed during daytime hours in a non-restricted zone.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4235
-  },
-  {
-    "frame_id": "frame_038",
-    "timestamp": "16:43:47",
-    "location": "Garage",
-    "vlm_description": "The scene depicts a residential area with parked vehicles. A driveway leading to an entrance is visible.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "vehicle",
-      "person"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 2,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
+    "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There is one person visible, standing behind a glass display counter. The individual is facing away from the camera, with hands behind their back, possibly holding an object. The store has several mobile phones displayed under the glass counter and promotional posters on the walls.",
+    "scene_type": "retail",
     "people_count": 1,
     "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "dark_clothes"
-        ],
-        "face_visible": false,
-        "actions": [
-          "near_vehicle"
-        ]
-      }
+      "Person_1: Standing behind the counter, facing away from the camera, hands behind back possibly holding an object."
     ],
-    "vehicles_detected": [
-      "sedan"
+    "objects_detected": [
+      "glass display counter",
+      "mobile phones",
+      "promotional posters",
+      "orange stool",
+      "water cooler"
     ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "black",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      },
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A person is present near a parked vehicle.",
-    "security_signals": [
-      "none"
-    ],
+    "activity": "The person is standing still, possibly interacting with an object behind their back.",
+    "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required.",
-    "alert_reasoning": "Presence in a non-restricted, public zone during acceptable hours.",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
+    "object_details": [],
+    "vehicle_details": [],
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3784
-  },
-  {
-    "frame_id": "frame_039",
-    "timestamp": "16:44:58",
-    "location": "Back Entrance",
-    "vlm_description": "The frame shows a residential entrance with a paved area where two vehicles are parked. There is a small porch with a few items visible, including shoes and a plant.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "person",
-      "vehicle",
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 2,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 1,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "light_clothes"
-        ],
-        "face_visible": true,
-        "actions": [
-          "standing near vehicle"
-        ]
-      }
-    ],
-    "vehicles_detected": [
-      "sedan",
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "unknown",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": true
-      },
-      {
-        "type": "SUV",
-        "color": "unknown",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A person is standing near the parked vehicles.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
-    "suspicious_elements": [],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for continued activity or unauthorized access.",
-    "alert_reasoning": "Presence of vehicles in a restricted zone during monitored hours.",
-    "alert_priority_signals": [
-      "vehicle_loitering"
-    ],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4357
-  },
-  {
-    "frame_id": "frame_040",
-    "timestamp": "16:46:09",
-    "location": "Restricted Zone",
-    "vlm_description": "A residential entrance with vehicles parked close by, one vehicle with an open door and an individual standing near it.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "person",
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 1,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "dark_clothes"
-        ],
-        "face_visible": false,
-        "actions": [
-          "standing_near_vehicle"
-        ]
-      }
-    ],
-    "vehicles_detected": [
-      "vehicle_1"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "unknown",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Person standing near a parked vehicle with its door open.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
-    "suspicious_elements": [
-      "vehicle_door_open"
-    ],
-    "threat_assessment": "medium",
-    "confidence": 0.95,
-    "recommended_action": "Monitor the situation for potential unauthorized access and alert security personnel.",
-    "alert_reasoning": "Presence of a person near an open vehicle door in a restricted area may indicate potential unauthorized access.",
-    "alert_priority_signals": [
-      "vehicle_loitering"
-    ],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4110
-  },
-  {
-    "frame_id": "frame_041",
-    "timestamp": "16:47:20",
-    "location": "Driveway",
-    "vlm_description": "A person is standing near a parked white sedan in a driveway with a small entrance area.",
-    "scene_type": "residential",
-    "objects_detected": [
-      "person",
-      "vehicle"
-    ],
-    "object_details": [
-      {
-        "label": "person",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "standing",
-          "near_vehicle"
-        ]
-      },
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 1,
-    "person_features": [
-      {
-        "id": "person_1",
-        "appearance": [
-          "white_t-shirt",
-          "lungee"
-        ],
-        "face_visible": false,
-        "actions": [
-          "standing"
-        ]
-      }
-    ],
     "vehicles_detected": [],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "A person standing next to a parked vehicle.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Monitor for unusual behavior.",
-    "alert_reasoning": "No suspicious activity detected; normal residential presence during clear weather.",
-    "alert_priority_signals": [],
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4085
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 3083
   },
-  {
-    "frame_id": "frame_042",
-    "timestamp": "16:48:31",
-    "location": "Side Entrance",
-    "vlm_description": "The scene shows a residential entrance area with a parked white sedan to the left. Footwear is scattered near the entrance, suggesting recent or expected activity.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "footwear"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      },
-      {
-        "label": "footwear",
-        "count": 5,
-        "confidence": 0.8,
-        "attributes": []
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No active movement detected. The scene suggests potential upcoming activity due to presence of footwear.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required. Continue monitoring for any suspicious activity.",
-    "alert_reasoning": "The environment appears calm with no presence of people or activities indicating threats.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4663
-  },
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
   {
     "frame_id": "frame_043",
-    "timestamp": "16:49:42",
+    "timestamp": "16:01:39",
     "location": "Main Gate",
-    "vlm_description": "Image shows the entrance area with a parked white sedan on the left. Several pairs of shoes are visible near the steps leading to a door.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 5,
-        "confidence": 0.85,
-        "attributes": [
-          "various positions"
-        ]
-      },
-      {
-        "label": "door",
-        "count": 1,
-        "confidence": 0.95,
-        "attributes": [
-          "wooden",
-          "closed"
-        ]
-      }
-    ],
+    "vlm_description": "The scene is an interior setting, likely a retail store with display counters. There are no people visible in the frame. The counters contain various electronic devices, possibly mobile phones. An orange water cooler is on a small table in the background.",
+    "scene_type": "retail",
     "people_count": 0,
     "person_features": [],
-    "vehicles_detected": [
-      "sedan"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "north",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No significant activity observed.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required.",
-    "alert_reasoning": "No suspicious activity detected. Vehicle is parked, and no people are present.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3235
-  },
-  {
-    "frame_id": "frame_044",
-    "timestamp": "16:50:53",
-    "location": "Perimeter North",
-    "vlm_description": "Scene shows a residential entrance with a parked white vehicle near a set of steps leading to a doorway. Several pairs of shoes are seen near the entrance.",
-    "scene_type": "residential",
     "objects_detected": [
-      "vehicle",
-      "shoes",
-      "doorway"
+      "display counters",
+      "electronic devices",
+      "orange water cooler",
+      "chairs"
     ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "white",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "vehicle"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "north",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No human activity detected. The vehicle is stationary.",
+    "activity": "No human activity observed.",
     "security_signals": [],
     "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No immediate action required. Continue monitoring.",
-    "alert_reasoning": "The area appears secure with no suspicious behavior detected.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 4392
-  },
-  {
-    "frame_id": "frame_045",
-    "timestamp": "16:52:04",
-    "location": "Garage",
-    "raw_response": "I'm unable to provide detailed security analysis or JSON output for this image. However, I can assist with general inquiries or further clarification.",
-    "scene_type": "unknown",
+    "threat_level": "CLEAR",
+    "threat_type": "clear",
+    "reasoning": "Initial observation - no security assessment",
+    "recommended_action": "Continue monitoring",
+    "confidence": 0.9,
     "object_details": [],
-    "person_features": [],
     "vehicle_details": [],
-    "security_signals": [],
-    "alert_reasoning": "Review frame manually",
+    "alert_reasoning": "Continue monitoring",
     "alert_priority_signals": [],
-    "objects_detected": [],
     "vehicles_detected": [],
-    "suspicious_elements": [],
-    "people_count": 0,
-    "vlm_description": "Scene analysis unavailable.",
-    "activity": "Unknown activity",
-    "recommended_action": "Review frame manually",
     "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 2091
+    "clip_threat_score": 0,
+    "blip_caption": "",
+    "blip_insights": {},
+    "overall_threat_level": "UNKNOWN",
+    "model_used": "cloud-clip-blip-gpt4o",
+    "processing_time_ms": 2461
   },
-  {
-    "frame_id": "frame_046",
-    "timestamp": "16:53:15",
-    "location": "Back Entrance",
-    "vlm_description": "The scene depicts an entrance area with a parked white sedan vehicle nearby. There are several pairs of shoes placed on the ground near the steps leading to a door.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 4,
-        "confidence": 0.9,
-        "attributes": [
-          "on_ground"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "sedan"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Shoes are placed at the entrance, indicating possible human presence.",
-    "security_signals": [
-      "restricted_zone_vehicle"
-    ],
-    "suspicious_elements": [
-      "vehicle parked in restricted zone"
-    ],
-    "threat_assessment": "low",
-    "confidence": 0.95,
-    "recommended_action": "Monitor the area for any unauthorized entry or suspicious activity.",
-    "alert_reasoning": "A vehicle is parked in a restricted zone, but there is no immediate evidence of threat or unauthorized access after hours.",
-    "alert_priority_signals": [
-      "vehicle_loitering"
-    ],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3600
-  },
-  {
-    "frame_id": "frame_047",
-    "timestamp": "16:54:26",
-    "location": "Restricted Zone",
-    "vlm_description": "detailed description of the scene",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No human activity detected, vehicle parked.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required.",
-    "alert_reasoning": "No unusual activity or unauthorized presence detected.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3616
-  },
-  {
-    "frame_id": "frame_048",
-    "timestamp": "16:55:37",
-    "location": "Driveway",
-    "vlm_description": "Driveway scene with a parked white sedan near residential entrance. Multiple shoes are visible near the entrance, indicating potential foot traffic.",
-    "scene_type": "driveway",
-    "objects_detected": [
-      "vehicle",
-      "shoes",
-      "door"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "sedan",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "vehicle"
-    ],
-    "vehicle_details": [
-      {
-        "type": "sedan",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle is parked; no visible human activity.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring; no immediate threat detected.",
-    "alert_reasoning": "Normal scene with no visible human presence or suspicious activity.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3853
-  },
-  {
-    "frame_id": "frame_049",
-    "timestamp": "16:56:48",
-    "location": "Side Entrance",
-    "vlm_description": "A side entrance area with a parked white SUV, several scattered sandals, and a small set of steps leading to a door. There is no visible human activity.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "sandals"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.85,
-        "attributes": [
-          "SUV",
-          "parked"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "SUV"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "No human activity detected. The vehicle is parked, and sandals are scattered near the entrance.",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "Continue monitoring the area as part of routine patrols.",
-    "alert_reasoning": "No suspicious activities or presence detected. Everything appears normal for the time and location.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3621
-  },
-  {
-    "frame_id": "frame_050",
-    "timestamp": "16:57:59",
-    "location": "Main Gate",
-    "vlm_description": "A residential entrance with a parked vehicle on the left. Stairs leading to a door with several pairs of shoes scattered near the entrance. Bright daylight with shadows visible.",
-    "scene_type": "entrance",
-    "objects_detected": [
-      "vehicle",
-      "shoes"
-    ],
-    "object_details": [
-      {
-        "label": "vehicle",
-        "count": 1,
-        "confidence": 0.9,
-        "attributes": [
-          "white",
-          "parked"
-        ]
-      },
-      {
-        "label": "shoes",
-        "count": 4,
-        "confidence": 0.8,
-        "attributes": [
-          "scattered"
-        ]
-      }
-    ],
-    "people_count": 0,
-    "person_features": [],
-    "vehicles_detected": [
-      "vehicle_1"
-    ],
-    "vehicle_details": [
-      {
-        "type": "SUV",
-        "color": "white",
-        "position": "parked",
-        "direction": "unknown",
-        "occupancy": "unknown",
-        "plate_visible": false
-      }
-    ],
-    "activity": "Vehicle is parked, no people present",
-    "security_signals": [],
-    "suspicious_elements": [],
-    "threat_assessment": "none",
-    "confidence": 0.95,
-    "recommended_action": "No action required.",
-    "alert_reasoning": "No suspicious activity or objects detected.",
-    "alert_priority_signals": [],
-    "reasoning_signals": [],
-    "model_used": "gpt-4o",
-    "processing_time_ms": 3343
-  }
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null
 ]

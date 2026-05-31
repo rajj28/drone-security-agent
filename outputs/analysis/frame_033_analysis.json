@@ -1,48 +1,38 @@
 {
   "frame_id": "frame_033",
-  "timestamp": "16:37:52",
+  "timestamp": "16:00:32",
   "location": "Restricted Zone",
-  "vlm_description": "A residential area with a parked white SUV in front of a building entrance. Shoes are visible near the entrance, indicating normal activity.",
-  "scene_type": "residential",
+  "vlm_description": "The scene is inside a retail store, likely a mobile phone shop. There is one person visible, standing behind a glass display counter. The individual is facing away from the camera, with hands behind their back, possibly holding an object. The store has several mobile phones displayed under the glass counter and promotional posters on the walls.",
+  "scene_type": "retail",
+  "people_count": 1,
+  "person_features": [
+    "Person_1: Standing behind the counter, facing away from the camera, hands behind back possibly holding an object."
+  ],
   "objects_detected": [
-    "vehicle",
-    "shoes"
+    "glass display counter",
+    "mobile phones",
+    "promotional posters",
+    "orange stool",
+    "water cooler"
   ],
-  "object_details": [
-    {
-      "label": "vehicle",
-      "count": 1,
-      "confidence": 0.9,
-      "attributes": [
-        "SUV",
-        "parked"
-      ]
-    }
-  ],
-  "people_count": 0,
-  "person_features": [],
-  "vehicles_detected": [
-    "SUV"
-  ],
-  "vehicle_details": [
-    {
-      "type": "SUV",
-      "color": "white",
-      "position": "parked",
-      "direction": "unknown",
-      "occupancy": "unknown",
-      "plate_visible": false
-    }
-  ],
-  "activity": "A vehicle is parked outside a residential entrance with shoes placed nearby, suggesting usual residential activity.",
+  "activity": "The person is standing still, possibly interacting with an object behind their back.",
   "security_signals": [],
   "suspicious_elements": [],
-  "threat_assessment": "none",
-  "confidence": 0.95,
-  "recommended_action": "No action needed, residential area with usual activity observed.",
-  "alert_reasoning": "The vehicle's presence is consistent with expected activity in a residential zone during non-restricted hours.",
+  "threat_level": "CLEAR",
+  "threat_type": "clear",
+  "reasoning": "Initial observation - no security assessment",
+  "recommended_action": "Continue monitoring",
+  "confidence": 0.9,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Continue monitoring",
   "alert_priority_signals": [],
+  "vehicles_detected": [],
   "reasoning_signals": [],
-  "model_used": "gpt-4o",
-  "processing_time_ms": 3518
+  "clip_threat_score": 0,
+  "blip_caption": "",
+  "blip_insights": {},
+  "overall_threat_level": "UNKNOWN",
+  "model_used": "cloud-clip-blip-gpt4o",
+  "processing_time_ms": 3083
 }
