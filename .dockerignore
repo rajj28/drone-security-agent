@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# Virtual environments
+venv
+env
+ENV
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+
+# Data (will be created at runtime)
+data/extracted
+data/extracted2
+data/telemetry
+data/alerts
+data/analysis
+data/sessions
+
+# Large files
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Logs
+*.log
+logs/
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Local environment
+.env
+.env.local
