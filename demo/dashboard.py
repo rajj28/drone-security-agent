@@ -581,8 +581,18 @@ if st.session_state.active_tab == 0:
     # Frame Analysis Section
     st.markdown("#### 🎬 Frame Analysis")
     
-    # Frame loading - use API which handles sequential extracted folders
-    frames_data = get_api_data("frames")
+    # Frame loading - use session-specific API if session is selected, otherwise general API
+    active_session_id = st.session_state.get('selected_session_id') or st.session_state.get('active_session_id')
+    
+    if active_session_id:
+        # Use session-specific API for Railway persistence
+        frames_data = get_api_data(f"sessions/{active_session_id}/frames")
+        if not frames_data:
+            # Fallback to general frames endpoint
+            frames_data = get_api_data("frames")
+    else:
+        # No active session, use general frames endpoint
+        frames_data = get_api_data("frames")
     
     # If API doesn't work, try direct file system access with sequential folders
     if not frames_data or not frames_data.get("frames"):
