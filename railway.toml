@@ -1,9 +1,0 @@
-[build]
-builder = "nixpacks"
-
-[deploy]
-startCommand = "uvicorn src.api:app --host 0.0.0.0 --port $PORT --workers 1"
-
-[nixpacks]
-# Install ffmpeg for video frame extraction
-apt_pkgs = ["ffmpeg"]
