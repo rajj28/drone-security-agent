@@ -350,6 +350,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             
             logger.info(f"Successfully extracted {len(frames)} frames using {extraction_strategy} strategy")
             
+            # Save frame list to processing_status for Railway persistence
+            processing_status[session_id]["extracted_frames"] = frames
+            processing_status[session_id]["frame_count"] = len(frames)
+            processing_status[session_id]["session_dir"] = str(session_dir)
+            
         except Exception as e:
             # Fallback to basic frame extractor if intelligent one fails
             logger.warning(f"Intelligent extraction failed, falling back to basic extraction: {e}")
@@ -361,6 +366,12 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             
             if result.returncode != 0:
                 raise Exception(f"Frame extraction failed: {result.stderr}")
+            
+            # Get frames from fallback extraction
+            fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("*.jpg")])
+            processing_status[session_id]["extracted_frames"] = fallback_frames
+            processing_status[session_id]["frame_count"] = len(fallback_frames)
+            processing_status[session_id]["session_dir"] = str(session_dir)
         
         finally:
             # Restore original settings
@@ -524,9 +535,16 @@ def get_frame_alert(frame_id: str):
 @app.get("/sessions/{session_id}/frames")
 def get_session_frames(session_id: str):
     """Get frames for a specific session"""
-    # Priority order for session-specific frame locations
     
-    # 1. Session-specific extracted directory (preferred location)
+    # 1. Check processing_status first (Railway persistence)
+    if session_id in processing_status:
+        stored_frames = processing_status[session_id].get("extracted_frames", [])
+        if stored_frames:
+            # Extract just the filename from full paths
+            frame_names = [Path(f).name for f in stored_frames]
+            return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
+    
+    # 2. Session-specific extracted directory (fallback)
     session_extracted_dir = Path("data") / "sessions" / session_id / "extracted"
     if session_extracted_dir.exists():
         frames = []
