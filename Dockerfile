@@ -18,5 +18,6 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run the API (use shell form for PORT env var)
+# Run the API using shell to expand PORT environment variable
+SHELL ["/bin/sh", "-c"]
 CMD uvicorn src.api:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
