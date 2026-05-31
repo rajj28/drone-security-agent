@@ -358,11 +358,17 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         except Exception as e:
             # Fallback to basic frame extractor if intelligent one fails
             logger.warning(f"Intelligent extraction failed, falling back to basic extraction: {e}")
+            extraction_output_dir = session_dir + "/extracted"
+            logger.info(f"[EXTRACTION] Running frame_extractor with output: {extraction_output_dir}")
             result = subprocess.run([
                 sys.executable, "-m", "src.frame_extractor",
                 "--input", video_path,
-                "--output", session_dir + "/extracted"
+                "--output", extraction_output_dir
             ], capture_output=True, text=True)
+            
+            logger.info(f"[EXTRACTION] Return code: {result.returncode}")
+            logger.info(f"[EXTRACTION] stdout: {result.stdout[:500] if result.stdout else 'empty'}")
+            logger.info(f"[EXTRACTION] stderr: {result.stderr[:500] if result.stderr else 'empty'}")
             
             if result.returncode != 0:
                 raise Exception(f"Frame extraction failed: {result.stderr}")
