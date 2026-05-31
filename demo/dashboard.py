@@ -5,6 +5,7 @@ Modern UI with smooth interactions, real-time updates, and responsive design.
 
 import streamlit as st
 import json
+import os
 import sys
 import requests
 import time
