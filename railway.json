@@ -1,28 +1,48 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS",
-    "nixpacksPlan": {
-      "providers": ["python"]
-    }
-  },
-  "deploy": {
-    "startCommand": "sh -c 'uvicorn src.api:app --host 0.0.0.0 --port ${PORT} --workers 1'",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 30,
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 3
-  },
-  "environments": {
-    "production": {
+  "services": {
+    "api": {
+      "build": {
+        "builder": "NIXPACKS",
+        "nixpacksPlan": {
+          "providers": ["python"]
+        }
+      },
+      "deploy": {
+        "startCommand": "sh -c 'uvicorn src.api:app --host 0.0.0.0 --port ${PORT} --workers 1'",
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 30,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 3
+      },
       "variables": {
         "PYTHON_VERSION": "3.10.13",
         "API_ENV": "production",
         "MAX_FRAMES": "10",
         "USE_CLOUD_ANALYZER": "true",
         "LOG_LEVEL": "INFO",
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "dashboard": {
+      "build": {
+        "builder": "NIXPACKS",
+        "nixpacksPlan": {
+          "providers": ["python"]
+        }
+      },
+      "deploy": {
+        "startCommand": "sh -c 'streamlit run demo/dashboard.py --server.port ${PORT} --server.headless true --server.enableCORS false'",
+        "healthcheckPath": "/_stcore/health",
+        "healthcheckTimeout": 30,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 3
+      },
+      "variables": {
+        "PYTHON_VERSION": "3.10.13",
+        "DASHBOARD_ENV": "production",
         "PYTHONUNBUFFERED": "1",
-        "PORT": "8000"
+        "API_URL": "${{api.URL}}"
       }
     }
   }
