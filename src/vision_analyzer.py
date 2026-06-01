@@ -1012,6 +1012,11 @@ def analyze_all_frames():
     telemetry_path = settings.TELEMETRY_DIR / "all_telemetry.json"
     with open(telemetry_path, "r", encoding="utf-8") as f:
         all_telemetry = json.load(f)
+    
+    # Build telemetry lookup by frame_id to handle rejected frames
+    telemetry_lookup = {t.get("frame_id", f"frame_{i+1:03d}"): t 
+                         for i, t in enumerate(all_telemetry)}
+    
     session_context = load_session_context()
     context_store = load_context_summaries()
     all_results = []
@@ -1020,7 +1025,13 @@ def analyze_all_frames():
         # Use the latest extracted folder instead of the default extracted directory
         latest_extracted_folder = get_latest_extracted_folder()
         image_path = Path(latest_extracted_folder) / frame["filename"]
-        telemetry = all_telemetry[i]
+        
+        # Get telemetry by frame_id (handles rejected frames gracefully)
+        telemetry = telemetry_lookup.get(frame_id)
+        if telemetry is None:
+            print(f"WARNING: No telemetry for {frame_id} - frame may have been rejected")
+            all_results.append(None)
+            continue
         # Debug: Print the actual path being used
         print(f"Processing frame {i+1}/{len(frame_meta)}: {frame_id}")
         print(f"Looking for image at: {image_path}")
