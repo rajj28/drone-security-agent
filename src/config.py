@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     LANGCHAIN_TRACING_V2: bool = Field(False, env="LANGCHAIN_TRACING_V2")
     LANGCHAIN_PROJECT: str = Field("drone-security-agent", env="LANGCHAIN_PROJECT")
     
+    # MongoDB (optional - for context persistence)
+    MONGODB_URI: str = Field("", env="MONGODB_URI")
+    
     # Hugging Face (for Cloud Enhanced Analyzer)
     HF_API_TOKEN: str = Field("", env="HF_API_TOKEN")
     USE_CLOUD_ANALYZER: bool = Field(False, env="USE_CLOUD_ANALYZER")
@@ -70,7 +73,7 @@ class Settings(BaseSettings):
 try:
     settings = Settings()
 except ValidationError as e:
-    print(f"❌ Config validation error: {e}")
+    print(f"ERROR: Config validation error: {e}")
     raise
 
 # Ensure all output directories exist
