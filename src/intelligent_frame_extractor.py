@@ -349,7 +349,7 @@ class IntelligentFrameExtractor:
         reason: str
     ) -> Optional[FrameInfo]:
         """Extract a single frame at a specific timestamp."""
-        frame_name = f"temp_frame_{frame_number:03d}.jpg"
+        frame_name = f"frame_{frame_number:03d}.jpg"
         output_path = output_dir / frame_name
         
         # Format timestamp for ffmpeg

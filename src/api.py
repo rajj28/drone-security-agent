@@ -569,24 +569,10 @@ def get_session_frames(session_id: str):
             stored_frames = processing_status[session_id].get("extracted_frames", [])
             logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
             if stored_frames:
-                # Extract just the filename from full paths, filter out temp files
+                # Extract just the filename from full paths
                 try:
-                    # Debug: log all stored frames
-                    logger.info(f"[FRAMES API] Raw stored frames: {stored_frames}")
-                    
-                    # Filter: keep only frame_*.jpg, exclude temp_*.jpg
-                    frame_names = []
-                    for f in stored_frames:
-                        f_str = str(f)
-                        has_frame = 'frame_' in f_str
-                        has_temp = 'temp_' in f_str
-                        if has_frame and not has_temp:
-                            frame_names.append(Path(f_str).name)
-                            logger.info(f"[FRAMES API] KEPT: {f_str}")
-                        else:
-                            logger.info(f"[FRAMES API] FILTERED OUT: {f_str} (frame_:{has_frame}, temp_:{has_temp})")
-                    
-                    logger.info(f"[FRAMES API] Returning {len(frame_names)}/{len(stored_frames)} frames from memory (filtered)")
+                    frame_names = [Path(str(f)).name for f in stored_frames]
+                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from memory")
                     return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
                 except Exception as e:
                     logger.error(f"[FRAMES API] Error extracting frame names: {e}")
