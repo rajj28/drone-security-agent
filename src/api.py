@@ -389,8 +389,8 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             if result.returncode != 0:
                 raise Exception(f"Frame extraction failed: {result.stderr}")
             
-            # Get frames from fallback extraction
-            fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("*.jpg")])
+            # Get frames from fallback extraction (only frame_*.jpg, not temp files)
+            fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("frame_*.jpg")])
             logger.info(f"[FALLBACK] Found {len(fallback_frames)} frames in {session_dir}/extracted")
             processing_status[session_id]["extracted_frames"] = fallback_frames
             processing_status[session_id]["frame_count"] = len(fallback_frames)
@@ -569,10 +569,10 @@ def get_session_frames(session_id: str):
             stored_frames = processing_status[session_id].get("extracted_frames", [])
             logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
             if stored_frames:
-                # Extract just the filename from full paths
+                # Extract just the filename from full paths, filter out temp files
                 try:
-                    frame_names = [Path(str(f)).name for f in stored_frames]
-                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from memory")
+                    frame_names = [Path(str(f)).name for f in stored_frames if 'frame_' in str(f) and 'temp_' not in str(f)]
+                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from memory (filtered)")
                     return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
                 except Exception as e:
                     logger.error(f"[FRAMES API] Error extracting frame names: {e}")
@@ -583,29 +583,29 @@ def get_session_frames(session_id: str):
     except Exception as e:
         logger.error(f"[FRAMES API] Error accessing processing_status: {e}")
     
-    # 2. Session-specific extracted directory (fallback)
+    # 2. Session-specific extracted directory (fallback) - only frame_*.jpg
     session_extracted_dir = Path("data") / "sessions" / session_id / "extracted"
     if session_extracted_dir.exists():
         frames = []
-        for f in sorted(session_extracted_dir.glob("*.jpg")):
+        for f in sorted(session_extracted_dir.glob("frame_*.jpg")):
             frames.append(f.name)
         if frames:
             return {"frames": frames, "source": "session_extracted", "count": len(frames)}
     
-    # 3. Session-specific session directory
+    # 3. Session-specific session directory - only frame_*.jpg
     session_session_dir = Path("data") / "sessions" / session_id / "session"
     if session_session_dir.exists():
         frames = []
-        for f in sorted(session_session_dir.glob("*.jpg")):
+        for f in sorted(session_session_dir.glob("frame_*.jpg")):
             frames.append(f.name)
         if frames:
             return {"frames": frames, "source": "session_dir", "count": len(frames)}
     
-    # 4. Check if frames need to be moved from general extracted to session-specific
+    # 4. Check if frames need to be moved from general extracted to session-specific - only frame_*.jpg
     extracted_dir = Path("data/extracted")
     if extracted_dir.exists():
         frames = []
-        for f in sorted(extracted_dir.glob("*.jpg")):
+        for f in sorted(extracted_dir.glob("frame_*.jpg")):
             frames.append(f.name)
         if frames:
             # Move frames to session-specific directory
