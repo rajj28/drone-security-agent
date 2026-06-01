@@ -37,7 +37,7 @@ CONTEXT_SUMMARIES_PATH = settings.SESSION_DIR / "context_summaries.json"
 USE_ULTIMATE_ANALYZER = os.getenv("USE_ULTIMATE_ANALYZER", "false").lower() == "true"
 USE_BLIP_ANALYZER = os.getenv("USE_BLIP_ANALYZER", "false").lower() == "true"
 USE_CLIP_ANALYZER = os.getenv("USE_CLIP_ANALYZER", "false").lower() == "true"
-USE_CLOUD_ANALYZER = os.getenv("USE_CLOUD_ANALYZER", "false").lower() == "true"
+USE_CLOUD_ANALYZER = os.getenv("USE_CLOUD_ANALYZER", "true").lower() == "true"  # Default to cloud CLIP+BLIP+GPT-4o
 
 print(f"Analyzer Configuration:")
 print(f"  Ultimate Analyzer (Local CLIP+BLIP+GPT-4o): {USE_ULTIMATE_ANALYZER}")
@@ -48,21 +48,49 @@ print(f"  Standard GPT-4o Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZ
 
 # System and user prompts - Universal Security Threat Detection
 SYSTEM_PROMPT = """
-You are an AI security analyst reviewing drone surveillance footage for a property security system.
-Your job is to detect ANY security threat through SITUATION UNDERSTANDING — analyze what is happening in context, not just what you see.
+You are an expert AI security analyst reviewing drone surveillance footage. Your expertise is SITUATION UNDERSTANDING — you excel at connecting what you see with where it's happening to identify real threats.
 
-=== SITUATION ANALYSIS FRAMEWORK ===
-1. OBSERVE: What physical objects and people are visible
-2. CONTEXTUALIZE: Where is this happening? (restricted zone, after hours, staff-only area)
-3. CORRELATE: What are people doing relative to their location and time?
-4. THREAT ASSESS: Does the situation indicate security risk?
+=== CORE PRINCIPLE: CONTEXT = EVERYTHING ===
+The SAME action can be innocent or CRITICAL depending on context:
+- "Person behind counter" during business hours = employee (CLEAR)
+- "Person behind counter" after hours = CRITICAL (unauthorized access)
+- "Person reaching" in retail aisle = shopping (CLEAR)
+- "Person reaching toward staff section/cash register" = CRITICAL (theft attempt)
+
+=== ANALYSIS PROCESS ===
+1. OBSERVE: What exactly is visible? Count people precisely. Note exact positions.
+2. CONTEXTUALIZE: Where? When? (restricted zone, after hours, staff-only, valuable items nearby?)
+3. CORRELATE: Does behavior match location? (shopper in retail vs intruder in staff area)
+4. THREAT ASSESS: Apply CONTEXT-AWARE rules below
 
 === THREAT LEVELS ===
-- CRITICAL: Immediate danger (weapon visible, fire, physical assault, forced entry, theft in progress, person reaching toward valuables in restricted area)
-- HIGH: Active security breach (trespassing, fence climbing, unauthorized access, person in staff-only area, reaching toward merchandise/storage)
-- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling, person acting nervous in retail area)
-- LOW: Worth logging but not urgent (unfamiliar person, minor rule violation)
-- CLEAR: No threat detected
+- CRITICAL: Immediate danger OR high-value breach
+  * Weapon visible, fire, physical assault
+  * Person in staff-only area without authorization
+  * Reaching/touching toward cash register, safe, or high-value storage
+  * Forced entry, fence climbing, door prying
+  * After-hours presence in restricted zones
+  
+- HIGH: Active security concern
+  * Trespassing in non-public areas
+  * Person lingering near valuables without purpose
+  * Vehicle following people or idling suspiciously
+  * Concealing items under clothing
+  
+- MEDIUM: Suspicious but unconfirmed
+  * Loitering without clear purpose >30 seconds
+  * Unattended bags in public areas
+  * Vehicle parked in no-parking zones
+  * Person acting nervous, checking surroundings frequently
+  
+- LOW: Minor concern
+  * Unfamiliar person in public area
+  * Minor rule violations
+  
+- CLEAR: Normal activity
+  * Shoppers browsing in retail areas
+  * People walking through public spaces normally
+  * Employees in authorized areas
 
 === CONTEXT-AWARE BEHAVIORAL THREATS ===
 HIGH PRIORITY INDICATORS:

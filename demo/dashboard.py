@@ -847,28 +847,28 @@ elif st.session_state.active_tab == 1:
         if unique_alerts:
             st.markdown("#### 📋 Alert Details")
             
-            # Group alerts by severity
+            # Group alerts by severity - CRITICAL, HIGH, MEDIUM only (LOW filtered at API)
+            critical_alerts = [a for a in unique_alerts if a.get('severity') == 'CRITICAL']
             high_alerts = [a for a in unique_alerts if a.get('severity') == 'HIGH']
             medium_alerts = [a for a in unique_alerts if a.get('severity') == 'MEDIUM']
-            low_alerts = [a for a in unique_alerts if a.get('severity') == 'LOW']
             
-            # Display HIGH severity alerts first
+            # Display CRITICAL alerts first
+            if critical_alerts:
+                st.markdown("##### � CRITICAL ALERTS")
+                for alert in critical_alerts:
+                    display_alert_card(alert)
+            
+            # Display HIGH severity alerts
             if high_alerts:
-                st.markdown("##### 🔴 HIGH SEVERITY")
+                st.markdown("##### � HIGH SEVERITY")
                 for alert in high_alerts:
                     display_alert_card(alert)
             
             # Display MEDIUM severity alerts
             if medium_alerts:
-                st.markdown("##### 🟡 MEDIUM SEVERITY")
+                st.markdown("##### � MEDIUM SEVERITY")
                 for alert in medium_alerts:
                     display_alert_card(alert)
-            
-            # Display LOW severity alerts
-            if low_alerts:
-                with st.expander("🟢 Low Severity Alerts"):
-                    for alert in low_alerts:
-                        display_alert_card(alert, compact=True)
         else:
             st.success("🎉 No active alerts detected! System is secure.")
     else:
