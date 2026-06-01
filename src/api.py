@@ -732,6 +732,9 @@ def get_session_frame_image(session_id: str, frame_name: str):
         Path("data/extracted2") / frame_name,
         Path("data/extracted1") / frame_name,
         Path("data/extracted") / frame_name,
+        Path("data/extracted3") / frame_name,  # Support new videos
+        Path("data/extracted4") / frame_name,
+        Path("data/extracted5") / frame_name,
         # Session directory
         Path("data") / "sessions" / session_id / "session" / frame_name,
     ]
