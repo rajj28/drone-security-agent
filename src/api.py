@@ -472,11 +472,16 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         settings.TELEMETRY_DIR = Path(session_dir) / "telemetry"
         settings.TELEMETRY_DIR.mkdir(exist_ok=True)
         
+        # Pass SESSION_ID so telemetry generator uses correct directory
+        env = os.environ.copy()
+        env["SESSION_ID"] = session_id
+        
         result = subprocess.run([
             sys.executable, "-m", "src.telemetry_generator"
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, env=env)
         
         if result.returncode != 0:
+            logger.error(f"Telemetry generation stderr: {result.stderr}")
             raise Exception(f"Telemetry generation failed: {result.stderr}")
         
         processing_status[session_id]["processing_steps"].append("telemetry_generation")

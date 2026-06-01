@@ -7,10 +7,21 @@ telemetry_generator.py — Generates realistic simulated telemetry for each extr
 """
 
 import json
+import os
 from pathlib import Path
 from typing import List, Dict
 from datetime import datetime, timedelta
 from src.config import settings
+
+# Handle SESSION_ID from environment (set by API subprocess)
+SESSION_ID = os.environ.get("SESSION_ID")
+if SESSION_ID:
+    # Use session-specific directories
+    SESSION_DIR = Path("data/sessions") / SESSION_ID
+    settings.SESSION_DIR = SESSION_DIR
+    settings.TELEMETRY_DIR = SESSION_DIR / "telemetry"
+    settings.EXTRACTED_DIR = SESSION_DIR / "extracted"
+    print(f"[Telemetry Generator] Using session directory: {SESSION_DIR}")
 
 
 def generate_telemetry(

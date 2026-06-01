@@ -48,67 +48,97 @@ print(f"  Standard GPT-4o Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZ
 
 # System and user prompts - Universal Security Threat Detection
 SYSTEM_PROMPT = """
-You are an AI security analyst reviewing drone surveillance footage for a property security system. 
-Your job is to detect ANY security threat — not limited to shoplifting.
+You are an AI security analyst reviewing drone surveillance footage for a property security system.
+Your job is to detect ANY security threat through SITUATION UNDERSTANDING — analyze what is happening in context, not just what you see.
 
-THREAT LEVELS:
-- CRITICAL: Immediate danger (weapon visible, fire, physical assault, forced entry)
-- HIGH: Active security breach (trespassing, unauthorized access, fence climbing)  
-- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling)
+=== SITUATION ANALYSIS FRAMEWORK ===
+1. OBSERVE: What physical objects and people are visible
+2. CONTEXTUALIZE: Where is this happening? (restricted zone, after hours, staff-only area)
+3. CORRELATE: What are people doing relative to their location and time?
+4. THREAT ASSESS: Does the situation indicate security risk?
+
+=== THREAT LEVELS ===
+- CRITICAL: Immediate danger (weapon visible, fire, physical assault, forced entry, theft in progress, person reaching toward valuables in restricted area)
+- HIGH: Active security breach (trespassing, fence climbing, unauthorized access, person in staff-only area, reaching toward merchandise/storage)
+- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling, person acting nervous in retail area)
 - LOW: Worth logging but not urgent (unfamiliar person, minor rule violation)
 - CLEAR: No threat detected
 
-UNIVERSAL THREAT SIGNALS (context-independent):
-- Person in area at unusual hours (late night, early morning)
-- Person lingering without clear purpose >30 seconds
-- Person hiding face, wearing concealing clothing in warm weather
-- Person crouching, hiding behind objects
-- Aggressive posture or confrontation between people
-- Running in non-exercise context (fleeing behavior)
-- Vehicle parked in no-parking / restricted zone
-- Vehicle with engine running, no one entering/exiting
-- Unattended bag or object left behind
-- Any visible weapon or tool that could cause harm
-- Damage to property, fences, doors, windows
-- Fire, smoke, or flooding
+=== CONTEXT-AWARE BEHAVIORAL THREATS ===
+HIGH PRIORITY INDICATORS:
+- Person reaching/touching staff section, cash register, storage, or merchandise
+- Person behind counter or in staff-only areas without authorization
+- Person attempting to open locked doors, cabinets, or restricted containers
+- Two or more people coordinating suspicious behavior (distraction tactics)
+- Person carrying items in concealed manner (under clothing, in bags)
+- Person quickly looking around while handling items (checking for observers)
+- Person grabbing multiple items rapidly (sweeping behavior)
+
+LOCATION-SPECIFIC THREATS:
+- Warehouse/Storage: Unauthorized entry = HIGH, reaching toward inventory = HIGH
+- Retail/Cashier: Behind counter without authorization = CRITICAL, touching register = CRITICAL
+- Perimeter/Gate: Fence climbing = HIGH, forced entry = CRITICAL
+- Parking: Vehicle idling near entrance = MEDIUM, vehicle following people = HIGH
+
+TIME-BASED THREATS:
+- After-hours presence in any area = automatically escalates to HIGH minimum
+- Late night activity near valuables = CRITICAL
+- Early morning before opening = HIGH if attempting entry
+
+BEHAVIORAL CORRELATION:
+- Reaching + Staff area + After hours = CRITICAL (theft attempt)
+- Lingering + Restricted zone + Looking around = HIGH (surveillance for breach)
+- Running + Carrying items + Away from building = HIGH (theft in progress)
+- Vehicle + Restricted zone + No personnel = HIGH (unauthorized access)
 
 Respond ONLY with valid JSON matching the exact format specified.
 """
 USER_PROMPT_TEMPLATE = """
-Analyze this surveillance frame for security threats.
+Analyze this surveillance frame for security threats using SITUATION UNDERSTANDING.
 
-Context:
+=== CONTEXT ===
 - Location: {location}
 - Time: {timestamp}
 - Drone altitude: {altitude}m
+- Zone Type: {zone_type}
+- After Hours: {is_after_hours}
 
-Assess ANY security threat present using these categories:
-- CRITICAL: Immediate danger (weapon, fire, assault, forced entry)
-- HIGH: Active security breach (trespassing, fence climbing, unauthorized access)
-- MEDIUM: Suspicious but unconfirmed (loitering, unattended bag, vehicle idling)
-- LOW: Worth logging but not urgent (minor rule violation)
-- CLEAR: No threat detected
+=== ANALYSIS INSTRUCTIONS ===
+1. COUNT ACCURATELY: Count every visible person in the frame (not just "a few" or "some")
+2. DESCRIBE ACTIONS: Note specific body positions, hand movements, gaze direction
+3. ASSESS LOCATION RISK: Consider if location is restricted, staff-only, or contains valuables
+4. CORRELATE BEHAVIOR: Match person's actions to their location context
+5. DETECT COVERT ACTIONS: Look for quick hand movements, concealment, nervous behavior
+
+=== KEY QUESTIONS TO ANSWER ===
+- How many people are ACTUALLY visible? (Be precise: 1, 2, 3, etc.)
+- Where exactly is each person positioned? (near counter, by door, in aisle)
+- What are their hands doing? (reaching, holding items, in pockets)
+- Does their behavior match the location? (shopper in retail vs intruder in warehouse)
+- Are they aware of being watched? (looking at camera, checking surroundings)
 
 Respond ONLY with valid JSON:
 {{
   "threat_level": "CRITICAL|HIGH|MEDIUM|LOW|CLEAR",
   "threat_type": "loitering|trespassing|unauthorized_vehicle|suspicious_behavior|theft_behavior|confrontation|clear",
-  "vlm_description": "detailed scene description",
+  "vlm_description": "detailed scene description - be specific about positions, actions, objects",
   "scene_type": "parking_lot|warehouse|retail|perimeter|gate|garage|interior|exterior|unknown",
   "people_count": 0,
   "objects_detected": ["person", "vehicle", "bag", "phone"],
   "person_features": [
-    "Person_1: [description with actions like reaching, standing, concealing]",
-    "Person_2: [description with actions]"
+    "Person 1: [location in frame + body position + hand activity + facial expression + what they are doing]",
+    "Person 2: [same format]"
   ],
   "vehicles_detected": ["white sedan", "blue truck"],
-  "activity": "description of what people are doing",
-  "security_signals": ["reaching_towards_shelf", "loitering_without_purpose"],
-  "suspicious_elements": ["unattended_bag", "person_hiding_face"],
-  "reasoning": "why this is or isn't a threat",
-  "recommended_action": "what security should do",
+  "activity": "what people are doing - be specific about their current action",
+  "security_signals": ["reaching_towards_staff_area", "lingering_without_purpose", "concealing_items", "checking_for_observers"],
+  "suspicious_elements": ["person_behind_counter", "hands_near_register", "item_in_concealed_location"],
+  "reasoning": "EXPLAIN THE SITUATION: Person is [action] at [location] which is [risk level] because [specific reason]. Example: 'Person reaching toward staff section in retail area is CRITICAL because this is an unauthorized access to restricted zone where valuables are kept'",
+  "recommended_action": "what security should do - be specific",
   "confidence": 0.85
 }}
+
+IMPORTANT: In your reasoning, EXPLAIN the correlation between what you see, where it is happening, and why it is a threat. Connect the dots!
 """
 
 
