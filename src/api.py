@@ -352,16 +352,24 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         original_video_file = settings.VIDEO_FILE
         settings.VIDEO_FILE = Path(video_path)
         original_extracted_dir = settings.EXTRACTED_DIR
+        original_outputs_dir = settings.OUTPUTS_DIR
         
         # session_dir is ALREADY the extracted folder (passed from upload endpoint)
         # e.g., data/sessions/{session_id}/extracted
         extracted_dir = Path(session_dir)
         extracted_dir.mkdir(parents=True, exist_ok=True)
         
-        # Update settings to use the extracted folder
+        # Also set outputs dir to session outputs for extraction log
+        session_root = extracted_dir.parent
+        outputs_dir = session_root / "outputs"
+        outputs_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Update settings
         settings.EXTRACTED_DIR = extracted_dir
+        settings.OUTPUTS_DIR = outputs_dir
         
         logger.info(f"[PIPELINE] Extracting frames to: {extracted_dir}")
+        logger.info(f"[PIPELINE] Extraction log to: {outputs_dir}")
         
         try:
             # Use intelligent frame extractor
@@ -452,21 +460,33 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             # Restore original settings
             settings.VIDEO_FILE = original_video_file
             settings.EXTRACTED_DIR = original_extracted_dir
+            settings.OUTPUTS_DIR = original_outputs_dir
         
         processing_status[session_id]["processing_steps"].append("frame_extraction")
         processing_status[session_id]["progress"] = 20
         
         # Step 2: Generate telemetry
         processing_status[session_id]["current_step"] = "generating_telemetry"
-        logger.info(f"Generating telemetry for session {session_id}")
+        logger.info(f"[PIPELINE] Generating telemetry for session {session_id}")
+        
+        # session_dir is ALREADY the extracted folder (e.g., data/sessions/{id}/extracted)
+        # Derive session root from it
+        extracted_dir = Path(session_dir)
+        session_root = extracted_dir.parent
+        telemetry_dir = session_root / "telemetry"
+        
+        logger.info(f"[PIPELINE] Using EXTRACTED_DIR: {extracted_dir}")
+        logger.info(f"[PIPELINE] Using TELEMETRY_DIR: {telemetry_dir}")
+        
+        # Ensure telemetry directory exists
+        telemetry_dir.mkdir(parents=True, exist_ok=True)
         
         # Update config to use session directory
         original_extracted_dir = settings.EXTRACTED_DIR
         original_telemetry_dir = settings.TELEMETRY_DIR
         
-        settings.EXTRACTED_DIR = Path(session_dir) / "extracted"
-        settings.TELEMETRY_DIR = Path(session_dir) / "telemetry"
-        settings.TELEMETRY_DIR.mkdir(exist_ok=True)
+        settings.EXTRACTED_DIR = extracted_dir
+        settings.TELEMETRY_DIR = telemetry_dir
         
         # Pass SESSION_ID so telemetry generator uses correct directory
         env = os.environ.copy()
@@ -485,21 +505,40 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         # Step 3: Vision analysis
         processing_status[session_id]["current_step"] = "analyzing_frames"
-        logger.info(f"Running vision analysis for session {session_id}")
+        logger.info(f"[PIPELINE] Running vision analysis for session {session_id}")
+        logger.info(f"[PIPELINE] Looking for frames in: {settings.EXTRACTED_DIR}")
         
-        settings.ANALYSIS_DIR = Path(session_dir) / "analysis"
-        settings.ANALYSIS_DIR.mkdir(exist_ok=True)
+        # Verify frames exist before running vision analysis
+        frame_files = list(settings.EXTRACTED_DIR.glob("frame_*.jpg"))
+        logger.info(f"[PIPELINE] Found {len(frame_files)} frames for analysis")
         
-        # Pass SESSION_ID so vision analyzer uses correct directory
+        if len(frame_files) == 0:
+            logger.error(f"[PIPELINE] No frames found in {settings.EXTRACTED_DIR}")
+            raise FileNotFoundError(f"No frames found in {settings.EXTRACTED_DIR}")
+        
+        # Set analysis directory
+        analysis_dir = session_root / "analysis"
+        analysis_dir.mkdir(parents=True, exist_ok=True)
+        settings.ANALYSIS_DIR = analysis_dir
+        
+        # Run vision analyzer subprocess with session context
         env = os.environ.copy()
         env["SESSION_ID"] = session_id
+        env["EXTRACTED_DIR"] = str(settings.EXTRACTED_DIR)
+        env["ANALYSIS_DIR"] = str(analysis_dir)
+        env["TELEMETRY_DIR"] = str(telemetry_dir)
+        
+        logger.info(f"[PIPELINE] Running vision analyzer with SESSION_ID={session_id}")
         
         result = subprocess.run([
             sys.executable, "-m", "src.vision_analyzer"
         ], capture_output=True, text=True, env=env)
         
+        logger.info(f"[PIPELINE] Vision analyzer stdout: {result.stdout[:500]}")
+        if result.stderr:
+            logger.warning(f"[PIPELINE] Vision analyzer stderr: {result.stderr[:500]}")
+        
         if result.returncode != 0:
-            logger.error(f"Vision analysis stderr: {result.stderr}")
             raise Exception(f"Vision analysis failed: {result.stderr}")
         
         processing_status[session_id]["processing_steps"].append("vision_analysis")
@@ -507,10 +546,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         # Step 4: Alert generation
         processing_status[session_id]["current_step"] = "generating_alerts"
-        logger.info(f"Generating alerts for session {session_id}")
+        logger.info(f"[PIPELINE] Generating alerts for session {session_id}")
         
-        settings.ALERTS_DIR = Path(session_dir) / "alerts"
-        settings.ALERTS_DIR.mkdir(exist_ok=True)
+        alerts_dir = session_root / "alerts"
+        alerts_dir.mkdir(parents=True, exist_ok=True)
+        settings.ALERTS_DIR = alerts_dir
         
         result = subprocess.run([
             sys.executable, "-m", "src.alert_engine"
@@ -524,10 +564,12 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         # Step 5: Person tracking
         processing_status[session_id]["current_step"] = "tracking_persons"
-        logger.info(f"Running person tracking for session {session_id}")
+        logger.info(f"[PIPELINE] Running person tracking for session {session_id}")
         
-        settings.SESSION_DIR = Path(session_dir) / "session"
-        settings.SESSION_DIR.mkdir(exist_ok=True)
+        # Use existing session_root (parent of extracted_dir)
+        session_subdir = session_root / "session"
+        session_subdir.mkdir(parents=True, exist_ok=True)
+        settings.SESSION_DIR = session_subdir
         
         result = subprocess.run([
             sys.executable, "src/person_tracker.py"
@@ -550,6 +592,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         # Restore original settings
         settings.EXTRACTED_DIR = original_extracted_dir
         settings.TELEMETRY_DIR = original_telemetry_dir
+        settings.OUTPUTS_DIR = original_outputs_dir
         
         processing_status[session_id]["processing_steps"].append("session_summary")
         processing_status[session_id]["progress"] = 100

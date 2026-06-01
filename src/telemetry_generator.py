@@ -85,13 +85,46 @@ def generate_telemetry(
     return all_telemetry
 
 if __name__ == "__main__":
+    import os
+    
+    # Check for SESSION_ID to use session-specific directories
+    session_id = os.environ.get("SESSION_ID")
+    
+    if session_id:
+        # Use session-specific directories
+        session_dir = Path("data") / "sessions" / session_id
+        extracted_dir = session_dir / "extracted"
+        outputs_dir = session_dir / "outputs"
+        telemetry_dir = session_dir / "telemetry"
+        
+        # Create directories
+        outputs_dir.mkdir(parents=True, exist_ok=True)
+        telemetry_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Override settings for this session
+        settings.EXTRACTED_DIR = extracted_dir
+        settings.OUTPUTS_DIR = outputs_dir
+        settings.TELEMETRY_DIR = telemetry_dir
+        
+        print(f"[TELEMETRY] Using session directories for {session_id}")
+        print(f"[TELEMETRY] EXTRACTED_DIR: {extracted_dir}")
+        print(f"[TELEMETRY] OUTPUTS_DIR: {outputs_dir}")
+        print(f"[TELEMETRY] TELEMETRY_DIR: {telemetry_dir}")
+    
     # Load extraction log
     meta_path = settings.OUTPUTS_DIR / "extraction_log.json"
     
+    print(f"[TELEMETRY] Looking for extraction log at: {meta_path}")
+    
     # Check if extraction log exists
     if not meta_path.exists():
-        print(f"Extraction log not found at: {meta_path}")
-        print("Please run frame extraction first to generate the extraction log.")
+        print(f"ERROR: Extraction log not found at: {meta_path}")
+        print("Available files in EXTRACTED_DIR:")
+        if settings.EXTRACTED_DIR.exists():
+            for f in settings.EXTRACTED_DIR.iterdir():
+                print(f"  - {f.name}")
+        else:
+            print(f"  EXTRACTED_DIR does not exist: {settings.EXTRACTED_DIR}")
         exit(1)
     
     try:
