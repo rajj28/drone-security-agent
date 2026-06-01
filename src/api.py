@@ -359,7 +359,12 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
                     if 'file_path' in f:
                         frame_paths.append(f['file_path'])
                     elif 'filename' in f:
-                        frame_paths.append(f"{session_dir}/extracted/{f['filename']}.jpg")
+                        # Don't add .jpg if filename already has it
+                        filename = f['filename']
+                        if not filename.endswith('.jpg'):
+                            filename += '.jpg'
+                        # Frames saved directly to session_dir, not session_dir/extracted/
+                        frame_paths.append(f"{session_dir}/{filename}")
                 else:
                     # Frame is already a path string
                     frame_paths.append(str(f))
@@ -734,9 +739,14 @@ def get_session_frame_image(session_id: str, frame_name: str):
     # Check processing_status for stored path
     if session_id in processing_status:
         stored_frames = processing_status[session_id].get("extracted_frames", [])
+        logger.info(f"[FRAME IMAGE] Stored frames count: {len(stored_frames)}")
+        logger.info(f"[FRAME IMAGE] Looking for: {frame_name}")
+        for i, frame_path in enumerate(stored_frames[:3]):  # Log first 3
+            logger.info(f"[FRAME IMAGE] Stored[{i}]: {frame_path}")
         for frame_path in stored_frames:
             if frame_name in str(frame_path):
                 possible_paths.insert(0, Path(frame_path))
+                logger.info(f"[FRAME IMAGE] Found stored path: {frame_path}")
                 break
     
     # Try each path
