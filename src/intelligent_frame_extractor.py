@@ -433,6 +433,14 @@ class IntelligentFrameExtractor:
                 with Image.open(output_path) as img:
                     img.verify()
                 
+                # QUALITY CHECK: Filter out text/menu/bad frames before saving
+                frame_cv = cv2.imread(str(output_path))
+                is_acceptable, reason = self._is_frame_quality_acceptable(frame_cv)
+                if not is_acceptable:
+                    logger.warning(f"Frame {frame_number} at {timestamp:.2f}s rejected: {reason}")
+                    output_path.unlink()  # Delete bad frame
+                    return None
+                
                 file_size_kb = output_path.stat().st_size / 1024
                 
                 frame_info = FrameInfo(
