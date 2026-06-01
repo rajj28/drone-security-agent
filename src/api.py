@@ -22,6 +22,7 @@ import os
 from src.config import settings
 from src.pinecone_indexer import search_frames
 from src.qa_agent import SecurityQAAgent
+from src.mongodb_storage import get_mongodb_storage
 
 def get_next_extracted_folder():
     """Get the next available extracted folder number (extracted1, extracted2, etc.)"""
@@ -704,8 +705,16 @@ def get_high_alerts():
 
 @app.get("/sessions/{session_id}/frame-image/{frame_name}")
 def get_session_frame_image(session_id: str, frame_name: str):
-    """Serve a frame image for a specific session"""
+    """Serve a frame image for a specific session from MongoDB GridFS or filesystem"""
     logger.info(f"[FRAME IMAGE] Request for session: {session_id}, frame: {frame_name}")
+    
+    # Try MongoDB GridFS first
+    mongo_storage = get_mongodb_storage()
+    if mongo_storage.is_connected():
+        image_data = mongo_storage.get_frame_image(session_id, frame_name)
+        if image_data:
+            logger.info(f"[FRAME IMAGE] Serving from MongoDB GridFS: {frame_name}")
+            return Response(content=image_data, media_type="image/jpeg")
     
     # Security: ensure frame_name doesn't contain path traversal
     frame_name = Path(frame_name).name
