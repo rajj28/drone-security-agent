@@ -765,6 +765,8 @@ if st.session_state.active_tab == 0:
                 st.markdown("#### 🚨 Alert Status")
                 
                 # Get threat info from analysis (new system)
+                if analysis is None:
+                    analysis = {}
                 threat_level = analysis.get("threat_level") or analysis.get("overall_threat_level", "CLEAR")
                 threat_type = analysis.get("threat_type", "clear")
                 alert_reasoning = analysis.get("alert_reasoning") or analysis.get("reasoning", "No reasoning provided")

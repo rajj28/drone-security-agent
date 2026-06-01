@@ -400,6 +400,27 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             
             logger.info(f"[STORAGE] Extracted {len(frame_paths)} frame paths for storage")
             
+            # Verify files actually exist and find where they are
+            existing_files = [p for p in frame_paths if Path(p).exists()]
+            logger.info(f"[STORAGE] {len(existing_files)}/{len(frame_paths)} frame files exist on disk")
+            
+            if len(existing_files) == 0 and len(frame_paths) > 0:
+                logger.error(f"[STORAGE] CRITICAL: No frame files found! Looking in: {session_dir}")
+                # Try to find where frames actually are
+                session_path = Path(session_dir)
+                if session_path.exists():
+                    jpg_files = list(session_path.glob("*.jpg"))
+                    logger.info(f"[STORAGE] Found {len(jpg_files)} .jpg files in {session_dir}")
+                    for f in jpg_files[:5]:
+                        logger.info(f"[STORAGE]   -> {f.name}")
+                
+                # Check outputs directory (where extraction log is saved)
+                outputs_path = Path("outputs")
+                if outputs_path.exists():
+                    output_jpgs = list(outputs_path.glob("*.jpg"))
+                    if output_jpgs:
+                        logger.info(f"[STORAGE] Found {len(output_jpgs)} .jpg files in outputs/")
+            
             # Save frame list to processing_status for Railway persistence
             processing_status[session_id]["extracted_frames"] = frame_paths
             processing_status[session_id]["frame_count"] = len(frame_paths)
