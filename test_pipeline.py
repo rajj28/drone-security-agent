@@ -26,14 +26,7 @@ from src.config import settings
 from src.intelligent_frame_extractor import IntelligentFrameExtractor
 from src.telemetry_generator import generate_telemetry
 from src.vision_analyzer import analyze_all_frames
-
-# Context manager imports (optional - may not exist)
-try:
-    from src.context_manager import load_context_summaries, load_session_context
-except ImportError:
-    load_context_summaries = lambda: None
-    load_session_context = lambda: None
-    print("Note: Context manager not available, using in-memory storage")
+from src.context_manager import load_context_summaries, load_session_context
 
 def test_frame_extraction(video_path: str, max_frames: int = 10):
     """Test frame extraction with quality filtering"""

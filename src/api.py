@@ -494,7 +494,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         result = subprocess.run([
             sys.executable, "-m", "src.telemetry_generator"
-        ], capture_output=True, text=True, env=env)
+        ], capture_output=True, text=True, env=env, timeout=300)  # 5 minute timeout
         
         if result.returncode != 0:
             logger.error(f"Telemetry generation stderr: {result.stderr}")
@@ -532,7 +532,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         result = subprocess.run([
             sys.executable, "-m", "src.vision_analyzer"
-        ], capture_output=True, text=True, env=env)
+        ], capture_output=True, text=True, env=env, timeout=600)  # 10 minute timeout
         
         logger.info(f"[PIPELINE] Vision analyzer stdout: {result.stdout[:500]}")
         if result.stderr:
@@ -554,7 +554,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         result = subprocess.run([
             sys.executable, "-m", "src.alert_engine"
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
         
         if result.returncode != 0:
             raise Exception(f"Alert generation failed: {result.stderr}")
@@ -573,7 +573,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         result = subprocess.run([
             sys.executable, "src/person_tracker.py"
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
         
         processing_status[session_id]["processing_steps"].append("person_tracking")
         processing_status[session_id]["progress"] = 90
@@ -584,7 +584,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         result = subprocess.run([
             sys.executable, "-m", "src.summarizer"
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
         
         if result.returncode != 0:
             raise Exception(f"Session summary failed: {result.stderr}")
