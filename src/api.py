@@ -7,7 +7,7 @@ api.py — FastAPI backend for Drone Security Analyst Agent.
 """
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any, Optional
 from pathlib import Path
