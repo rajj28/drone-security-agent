@@ -100,9 +100,11 @@ class IntelligentFrameExtractor:
         # Sort frames by timestamp
         frames.sort(key=lambda x: x.timestamp)
         
-        # Renumber frames sequentially
+        # Renumber frames sequentially and rename from temp files
         for i, frame in enumerate(frames):
-            old_path = output_dir / frame.filename
+            # Get the temp filename that was actually saved to disk
+            temp_filename = getattr(frame, 'temp_filename', frame.filename)
+            old_path = output_dir / temp_filename
             new_filename = f"frame_{i+1:03d}.jpg"
             new_path = output_dir / new_filename
             
@@ -110,6 +112,7 @@ class IntelligentFrameExtractor:
                 old_path.rename(new_path)
                 frame.filename = new_filename
                 frame.frame_number = i + 1
+                frame.temp_filename = new_filename  # Update temp reference
         
         logger.info(f"Extracted {len(frames)} frames using {strategy.value} strategy")
         return frames
@@ -349,8 +352,12 @@ class IntelligentFrameExtractor:
         reason: str
     ) -> Optional[FrameInfo]:
         """Extract a single frame at a specific timestamp."""
-        frame_name = f"frame_{frame_number:03d}.jpg"
-        output_path = output_dir / frame_name
+        # Use unique temp filename to avoid overwriting during hybrid extraction
+        import uuid
+        temp_name = f"temp_{uuid.uuid4().hex[:8]}.jpg"
+        output_path = output_dir / temp_name
+        # Final name will be assigned after deduplication (stored in frame_info temporarily)
+        final_frame_name = f"frame_{frame_number:03d}.jpg"
         
         # Format timestamp for ffmpeg
         hours = int(timestamp // 3600)
@@ -383,12 +390,14 @@ class IntelligentFrameExtractor:
                 frame_info = FrameInfo(
                     frame_number=frame_number,
                     timestamp=timestamp,
-                    filename=frame_name,
+                    filename=final_frame_name,  # Will be updated after deduplication
                     file_size_kb=file_size_kb,
                     extraction_time_ms=elapsed_ms,
                     extraction_reason=reason,
                     importance_score=self._calculate_importance_score(reason)
                 )
+                # Store temp filename for renaming after deduplication
+                frame_info.temp_filename = temp_name
                 
                 logger.debug(f"Extracted frame at {ts_formatted} ({reason})")
                 return frame_info
