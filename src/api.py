@@ -728,11 +728,18 @@ def get_session_frame_image(session_id: str, frame_name: str):
     possible_paths = [
         # Session-specific extracted directory
         Path("data") / "sessions" / session_id / "extracted" / frame_name,
-        # Direct path from stored frames
+        # Direct path from stored frames (with extracted/ subfolder - where frames are actually saved)
+        Path("data/extracted2") / "extracted" / frame_name,
+        Path("data/extracted1") / "extracted" / frame_name,
+        Path("data/extracted") / "extracted" / frame_name,
+        Path("data/extracted3") / "extracted" / frame_name,
+        Path("data/extracted4") / "extracted" / frame_name,
+        Path("data/extracted5") / "extracted" / frame_name,
+        # Also check direct paths (fallback)
         Path("data/extracted2") / frame_name,
         Path("data/extracted1") / frame_name,
         Path("data/extracted") / frame_name,
-        Path("data/extracted3") / frame_name,  # Support new videos
+        Path("data/extracted3") / frame_name,
         Path("data/extracted4") / frame_name,
         Path("data/extracted5") / frame_name,
         # Session directory
