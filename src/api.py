@@ -513,16 +513,17 @@ def list_frames():
         for f in sorted(latest_folder.glob("frame_*.jpg")):
             frames.append(f.name)
         if frames:
-            return {"frames": frames}
+            return {"frames": frames, "source": "latest_folder", "count": len(frames)}
     
     # Fallback to original extracted directory
     if settings.EXTRACTED_DIR.exists():
         frames = []
         for f in sorted(settings.EXTRACTED_DIR.glob("frame_*.jpg")):
             frames.append(f.name)
-        return {"frames": frames}
+        if frames:
+            return {"frames": frames, "source": "extracted_dir", "count": len(frames)}
     
-    return {"frames": []}
+    return {"frames": [], "source": "none", "count": 0}
 
 @app.get("/frames/{frame_id}")
 def get_frame_analysis(frame_id: str):
@@ -564,18 +565,18 @@ def get_session_frames(session_id: str):
         for f in sorted(session_extracted_dir.glob("*.jpg")):
             frames.append(f.name)
         if frames:
-            return {"frames": frames}
+            return {"frames": frames, "source": "session_extracted", "count": len(frames)}
     
-    # 2. Session-specific session directory
+    # 3. Session-specific session directory
     session_session_dir = Path("data") / "sessions" / session_id / "session"
     if session_session_dir.exists():
         frames = []
         for f in sorted(session_session_dir.glob("*.jpg")):
             frames.append(f.name)
         if frames:
-            return {"frames": frames}
+            return {"frames": frames, "source": "session_dir", "count": len(frames)}
     
-    # 3. Check if frames need to be moved from general extracted to session-specific
+    # 4. Check if frames need to be moved from general extracted to session-specific
     extracted_dir = Path("data/extracted")
     if extracted_dir.exists():
         frames = []
@@ -589,9 +590,9 @@ def get_session_frames(session_id: str):
                 dst = session_extracted_dir / frame_file
                 if src.exists() and not dst.exists():
                     shutil.copy2(src, dst)
-            return {"frames": frames}
+            return {"frames": frames, "source": "extracted", "count": len(frames)}
     
-    return {"frames": []}
+    return {"frames": [], "source": "none", "count": 0}
 
 @app.get("/sessions/{session_id}/alerts")
 def get_session_alerts(session_id: str):
