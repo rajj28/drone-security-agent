@@ -547,16 +547,25 @@ def get_session_frames(session_id: str):
     logger.info(f"[FRAMES API] Request for session: {session_id}")
     logger.info(f"[FRAMES API] processing_status keys: {list(processing_status.keys())}")
     
-    # 1. Check processing_status first (Railway persistence)
-    if session_id in processing_status:
-        stored_frames = processing_status[session_id].get("extracted_frames", [])
-        logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
-        if stored_frames:
-            # Extract just the filename from full paths
-            frame_names = [Path(f).name for f in stored_frames]
-            return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
-    else:
-        logger.warning(f"[FRAMES API] Session {session_id} not found in processing_status")
+    try:
+        # 1. Check processing_status first (Railway persistence)
+        if session_id in processing_status:
+            stored_frames = processing_status[session_id].get("extracted_frames", [])
+            logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
+            if stored_frames:
+                # Extract just the filename from full paths
+                try:
+                    frame_names = [Path(str(f)).name for f in stored_frames]
+                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from memory")
+                    return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
+                except Exception as e:
+                    logger.error(f"[FRAMES API] Error extracting frame names: {e}")
+                    # Return the stored frames as-is if path extraction fails
+                    return {"frames": [str(f) for f in stored_frames], "source": "memory_raw", "count": len(stored_frames)}
+        else:
+            logger.warning(f"[FRAMES API] Session {session_id} not found in processing_status")
+    except Exception as e:
+        logger.error(f"[FRAMES API] Error accessing processing_status: {e}")
     
     # 2. Session-specific extracted directory (fallback)
     session_extracted_dir = Path("data") / "sessions" / session_id / "extracted"
