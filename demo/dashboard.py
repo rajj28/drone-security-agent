@@ -491,6 +491,7 @@ if st.session_state.active_tab == 0:
                         st.session_state.current_session_id = session_id
                         st.session_state.selected_session_id = session_id
                         st.session_state.active_video_session = session_id
+                        st.session_state.active_session_id = session_id
                         
                         st.write(f"🔍 Debug Upload - Session states set:")
                         st.write(f"  - current_session_id: {st.session_state.current_session_id}")
@@ -532,6 +533,7 @@ if st.session_state.active_tab == 0:
         
         # Store selected session
         st.session_state.selected_session_id = selected_session_id
+        st.session_state.active_session_id = selected_session_id
         
         # Show session status
         selected_session = next((s for s in sessions if s["session_id"] == selected_session_id), None)
