@@ -700,3 +700,45 @@ def get_high_alerts():
         all_alerts = json.load(f)
     high = [a for a in all_alerts.get("alerts", []) if a["severity"] == "HIGH"]
     return {"high_alerts": high}
+
+
+@app.get("/sessions/{session_id}/frame-image/{frame_name}")
+def get_session_frame_image(session_id: str, frame_name: str):
+    """Serve a frame image for a specific session"""
+    logger.info(f"[FRAME IMAGE] Request for session: {session_id}, frame: {frame_name}")
+    
+    # Security: ensure frame_name doesn't contain path traversal
+    frame_name = Path(frame_name).name
+    
+    # Try to find the frame in various locations
+    possible_paths = [
+        # Session-specific extracted directory
+        Path("data") / "sessions" / session_id / "extracted" / frame_name,
+        # General extracted directories
+        Path("data/extracted") / frame_name,
+        Path("data/extracted1") / frame_name,
+        Path("data/extracted2") / frame_name,
+        # Session directory
+        Path("data") / "sessions" / session_id / "session" / frame_name,
+    ]
+    
+    # Check processing_status for stored path
+    if session_id in processing_status:
+        stored_frames = processing_status[session_id].get("extracted_frames", [])
+        for frame_path in stored_frames:
+            if frame_name in str(frame_path):
+                possible_paths.insert(0, Path(frame_path))
+                break
+    
+    # Try each path
+    for img_path in possible_paths:
+        if img_path.exists():
+            logger.info(f"[FRAME IMAGE] Found frame at: {img_path}")
+            return FileResponse(
+                img_path,
+                media_type="image/jpeg",
+                filename=frame_name
+            )
+    
+    logger.error(f"[FRAME IMAGE] Frame not found: {frame_name}")
+    raise HTTPException(404, f"Frame {frame_name} not found")

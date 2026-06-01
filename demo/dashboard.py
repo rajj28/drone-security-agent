@@ -26,9 +26,21 @@ from src.pinecone_indexer import search_frames
 API_BASE = os.environ.get("API_URL", "http://localhost:8000")
 
 # Streamlit compatibility function for image display
-def display_image(image_path, caption=None, width=None):
-    """Display image with Streamlit version compatibility."""
+def display_image(image_path, caption=None, width=None, session_id=None):
+    """Display image with Streamlit version compatibility.
+    
+    For Railway deployment, image_path can be a URL or local path.
+    If session_id is provided, will construct API URL for the image.
+    """
     try:
+        # If session_id provided, use API URL
+        if session_id and API_BASE:
+            # image_path is just the filename
+            if not image_path.startswith('http'):
+                image_url = f"{API_BASE}/sessions/{session_id}/frame-image/{image_path}"
+                st.image(image_url, caption=caption, width=width)
+                return
+        
         # Try newer parameter first
         if width:
             st.image(image_path, caption=caption, width=width)
@@ -665,20 +677,14 @@ if st.session_state.active_tab == 0:
                             except ValueError:
                                 continue
                 
-                # Use latest folder or fallback to original extracted
-                if latest_folder and latest_folder.exists():
-                    img_path = latest_folder / f"{frame_id}.jpg"
+                # For Railway: Use API URL to display frame images
+                # Get session_id from active session or use frame_id for lookup
+                session_id = st.session_state.get('active_session_id', '')
+                if session_id:
+                    # Use API to serve image - just pass filename and session_id
+                    display_image(f"{frame_id}.jpg", caption=f"Frame: {frame_id}", session_id=session_id)
                 else:
-                    img_path = Path("data/extracted") / f"{frame_id}.jpg"
-                
-                # Final fallback to settings path
-                if not img_path.exists():
-                    img_path = settings.EXTRACTED_DIR / f"{frame_id}.jpg"
-                
-                if img_path.exists():
-                    display_image(str(img_path), caption=f"Frame: {frame_id}")
-                else:
-                    st.warning("Frame image not found")
+                    st.warning("No active session for frame display")
                 
                 # Load and display analysis data - use session-specific paths if available
                 if st.session_state.get('active_session_id'):
