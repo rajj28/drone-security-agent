@@ -539,41 +539,65 @@ BE PRECISE about positions and actions. Location context matters!"""
 {enhanced_context}
 
 === CONTEXT-AWARE THREAT ASSESSMENT ===
-THREAT LEVELS:
-- CRITICAL: Immediate danger OR unauthorized access to high-value areas
-  * Weapon, fire, assault, forced entry
-  * Person behind counter/staff area (especially after hours)
-  * Reaching toward cash register, safe, or high-value storage
-  * Unauthorized entry to restricted zones
-  * After-hours presence in staff-only areas
+CRITICAL RETAIL THEFT INDICATORS (CRITICAL):
+- ANY hand reaching toward drawers, cabinets, storage below counter
+- Person opening or reaching into staff-only areas behind counter
+- Group of 3+ people where some distract while others access storage
+- Reaching/touching cash register, safe, phone display cases
+- Opening drawers, cabinets, or storage compartments unauthorized
 
-- HIGH: Active security concern
+HIGH THREAT PATTERNS:
+- Person with hands inside/opening drawers or cabinets
+- Multiple people crowding counter with one reaching behind
+- Distracting staff while accomplice accesses storage
+- Attempting to open locked compartments
+- Concealing items under clothing while near counter
+
+MEDIUM SUSPICIOUS BEHAVIOR:
+- Hovering near cash register without purchasing
+- Repeatedly checking if anyone is watching
+- Group crowding staff while one lingers at storage
+- Handling items in restricted staff areas
+
+THREAT LEVELS:
+- CRITICAL: 
+  * ANY reaching/touching drawers, cabinets, storage below counter
+  * Hand inside staff drawers or compartments
+  * Coordinated theft: group distracting + one accessing storage
+  * Unauthorized access behind counter with hand movements
+  * Reaching toward cash register, safe, high-value storage
+  * Weapons, fire, assault, forced entry
+  * After-hours presence in staff areas
+
+- HIGH:
+  * Person touching/opening drawers or cabinets
   * Trespassing in non-public areas
-  * Lingering near valuables without purpose
   * Concealing items or hiding behavior
   * Attempting to open restricted containers/doors
   * Coordinated suspicious behavior (distraction tactics)
 
-- MEDIUM: Suspicious but unconfirmed
-  * Loitering without purpose >30 seconds
+- MEDIUM:
+  * Group crowding staff with unclear purpose
   * Nervous behavior while handling items
   * Checking for observers frequently
-  * Unusual interest in security cameras
+  * Loitering near valuables without purchasing
 
-- LOW: Minor concern
+- LOW:
   * Unfamiliar person in public area
   * Minor rule violations
 
-- CLEAR: Normal activity
-  * Shoppers browsing in retail areas
-  * People in authorized areas during business hours
-  * Normal walking through public spaces
+- CLEAR:
+  * Normal shoppers browsing authorized areas
+  * Hands visible, not reaching toward storage
+  * Appropriate social distance from counter
 
 === KEY CONTEXT RULES ===
-1. STAFF-ONLY AREAS: Any unauthorized person = HIGH minimum, CRITICAL if after-hours
-2. CASH REGISTERS: Reaching/touching = CRITICAL (theft attempt)
-3. AFTER HOURS: Escalate any unauthorized presence by +1 threat level
-4. HIGH-VALUE STORAGE: Any unauthorized access = CRITICAL
+1. DRAWERS/CABINETS: ANY hand reaching toward = CRITICAL (theft attempt)
+2. CASH REGISTERS: Reaching/touching = CRITICAL (theft attempt)  
+3. COORDINATED GROUPS: Distracting + accessing storage = CRITICAL
+4. STAFF-ONLY AREAS: Unauthorized person = HIGH minimum
+5. AFTER HOURS: Escalate any threat by +1 level
+6. HIGH-VALUE STORAGE: Any unauthorized access = CRITICAL
 
 === FRAME CONTEXT ===
 - Location: {telemetry.get('location', 'unknown')}
