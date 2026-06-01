@@ -18,10 +18,24 @@ import requests
 import base64
 import json
 import time
+import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from openai import OpenAI
 from src.config import settings
+
+# Import context management
+try:
+    from src.context_manager import (
+        get_session_context, 
+        update_frame_context,
+        get_frame_context_summary,
+        save_session_context
+    )
+    CONTEXT_AVAILABLE = True
+except ImportError:
+    CONTEXT_AVAILABLE = False
+    print("[WARNING] Context manager not available")
 
 # Hugging Face API configuration
 HF_API_TOKEN = settings.HF_API_TOKEN
@@ -57,6 +71,23 @@ class CloudEnhancedAnalyzer:
         start_time = time.time()
         print(f"[CLOUD] Starting cloud-enhanced analysis for {image_path.name}")
         
+        # Get session ID from telemetry or environment
+        session_id = telemetry.get('session_id', os.environ.get('SESSION_ID', 'default'))
+        frame_id = telemetry.get('frame_id', 'unknown')
+        frame_number = int(frame_id.split('_')[1]) if 'frame_' in frame_id else 0
+        
+        # Load previous context from MongoDB
+        session_context = None
+        frame_history = ""
+        if CONTEXT_AVAILABLE and session_id != 'default':
+            try:
+                session_context = get_session_context(session_id)
+                frame_history = get_frame_context_summary(session_id, frame_number, window_size=5)
+                print(f"[CLOUD] Loaded context for session {session_id}, frame {frame_id}")
+                print(f"[CLOUD] Previous context: {frame_history[:200]}...")
+            except Exception as e:
+                print(f"[WARNING] Failed to load context: {e}")
+        
         # Load and encode image
         with open(image_path, "rb") as f:
             image_bytes = f.read()
@@ -71,7 +102,8 @@ class CloudEnhancedAnalyzer:
             'overall_threat_level': 'UNKNOWN',
             'analysis_method': 'Cloud CLIP + BLIP + GPT-4o',
             'model_used': 'CloudEnhancedAnalyzer',
-            'processing_time_ms': 0
+            'processing_time_ms': 0,
+            'session_context': frame_history  # Store for reference
         }
         
         # Step 1: Cloud CLIP Analysis (parallel with BLIP)
@@ -155,6 +187,25 @@ class CloudEnhancedAnalyzer:
         
         results['processing_time_ms'] = int((time.time() - start_time) * 1000)
         print(f"[OK] Cloud-enhanced analysis complete in {results['processing_time_ms']}ms")
+        
+        # Step 6: Update and save session context
+        if CONTEXT_AVAILABLE and session_id != 'default':
+            try:
+                frame_data = {
+                    'frame_id': frame_id,
+                    'timestamp': telemetry.get('timestamp', 0),
+                    'threat_level': results['overall_threat_level'],
+                    'threat_type': results.get('threat_type', 'clear'),
+                    'people_count': results.get('people_count', 0),
+                    'activity': results.get('activity', ''),
+                    'security_signals': results.get('security_signals', []),
+                    'vlm_description': results.get('vlm_description', '')
+                }
+                
+                updated_context = update_frame_context(session_id, frame_data)
+                print(f"[CONTEXT] Updated context: {updated_context.running_summary}")
+            except Exception as e:
+                print(f"[WARNING] Failed to update context: {e}")
         
         return results
     
@@ -424,86 +475,128 @@ class CloudEnhancedAnalyzer:
             
             # Stage-specific prompts
             if stage == 1:
-                # STAGE 1: Neutral observation (to catch suspicious keywords)
-                prompt = f"""You are observing a surveillance camera frame. Describe what you see objectively and factually.
+                # STAGE 1: Initial observation with context-aware analysis
+                prompt = f"""You are a security observer analyzing surveillance footage. Be PRECISE and FACTUAL.
 
-Focus on:
-1. Scene type and setting
-2. Number of people and what they are doing
-3. Any hand movements, reaching, or object interactions
-4. People's positions and actions
-5. Any unusual or noteworthy behaviors
+=== FRAME HISTORY (Previous Activity Context) ===
+{frame_history if frame_history else "No previous frames - establishing baseline."}
 
-Context from other analysis tools:
+=== CURRENT FRAME CONTEXT (CRITICAL for understanding) ===
+- Frame ID: {telemetry.get('frame_id', 'unknown')}
+- Location: {telemetry.get('location', 'unknown')}
+- Time: {telemetry.get('timestamp', 'unknown')}
+- After Hours: {telemetry.get('is_after_hours', False)}
+- Zone Type: {telemetry.get('zone_type', 'unknown')}
+- Restricted Zone: {telemetry.get('is_restricted_zone', False)}
+
+Additional analysis context:
 {enhanced_context}
 
-Frame metadata:
-- Frame ID: {telemetry.get('frame_id', 'unknown')}
-- Time: {telemetry.get('timestamp', 'unknown')}
-- Location: {telemetry.get('location', 'unknown')}
+=== OBSERVATION REQUIREMENTS ===
+1. SCENE TYPE: retail, warehouse, parking, perimeter, staff_area, storage, public_area
+2. PEOPLE COUNT: Count EXACTLY - say "2 people" not "a few people"
+3. PEOPLE POSITIONS: Where is each person? (behind counter, in aisle, near door, at register)
+4. BODY LANGUAGE: What are hands doing? (reaching, holding items, in pockets, behind back)
+5. OBJECT INTERACTIONS: Touching anything? Staff section? Merchandise? Register?
+6. BEHAVIORAL SIGNALS: Looking around nervously? Moving quickly? Hiding?
+
+=== HIGH-PRIORITY OBSERVATIONS (Flag these) ===
+- Person behind counter/staff section
+- Person reaching toward register/cashier area
+- Person in restricted/staff-only area
+- Person handling merchandise in suspicious manner
+- Concealment behaviors (hiding items, checking for observers)
+- After-hours presence in restricted zones
 
 Provide detailed observation in JSON:
 {{
-  "vlm_description": "Detailed factual description",
-  "scene_type": "retail|warehouse|parking|interior|exterior",
+  "vlm_description": "Precise scene description including exact positions, actions, and any high-priority observations",
+  "scene_type": "retail|warehouse|parking|interior|exterior|staff_area|storage",
   "people_count": 0,
-  "person_features": ["Person_1: [exactly what they are doing]", "Person_2: [actions]"],
-  "objects_detected": ["list of visible objects"],
-  "activity": "summary of overall activity",
-  "security_signals": [],
-  "suspicious_elements": [],
+  "person_features": ["Person 1: [exact location + body position + hand activity + what they're doing]", "Person 2: [same format]"],
+  "objects_detected": ["specific visible objects"],
+  "activity": "summary of what people are actually doing",
+  "security_signals": ["reaching_toward_staff_section", "behind_counter", "concealing_items", "checking_surroundings"],
+  "suspicious_elements": ["person_in_unauthorized_area", "hands_near_register"],
   "threat_level": "CLEAR",
   "threat_type": "clear",
-  "reasoning": "Initial observation - no security assessment",
+  "reasoning": "Factual observation. Note any suspicious positions/actions relative to location context.",
   "recommended_action": "Continue monitoring",
   "confidence": 0.9
 }}
 
-Be factual and descriptive. Note any reaching, concealing, or unusual movements."""
+BE PRECISE about positions and actions. Location context matters!"""
             else:
-                # STAGE 2: Security-focused analysis
-                prompt = f"""You are a SECURITY ANALYST reviewing surveillance footage for THREATS.
+                # STAGE 2: Security-focused analysis with situation understanding
+                prompt = f"""You are a SENIOR SECURITY ANALYST. Apply SITUATION UNDERSTANDING — the same action can be innocent or CRITICAL based on context.
 
 🚨 SECURITY ASSESSMENT REQUIRED 🚨
 
-Previous observation flagged these behaviors: {enhanced_context}
+=== FRAME HISTORY (Previous Activity Context) ===
+{frame_history if frame_history else "No previous frames - establishing baseline."}
 
-THREAT CLASSIFICATION:
-- CRITICAL: Weapon, fire, assault, forced entry, active theft
-- HIGH: Confirmed trespassing, unauthorized access, repeated suspicious behavior
-- MEDIUM: Suspicious but unconfirmed (reaching, loitering, concealing attempts)
-- LOW: Minor concerns, rule violations
-- CLEAR: No threat detected
+=== PREVIOUS FRAME ANALYSIS ===
+{enhanced_context}
 
-IMPORTANT: The following behaviors are THEFT INDICATORS - flag as MEDIUM or HIGH:
-- Reaching towards items without staff present
-- Hand/arm movements toward pockets/bags while near merchandise
-- Looking around nervously while handling items
-- Crouching or hiding behind displays
-- Rapid movements with items
-- Putting items in clothing or bags
+=== CONTEXT-AWARE THREAT ASSESSMENT ===
+THREAT LEVELS:
+- CRITICAL: Immediate danger OR unauthorized access to high-value areas
+  * Weapon, fire, assault, forced entry
+  * Person behind counter/staff area (especially after hours)
+  * Reaching toward cash register, safe, or high-value storage
+  * Unauthorized entry to restricted zones
+  * After-hours presence in staff-only areas
 
-Context:
-- After hours: {telemetry.get('is_after_hours', False)}
+- HIGH: Active security concern
+  * Trespassing in non-public areas
+  * Lingering near valuables without purpose
+  * Concealing items or hiding behavior
+  * Attempting to open restricted containers/doors
+  * Coordinated suspicious behavior (distraction tactics)
+
+- MEDIUM: Suspicious but unconfirmed
+  * Loitering without purpose >30 seconds
+  * Nervous behavior while handling items
+  * Checking for observers frequently
+  * Unusual interest in security cameras
+
+- LOW: Minor concern
+  * Unfamiliar person in public area
+  * Minor rule violations
+
+- CLEAR: Normal activity
+  * Shoppers browsing in retail areas
+  * People in authorized areas during business hours
+  * Normal walking through public spaces
+
+=== KEY CONTEXT RULES ===
+1. STAFF-ONLY AREAS: Any unauthorized person = HIGH minimum, CRITICAL if after-hours
+2. CASH REGISTERS: Reaching/touching = CRITICAL (theft attempt)
+3. AFTER HOURS: Escalate any unauthorized presence by +1 threat level
+4. HIGH-VALUE STORAGE: Any unauthorized access = CRITICAL
+
+=== FRAME CONTEXT ===
 - Location: {telemetry.get('location', 'unknown')}
+- After Hours: {telemetry.get('is_after_hours', False)}
+- Restricted Zone: {telemetry.get('is_restricted_zone', False)}
 - Time: {telemetry.get('timestamp', 'unknown')}
 
 Provide security assessment in JSON:
 {{
   "threat_level": "CRITICAL|HIGH|MEDIUM|LOW|CLEAR",
-  "threat_type": "theft_behavior|loitering|trespassing|suspicious_behavior|clear",
-  "vlm_description": "Security-focused description",
-  "scene_type": "retail|warehouse|parking|interior|exterior",
+  "threat_type": "theft_behavior|loitering|trespassing|unauthorized_access|suspicious_behavior|clear",
+  "vlm_description": "Security-focused description with exact positions and actions",
+  "scene_type": "retail|warehouse|parking|interior|exterior|staff_area|storage",
   "people_count": 0,
-  "person_features": ["Person_1: [security-relevant actions]"],
-  "security_signals": ["theft_indicator_1", "theft_indicator_2"],
-  "suspicious_elements": ["specific concerns"],
-  "reasoning": "Security assessment: why this is/isn't a threat",
+  "person_features": ["Person 1: [position + action + security relevance]"],
+  "security_signals": ["reaching_staff_section", "unauthorized_area_access", "concealment_behavior"],
+  "suspicious_elements": ["specific concerns with location context"],
+  "reasoning": "EXPLAIN THE SITUATION: Person is [action] at [location] which is [threat level] because [specific contextual reason]. Connect action to location!",
   "recommended_action": "Specific security response",
   "confidence": 0.85
 }}
 
-Focus on THEFT and SECURITY THREATS. Do NOT dismiss reaching/concealing as 'normal shopping'."""
+IMPORTANT: Consider WHERE the action is happening. "Person reaching toward register" is VERY different from "Person reaching toward shelf"!"""
 
             response = self.openai_client.chat.completions.create(
                 model="gpt-4o",
