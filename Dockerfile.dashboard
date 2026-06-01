@@ -17,6 +17,9 @@ COPY . .
 # Expose port
 EXPOSE 8501
 
-# Run the Streamlit dashboard using shell to expand PORT
-SHELL ["/bin/sh", "-c"]
-CMD streamlit run demo/dashboard.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
+# Copy and make startup script executable
+COPY start_dashboard.sh /app/start_dashboard.sh
+RUN chmod +x /app/start_dashboard.sh
+
+# Run the dashboard using startup script
+CMD ["/app/start_dashboard.sh"]
