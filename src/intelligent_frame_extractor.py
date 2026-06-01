@@ -55,6 +55,54 @@ class IntelligentFrameExtractor:
         self.min_frame_interval = 0.5  # Minimum seconds between frames
         self.max_frames_per_minute = 30  # Maximum frames to extract per minute
         
+        # Quality filtering thresholds
+        self.min_brightness_threshold = 20  # Skip very dark frames (0-255)
+        self.max_brightness_threshold = 250  # Skip overexposed frames
+        self.min_variance_threshold = 50  # Skip low-contrast/static/menu frames
+    
+    def _is_frame_quality_acceptable(self, frame: np.ndarray) -> Tuple[bool, str]:
+        """
+        Check if frame quality is acceptable for extraction.
+        Filters out: black frames, title cards, menus, overexposed frames.
+        
+        Returns: (is_acceptable, reason)
+        """
+        if frame is None or frame.size == 0:
+            return False, "empty_frame"
+        
+        # Convert to grayscale for analysis
+        if len(frame.shape) == 3:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = frame
+        
+        # Check 1: Brightness (mean pixel value)
+        mean_brightness = np.mean(gray)
+        if mean_brightness < self.min_brightness_threshold:
+            return False, f"too_dark({mean_brightness:.1f})"
+        if mean_brightness > self.max_brightness_threshold:
+            return False, f"overexposed({mean_brightness:.1f})"
+        
+        # Check 2: Variance (contrast/texture)
+        variance = np.var(gray)
+        if variance < self.min_variance_threshold:
+            return False, f"low_contrast({variance:.1f})"
+        
+        # Check 3: Detect solid color / title cards
+        # Calculate percentage of pixels near the mean (solid color detection)
+        diff_from_mean = np.abs(gray.astype(float) - mean_brightness)
+        solid_color_ratio = np.mean(diff_from_mean < 10)  # Pixels within 10 of mean
+        if solid_color_ratio > 0.95:  # 95% of frame is same color
+            return False, f"solid_color({solid_color_ratio*100:.1f}%)"
+        
+        # Check 4: Edge detection (menu/title cards have few edges)
+        edges = cv2.Canny(gray, 50, 150)
+        edge_ratio = np.sum(edges > 0) / edges.size
+        if edge_ratio < 0.001:  # Less than 0.1% edges
+            return False, f"no_edges({edge_ratio*100:.3f}%)"
+        
+        return True, "quality_ok"
+        
     def extract_frames_intelligently(
         self,
         video_path: Path,
