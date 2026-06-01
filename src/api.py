@@ -73,6 +73,25 @@ def get_latest_extracted_folder():
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Check ffmpeg availability at startup
+def check_ffmpeg():
+    """Verify ffmpeg is installed."""
+    try:
+        import subprocess
+        result = subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=5)
+        if result.returncode == 0:
+            version = result.stdout.decode().split('\n')[0]
+            logger.info(f"✅ FFmpeg available: {version[:60]}")
+            return True
+        else:
+            logger.error("❌ FFmpeg not working properly")
+            return False
+    except Exception as e:
+        logger.error(f"❌ FFmpeg not found: {e}")
+        return False
+
+FFMPEG_AVAILABLE = check_ffmpeg()
+
 app = FastAPI(
     title="Drone Security Analyst API",
     description="Production-ready AI-powered security analysis system",
@@ -121,7 +140,8 @@ def health():
         "status": "ok",
         "timestamp": datetime.now().isoformat(),
         "version": "2.0.0",
-        "system": "drone-security-agent"
+        "system": "drone-security-agent",
+        "ffmpeg_available": FFMPEG_AVAILABLE
     }
 
 @app.post("/upload-video")
@@ -319,7 +339,16 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
         logger.info(f"[{session_id}] Started keep-alive heartbeat for long processing")
         
-        # Step 1: Extract frames using intelligent extractor
+        # Step 1: Check ffmpeg availability
+        if not FFMPEG_AVAILABLE:
+            logger.error(f"[{session_id}] ❌ FFmpeg not available - cannot extract frames!")
+            processing_status[session_id]["status"] = "failed"
+            processing_status[session_id]["error"] = "FFmpeg not installed"
+            return
+        
+        logger.info(f"[{session_id}] ✅ FFmpeg available, starting frame extraction")
+        
+        # Step 2: Extract frames using intelligent extractor
         logger.info(f"Extracting frames for session {session_id} using {extraction_strategy} strategy")
         
         # Update video path in settings for the extractor
