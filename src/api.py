@@ -489,11 +489,16 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         settings.ANALYSIS_DIR = Path(session_dir) / "analysis"
         settings.ANALYSIS_DIR.mkdir(exist_ok=True)
         
+        # Pass SESSION_ID so vision analyzer uses correct directory
+        env = os.environ.copy()
+        env["SESSION_ID"] = session_id
+        
         result = subprocess.run([
             sys.executable, "-m", "src.vision_analyzer"
-        ], capture_output=True, text=True)
+        ], capture_output=True, text=True, env=env)
         
         if result.returncode != 0:
+            logger.error(f"Vision analysis stderr: {result.stderr}")
             raise Exception(f"Vision analysis failed: {result.stderr}")
         
         processing_status[session_id]["processing_steps"].append("vision_analysis")

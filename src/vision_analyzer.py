@@ -19,6 +19,17 @@ from src.config import settings
 from src.api import get_latest_extracted_folder
 import os
 
+# Handle SESSION_ID from environment (set by API subprocess)
+SESSION_ID = os.environ.get("SESSION_ID")
+if SESSION_ID:
+    # Use session-specific directories
+    SESSION_DIR = Path("data/sessions") / SESSION_ID
+    settings.SESSION_DIR = SESSION_DIR
+    settings.ANALYSIS_DIR = SESSION_DIR / "analysis"
+    settings.ALERTS_DIR = SESSION_DIR / "alerts"
+    settings.TELEMETRY_DIR = SESSION_DIR / "telemetry"
+    print(f"[Vision Analyzer] Using session directory: {SESSION_DIR}")
+
 SESSION_CONTEXT_PATH = settings.SESSION_DIR / "session_context.json"
 CONTEXT_SUMMARIES_PATH = settings.SESSION_DIR / "context_summaries.json"
 
