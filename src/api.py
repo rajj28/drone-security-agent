@@ -350,9 +350,24 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             
             logger.info(f"Successfully extracted {len(frames)} frames using {extraction_strategy} strategy")
             
+            # Extract file paths from frame dicts (if dicts) or use as-is (if strings)
+            frame_paths = []
+            for f in frames:
+                if isinstance(f, dict):
+                    # If frame is a dict, get the file_path or construct from session_dir
+                    if 'file_path' in f:
+                        frame_paths.append(f['file_path'])
+                    elif 'filename' in f:
+                        frame_paths.append(f"{session_dir}/extracted/{f['filename']}.jpg")
+                else:
+                    # Frame is already a path string
+                    frame_paths.append(str(f))
+            
+            logger.info(f"[STORAGE] Extracted {len(frame_paths)} frame paths for storage")
+            
             # Save frame list to processing_status for Railway persistence
-            processing_status[session_id]["extracted_frames"] = frames
-            processing_status[session_id]["frame_count"] = len(frames)
+            processing_status[session_id]["extracted_frames"] = frame_paths
+            processing_status[session_id]["frame_count"] = len(frame_paths)
             processing_status[session_id]["session_dir"] = str(session_dir)
             
         except Exception as e:
