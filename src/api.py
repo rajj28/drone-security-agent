@@ -686,7 +686,7 @@ def get_session_frames(session_id: str):
 
 @app.get("/sessions/{session_id}/alerts")
 def get_session_alerts(session_id: str):
-    """Get alerts for a specific session"""
+    """Get alerts for a specific session - FILTERED to only show MEDIUM, HIGH, CRITICAL"""
     session_dir = Path("data") / "sessions" / session_id
     alerts_file = session_dir / "alerts.json"
     
@@ -701,7 +701,32 @@ def get_session_alerts(session_id: str):
         }
     
     with open(alerts_file, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    
+    # FILTER: Only include MEDIUM, HIGH, CRITICAL alerts for alert center
+    # Exclude LOW and CLEAR - they don't warrant immediate attention
+    SIGNIFICANT_LEVELS = ['MEDIUM', 'HIGH', 'CRITICAL']
+    
+    filtered_alerts = [
+        a for a in data.get("alerts", []) 
+        if a.get("severity", "").upper() in SIGNIFICANT_LEVELS
+    ]
+    
+    # Recalculate counts based on filtered alerts
+    high_count = sum(1 for a in filtered_alerts if a.get("severity") == "HIGH")
+    medium_count = sum(1 for a in filtered_alerts if a.get("severity") == "MEDIUM")
+    critical_count = sum(1 for a in filtered_alerts if a.get("severity") == "CRITICAL")
+    
+    return {
+        "session_date": data.get("session_date", datetime.now().strftime("%Y-%m-%d")),
+        "total_alerts": len(filtered_alerts),
+        "high_severity": high_count,
+        "medium_severity": medium_count,
+        "critical_severity": critical_count,
+        "low_severity": 0,  # Filtered out
+        "alerts": filtered_alerts,
+        "filter_applied": "MEDIUM+ only - LOW and CLEAR excluded"
+    }
 
 @app.get("/sessions/{session_id}/summary")
 def get_session_summary(session_id: str):
@@ -743,6 +768,7 @@ def ask_qa(payload: Dict[str, Any]):
 
 @app.get("/alerts")
 def get_all_alerts():
+    """Get all alerts - FILTERED to only show MEDIUM, HIGH, CRITICAL (no LOW or CLEAR)"""
     path = Path("outputs/alerts/all_alerts.json")
     if not path.exists():
         # Return empty alerts structure if file doesn't exist
@@ -751,11 +777,33 @@ def get_all_alerts():
             "total_alerts": 0,
             "high_severity": 0,
             "medium_severity": 0,
-            "low_severity": 0,
             "alerts": []
         }
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    
+    # FILTER: Only include MEDIUM, HIGH, CRITICAL alerts
+    # Exclude LOW and CLEAR from alert center
+    SIGNIFICANT_LEVELS = ['MEDIUM', 'HIGH', 'CRITICAL']
+    filtered_alerts = [
+        a for a in data.get("alerts", []) 
+        if a.get("severity", "").upper() in SIGNIFICANT_LEVELS
+    ]
+    
+    # Update counts
+    high_count = sum(1 for a in filtered_alerts if a.get("severity") == "HIGH")
+    medium_count = sum(1 for a in filtered_alerts if a.get("severity") == "MEDIUM")
+    critical_count = sum(1 for a in filtered_alerts if a.get("severity") == "CRITICAL")
+    
+    return {
+        "session_date": data.get("session_date", datetime.now().strftime("%Y-%m-%d")),
+        "total_alerts": len(filtered_alerts),
+        "high_severity": high_count,
+        "medium_severity": medium_count,
+        "critical_severity": critical_count,
+        "alerts": filtered_alerts,
+        "filter_applied": "MEDIUM+ only - LOW and CLEAR excluded"
+    }
 
 @app.get("/alerts/high")
 def get_high_alerts():

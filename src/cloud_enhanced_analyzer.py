@@ -690,12 +690,15 @@ IMPORTANT: Consider WHERE the action is happening. "Person reaching toward regis
         
         avg_score = sum(threat_scores) / len(threat_scores)
         
-        if avg_score >= 70:
+        # RIGOROUS THRESHOLDS - Only significant threats get elevated status
+        if avg_score >= 80:  # Was 70 - now requires stronger evidence
             return 'HIGH'
-        elif avg_score >= 40:
+        elif avg_score >= 55:  # Was 40 - medium requires more proof
             return 'MEDIUM'
-        else:
+        elif avg_score >= 25:  # NEW - LOW tier
             return 'LOW'
+        else:
+            return 'CLEAR'  # Was LOW - now CLEAR for minimal scores
 
 
 def analyze_frame_cloud(image_path: Path, telemetry: Dict[str, Any]) -> Dict[str, Any]:
