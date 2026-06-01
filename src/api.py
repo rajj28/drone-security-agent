@@ -714,10 +714,10 @@ def get_session_frame_image(session_id: str, frame_name: str):
     possible_paths = [
         # Session-specific extracted directory
         Path("data") / "sessions" / session_id / "extracted" / frame_name,
-        # General extracted directories
-        Path("data/extracted") / frame_name,
-        Path("data/extracted1") / frame_name,
+        # Direct path from stored frames
         Path("data/extracted2") / frame_name,
+        Path("data/extracted1") / frame_name,
+        Path("data/extracted") / frame_name,
         # Session directory
         Path("data") / "sessions" / session_id / "session" / frame_name,
     ]
@@ -731,7 +731,9 @@ def get_session_frame_image(session_id: str, frame_name: str):
                 break
     
     # Try each path
-    for img_path in possible_paths:
+    logger.info(f"[FRAME IMAGE] Checking {len(possible_paths)} possible paths for {frame_name}")
+    for i, img_path in enumerate(possible_paths):
+        logger.info(f"[FRAME IMAGE] Path {i}: {img_path} - exists: {img_path.exists()}")
         if img_path.exists():
             logger.info(f"[FRAME IMAGE] Found frame at: {img_path}")
             return FileResponse(
