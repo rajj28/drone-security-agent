@@ -209,13 +209,13 @@ async def upload_video(
         if not session_id:
             session_id = str(uuid.uuid4())
         
-        # Create sequential extracted folder for this video
-        new_extracted_folder_name = get_next_extracted_folder()
-        new_extracted_dir = Path("data") / new_extracted_folder_name
-        new_extracted_dir.mkdir(parents=True, exist_ok=True)
+        # Create session-specific directory for ALL processing
+        session_dir = Path("data") / "sessions" / session_id
+        extracted_dir = session_dir / "extracted"
+        extracted_dir.mkdir(parents=True, exist_ok=True)
         
-        # Save uploaded video in the extracted folder
-        video_path = new_extracted_dir / file.filename
+        # Save uploaded video in the session folder
+        video_path = session_dir / file.filename
         try:
             # Reset file position to beginning
             file.file.seek(0)
@@ -238,11 +238,7 @@ async def upload_video(
                 detail=f"Failed to save uploaded file: {str(e)}"
             )
         
-        # Create minimal session dir for status tracking only
-        session_dir = Path("data") / "sessions" / session_id
-        session_dir.mkdir(parents=True, exist_ok=True)
-        
-        logger.info(f"Video saved to: {new_extracted_folder_name}")
+        logger.info(f"Video saved to session: {session_id}, extracted dir: {extracted_dir}")
         
         # Initialize processing status
         processing_status[session_id] = {
@@ -257,12 +253,12 @@ async def upload_video(
             "max_frames": max_frames
         }
         
-        # Start processing in background
+        # Start processing in background - use session directory
         background_tasks.add_task(
             process_video_pipeline,
             session_id,
             str(video_path),
-            str(new_extracted_dir),  # Use extracted folder, not session folder
+            str(extracted_dir),  # Use session extracted folder
             extraction_strategy,
             max_frames
         )
@@ -349,7 +345,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         logger.info(f"[{session_id}] ✅ FFmpeg available, starting frame extraction")
         
         # Step 2: Extract frames using intelligent extractor
-        logger.info(f"Extracting frames for session {session_id} using {extraction_strategy} strategy")
+        logger.info(f"[PIPELINE] Starting frame extraction for session {session_id}")
         
         # Update video path in settings for the extractor
         from src.config import settings
@@ -357,15 +353,15 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         settings.VIDEO_FILE = Path(video_path)
         original_extracted_dir = settings.EXTRACTED_DIR
         
-        # Use the extracted folder that was already created during upload
-        # Find the extracted folder that contains the video file
-        video_path_obj = Path(video_path)
-        extracted_dir = video_path_obj.parent
+        # session_dir is ALREADY the extracted folder (passed from upload endpoint)
+        # e.g., data/sessions/{session_id}/extracted
+        extracted_dir = Path(session_dir)
+        extracted_dir.mkdir(parents=True, exist_ok=True)
         
         # Update settings to use the extracted folder
         settings.EXTRACTED_DIR = extracted_dir
         
-        logger.info(f"Using extracted folder: {extracted_dir.name}")
+        logger.info(f"[PIPELINE] Extracting frames to: {extracted_dir}")
         
         try:
             # Use intelligent frame extractor
