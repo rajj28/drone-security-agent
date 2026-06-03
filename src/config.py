@@ -15,18 +15,40 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseSettings):
-    # OpenAI
-    OPENAI_API_KEY: str = Field(..., env="OPENAI_API_KEY")
-    OPENAI_EMBEDDING_MODEL: str = Field("text-embedding-3-large", env="OPENAI_EMBEDDING_MODEL")
-    OPENAI_EMBEDDING_DIMENSION: int = Field(1024, env="OPENAI_EMBEDDING_DIMENSION")
+    # Google Gemini (primary LLM / VLM)
+    GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
+    GEMINI_MODEL: str = Field("gemini-2.5-pro", env="GEMINI_MODEL")
+    GEMINI_FALLBACK_MODEL: str = Field("gemini-2.5-flash", env="GEMINI_FALLBACK_MODEL")
+    # Production: try Flash first to avoid 4× Pro retries (~30s) on every 429
+    GEMINI_PREFER_FLASH: bool = Field(True, env="GEMINI_PREFER_FLASH")
+    # When true, never call Pro (avoids burning quota on fallback after Flash 429)
+    GEMINI_FLASH_ONLY: bool = Field(False, env="GEMINI_FLASH_ONLY")
+    API_MIN_INTERVAL_SEC: float = Field(12.0, env="API_MIN_INTERVAL_SEC")
+    GEMINI_EMBEDDING_MODEL: str = Field("text-embedding-004", env="GEMINI_EMBEDDING_MODEL")
+    GEMINI_EMBEDDING_DIMENSION: int = Field(768, env="GEMINI_EMBEDDING_DIMENSION")
 
-    # Pinecone
+    # Legacy OpenAI fields (optional — unused when Gemini is configured)
+    OPENAI_API_KEY: str = Field("", env="OPENAI_API_KEY")
+    OPENAI_EMBEDDING_MODEL: str = Field("text-embedding-004", env="OPENAI_EMBEDDING_MODEL")
+    OPENAI_EMBEDDING_DIMENSION: int = Field(768, env="OPENAI_EMBEDDING_DIMENSION")
+    
+    # Agent LLM Provider (for Q&A - allows using free alternatives to Gemini)
+    AGENT_LLM_PROVIDER: str = Field("gemini", env="AGENT_LLM_PROVIDER")  # gemini, groq, ollama, openai
+    GROQ_API_KEY: str = Field("", env="GROQ_API_KEY")  # Free tier: 20 req/min, 1M tokens/day
+    OLLAMA_BASE_URL: str = Field("http://localhost:11434", env="OLLAMA_BASE_URL")
+    OLLAMA_MODEL: str = Field("llama3.1", env="OLLAMA_MODEL")
+
+    # Pinecone (flytbase: llama-text-embed-v2 integrated inference, 768 dim)
     PINECONE_API_KEY: str = Field(..., env="PINECONE_API_KEY")
-    PINECONE_INDEX_NAME: str = Field("drone-security-frames", env="PINECONE_INDEX_NAME")
+    PINECONE_INDEX_NAME: str = Field("flytbase", env="PINECONE_INDEX_NAME")
     PINECONE_CLOUD: str = Field("aws", env="PINECONE_CLOUD")
     PINECONE_REGION: str = Field("us-east-1", env="PINECONE_REGION")
-    PINECONE_DIMENSION: int = Field(1024, env="PINECONE_DIMENSION")
+    PINECONE_DIMENSION: int = Field(768, env="PINECONE_DIMENSION")
     PINECONE_METRIC: str = Field("cosine", env="PINECONE_METRIC")
+    PINECONE_USE_INTEGRATED: bool = Field(True, env="PINECONE_USE_INTEGRATED")
+    PINECONE_NAMESPACE: str = Field("drone-security", env="PINECONE_NAMESPACE")
+    PINECONE_TEXT_FIELD: str = Field("text", env="PINECONE_TEXT_FIELD")
+    PINECONE_HOST: str = Field("", env="PINECONE_HOST")
 
     # LangChain (optional - only needed for tracing)
     LANGCHAIN_API_KEY: str = Field("", env="LANGCHAIN_API_KEY")
@@ -38,7 +60,11 @@ class Settings(BaseSettings):
     
     # Hugging Face (for Cloud Enhanced Analyzer)
     HF_API_TOKEN: str = Field("", env="HF_API_TOKEN")
-    USE_CLOUD_ANALYZER: bool = Field(False, env="USE_CLOUD_ANALYZER")
+    USE_CLOUD_ANALYZER: bool = Field(True, env="USE_CLOUD_ANALYZER")
+
+    # One video = one session (see session_bootstrap.py)
+    SESSION_ID: str = Field("", env="SESSION_ID")
+    USE_MONGO_CONTEXT: bool = Field(False, env="USE_MONGO_CONTEXT")
 
     # App Config
     DATA_DIR: Path = Field(Path("data"), env="DATA_DIR")
@@ -75,6 +101,10 @@ try:
 except ValidationError as e:
     print(f"ERROR: Config validation error: {e}")
     raise
+
+from src.session_bootstrap import apply_session_layout
+
+apply_session_layout(settings.SESSION_ID or None)
 
 # Ensure all output directories exist
 for d in [

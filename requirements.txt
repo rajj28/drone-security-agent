@@ -6,8 +6,11 @@ pydantic-settings==2.0.3
 # OpenAI — MUST stay below 2.0.0 for langchain compatibility
 openai>=1.30.0,<2.0.0
 
-# Pinecone
-pinecone-client==3.0.0
+# Free LLM alternatives for agent (optional)
+groq>=0.4.0  # Free tier: 20 req/min, 1M tokens/day
+
+# Pinecone (integrated inference: upsert_records + search)
+pinecone>=5.0,<10.0
 
 # LangChain compatible set
 langchain==0.1.16
