@@ -1,0 +1,53 @@
+# Railway-optimized requirements (lighter build)
+# Uses cloud-based vision (Gemini) instead of local PyTorch
+
+# Core
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.0.3
+
+# OpenAI
+openai>=1.30.0,<2.0.0
+
+# Free LLM alternatives for agent (optional)
+groq>=0.4.0
+
+# Pinecone
+pinecone>=5.0,<10.0
+
+# LangChain compatible set
+langchain==0.1.16
+langchain-community==0.0.32
+langchain-openai==0.0.8
+langgraph==0.0.40
+
+# API
+fastapi==0.109.0
+uvicorn==0.27.0
+
+# Dashboard
+streamlit==1.31.0
+
+# Image processing (no torch)
+Pillow==10.2.0
+opencv-python-headless==4.9.0.80  # Headless version for containers
+
+# Testing
+pytest==7.4.0
+pytest-asyncio==0.23.0
+
+# Production enhancements
+numpy==1.26.0
+psutil==5.9.0
+pandas==2.1.0
+python-multipart==0.0.6
+aiofiles==23.2.0
+
+# HTTP clients
+httpx==0.26.0
+requests==2.31.0
+urllib3==2.1.0
+certifi==2023.11.17
+
+# Utilities
+pymongo==4.6.0
