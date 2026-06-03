@@ -161,11 +161,11 @@ async def upload_video(
         extraction_strategy: Frame extraction strategy (uniform, motion_based, scene_change, hybrid)
         max_frames: Maximum number of frames to extract (10-500)
     
-    Supports multiple video formats: .mp4, .avi, .mov, .dav, .mkv, .wmv, .flv
+    Supports 14+ video formats: .mp4, .avi, .mov, .dav, .mkv, .wmv, .flv, .webm, .mpeg, .3gp, .ts, .m4v, .m2ts
     """
     try:
         # Validate file type
-        allowed_extensions = {".mp4", ".avi", ".mov", ".dav", ".mkv", ".wmv", ".flv"}
+        allowed_extensions = {".mp4", ".avi", ".mov", ".dav", ".mkv", ".wmv", ".flv", ".webm", ".mpeg", ".mpg", ".3gp", ".ts", ".m4v", ".m2ts"}
         
         # Debug: Log file object details
         logger.info(f"File object - filename: {file.filename}, content_type: {file.content_type}")
