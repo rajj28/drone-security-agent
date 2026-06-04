@@ -1,0 +1,85 @@
+steps:
+  # Build API container
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/drone-security-api:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/drone-security-api:latest'
+      - '-f'
+      - 'Dockerfile.railway'
+      - '.'
+  
+  # Build Dashboard container
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/drone-security-dashboard:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/drone-security-dashboard:latest'
+      - '-f'
+      - 'Dockerfile.dashboard'
+      - '.'
+  
+  # Push API container
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/drone-security-api:latest'
+  
+  # Push Dashboard container
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/drone-security-dashboard:latest'
+  
+  # Deploy API to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'drone-security-api'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/drone-security-api:latest'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'GEMINI_API_KEY=${_GEMINI_API_KEY},GROQ_API_KEY=${_GROQ_API_KEY},PINECONE_API_KEY=${_PINECONE_API_KEY},USE_CLOUD_ANALYZER=true,AGENT_LLM_PROVIDER=groq'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
+  
+  # Deploy Dashboard to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'drone-security-dashboard'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/drone-security-dashboard:latest'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'API_URL=https://drone-security-api-url'
+      - '--memory'
+      - '1Gi'
+      - '--cpu'
+      - '1'
+
+images:
+  - 'gcr.io/$PROJECT_ID/drone-security-api:latest'
+  - 'gcr.io/$PROJECT_ID/drone-security-dashboard:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
