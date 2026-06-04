@@ -63,6 +63,19 @@ outputs/
 data/eval_sessions/
 data/videos/
 data/evaluations/
+data/frames/
+
+# GCP deployment files
+cloudbuild.yaml
+deploy-gcp.sh
+deploy-gcp.ps1
+GCP_DEPLOYMENT.md
+railway.toml
+railway-dashboard.toml
+railway-api.toml
+
+# Large video files in root
+*.dav
 
 # Node modules (if any)
 node_modules/
