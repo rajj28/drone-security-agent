@@ -19,5 +19,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run the API directly (no shell script to avoid permission issues)
-CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Run the API - SHELL FORM to expand $PORT
+CMD uvicorn src.api:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
