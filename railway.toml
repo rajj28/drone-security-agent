@@ -4,7 +4,8 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile.railway"
 
 [deploy]
-startCommand = "uvicorn src.api:app --host 0.0.0.0 --port ${PORT} --workers 1"
+# No startCommand - Dockerfile.railway's shell-form CMD handles port binding
+# CMD uvicorn src.api:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
