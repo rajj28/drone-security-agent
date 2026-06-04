@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Copy lighter requirements for Railway
 COPY requirements.railway.txt .
-RUN pip install --no-cache-dir -r requirements.railway.txt
+RUN pip install --no-cache-dir --default-timeout=300 --retries 5 -r requirements.railway.txt
 
 # Copy application code
 COPY . .
