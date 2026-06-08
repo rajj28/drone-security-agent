@@ -30,12 +30,11 @@ class MongoDBStorage:
                 mongo_uri = "mongodb://localhost:27017/"
             
             # Connection options for Cloud Run / container environments
+            # Note: retryWrites and w='majority' removed due to pymongo transaction compatibility issues
             connection_options = {
                 'serverSelectionTimeoutMS': 10000,
                 'connectTimeoutMS': 10000,
-                'socketTimeoutMS': 30000,
-                'retryWrites': True,
-                'w': 'majority'
+                'socketTimeoutMS': 30000
             }
             
             # Handle SSL/TLS for different URI types

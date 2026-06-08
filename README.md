@@ -35,20 +35,27 @@ Ever wished your security cameras could **actually understand** what they're see
 
 | Issue | Status | Workaround |
 |-------|--------|------------|
-| Cloud Build substitution errors | 🔧 In Progress | Use `--source` deployment instead |
-| Docker Desktop build timeouts | 🔧 In Progress | Use Cloud Build or gCloud Run deploy |
+| Cloud Build substitution errors | ✅ Fixed | Use Docker build + push instead |
+| Docker Desktop build timeouts | ✅ Fixed | Use Docker build with cache |
 | SSL/TLS issues with MongoDB Atlas | ✅ Fixed | Added `tlsAllowInvalidCertificates` for container env |
-| In-memory session loss | ✅ Fixed | MongoDB persistence implemented |
+| In-memory session loss | ⚠️ Partial | MongoDB code implemented but connection failing |
+| pymongo `in_transaction` error | 🔧 In Progress | Use in-memory fallback for now |
 
-**Current Blockers:**
-1. `gcloud builds submit` fails with substitution key errors - use direct source deployment
-2. Docker Desktop on Windows has SSL issues with MongoDB - works fine in Cloud Run
-3. Need to verify API health endpoint after deployment
+**Current Status:**
+- ✅ API deployed and running: `https://drone-security-api-27774218566.us-central1.run.app`
+- ✅ Health endpoint responding: `{"status":"ok",...}`
+- ❌ MongoDB persistence: Failing with `'int' object has no attribute 'in_transaction'`
+- ✅ Fallback: In-memory storage (sessions lost on container restart)
 
 **Working Deployment Command:**
 ```bash
+# Build and push
+docker build -f Dockerfile.light -t gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6 .
+docker push gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6
+
+# Deploy
 gcloud run deploy drone-security-api \
-  --source . \
+  --image gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6 \
   --region us-central1 \
   --platform managed \
   --allow-unauthenticated \
