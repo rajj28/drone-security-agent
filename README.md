@@ -14,6 +14,25 @@
 
 Ever wished your security cameras could **actually understand** what they're seeing? Meet your new AI security guard that never sleeps, never blinks, and catches threats humans miss!
 
+---
+
+## 🆕 Recent Updates
+
+### June 2026 - MongoDB Persistence & Cloud Run Deployment
+- ✅ **MongoDB Integration**: Added persistent session storage for video processing status
+- ✅ **Cloud Run Deployment**: Fully deployed API and Dashboard to Google Cloud Run
+- ✅ **Session Persistence**: Processing status now survives container restarts and autoscaling
+- ✅ **Health Check Endpoint**: Added `/health` endpoint with MongoDB connection status
+- ✅ **API Key Integration**: Support for Gemini API and Pinecone API keys
+- ✅ **Dashboard Connection**: Fixed dashboard to use correct Cloud Run API URL
+- ✅ **Docker Optimization**: Created lightweight Dockerfiles for faster builds
+
+**Deployment URLs:**
+- API: `https://drone-security-api-27774218566.us-central1.run.app`
+- Dashboard: (deployed separately)
+
+---
+
 ### 🔥 The Magic Behind the Scenes
 
 Our **Three-Brain Architecture** combines the power of:

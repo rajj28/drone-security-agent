@@ -130,8 +130,46 @@ def api_info():
         "documentation": "/docs"
     }
 
-# Global variable to track processing status
+# Global variable to track processing status (fallback if MongoDB not available)
 processing_status = {}
+
+# Initialize MongoDB storage for persistent session tracking
+mongodb_storage = get_mongodb_storage()
+logger.info(f"MongoDB connection status: {mongodb_storage.is_connected()}")
+
+def save_session_status(session_id: str, status_data: dict):
+    """Save session status to both memory and MongoDB."""
+    processing_status[session_id] = status_data
+    if mongodb_storage.is_connected():
+        mongodb_storage.save_session(session_id, status_data)
+
+def get_session_status(session_id: str) -> dict:
+    """Get session status from MongoDB or memory."""
+    # Try MongoDB first (persistent across restarts)
+    if mongodb_storage.is_connected():
+        db_status = mongodb_storage.get_session(session_id)
+        if db_status:
+            # Update memory cache
+            processing_status[session_id] = db_status
+            return db_status
+    # Fallback to memory
+    return processing_status.get(session_id)
+
+def get_all_session_statuses() -> list:
+    """Get all sessions from MongoDB or memory."""
+    if mongodb_storage.is_connected():
+        return mongodb_storage.get_all_sessions()
+    # Fallback to memory
+    return [
+        {
+            "session_id": sid,
+            "filename": status.get("filename", "unknown"),
+            "status": status.get("status", "unknown"),
+            "upload_time": status.get("upload_time"),
+            "progress": status.get("progress", 0)
+        }
+        for sid, status in processing_status.items()
+    ]
 
 @app.get("/health")
 def health():
@@ -141,7 +179,9 @@ def health():
         "timestamp": datetime.now().isoformat(),
         "version": "2.0.0",
         "system": "drone-security-agent",
-        "ffmpeg_available": FFMPEG_AVAILABLE
+        "ffmpeg_available": FFMPEG_AVAILABLE,
+        "mongodb_connected": mongodb_storage.is_connected(),
+        "persistence": "mongodb" if mongodb_storage.is_connected() else "memory-only"
     }
 
 @app.post("/upload-video")
@@ -240,8 +280,8 @@ async def upload_video(
         
         logger.info(f"Video saved to session: {session_id}, extracted dir: {extracted_dir}")
         
-        # Initialize processing status
-        processing_status[session_id] = {
+        # Initialize processing status (saved to MongoDB if available)
+        initial_status = {
             "status": "uploaded",
             "filename": file.filename,
             "upload_time": datetime.now().isoformat(),
@@ -252,6 +292,8 @@ async def upload_video(
             "extraction_strategy": extraction_strategy,
             "max_frames": max_frames
         }
+        save_session_status(session_id, initial_status)
+        logger.info(f"Session {session_id} status saved to {'MongoDB' if mongodb_storage.is_connected() else 'memory'}")
         
         # Start processing in background - use session directory
         background_tasks.add_task(
@@ -280,26 +322,31 @@ async def upload_video(
 
 @app.get("/processing-status/{session_id}")
 def get_processing_status(session_id: str):
-    """Get the current processing status for a video session."""
-    if session_id not in processing_status:
+    """Get the current processing status for a video session from MongoDB or memory."""
+    status = get_session_status(session_id)
+    if not status:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    return processing_status[session_id]
+    return status
 
 @app.get("/sessions")
 def list_sessions():
-    """List all processing sessions."""
-    sessions = []
-    for session_id, status in processing_status.items():
-        sessions.append({
-            "session_id": session_id,
-            "filename": status.get("filename", "unknown"),
-            "status": status.get("status", "unknown"),
-            "upload_time": status.get("upload_time"),
-            "progress": status.get("progress", 0)
-        })
+    """List all processing sessions from MongoDB or memory."""
+    sessions = get_all_session_statuses()
     
-    return {"sessions": sessions}
+    # Format for response
+    formatted_sessions = []
+    for session in sessions:
+        if isinstance(session, dict):
+            formatted_sessions.append({
+                "session_id": session.get("session_id", "unknown"),
+                "filename": session.get("filename", "unknown"),
+                "status": session.get("status", "unknown"),
+                "upload_time": session.get("upload_time"),
+                "progress": session.get("progress", 0)
+            })
+    
+    return {"sessions": formatted_sessions, "source": "mongodb" if mongodb_storage.is_connected() else "memory"}
 
 async def keep_alive_heartbeat(session_id: str, interval: int = 60):
     """
@@ -308,12 +355,18 @@ async def keep_alive_heartbeat(session_id: str, interval: int = 60):
     """
     import asyncio
     heartbeat_count = 0
-    while processing_status.get(session_id, {}).get("status") == "processing":
+    while True:
+        status = get_session_status(session_id)
+        if not status or status.get("status") != "processing":
+            break
         await asyncio.sleep(interval)
         heartbeat_count += 1
-        logger.info(f"[{session_id}] Keep-alive heartbeat #{heartbeat_count} - service active, status: {processing_status[session_id].get('current_step', 'unknown')}")
+        current_step = status.get('current_step', 'unknown')
+        logger.info(f"[{session_id}] Keep-alive heartbeat #{heartbeat_count} - service active, status: {current_step}")
         # Update timestamp to show activity
-        processing_status[session_id]["last_heartbeat"] = time.time()
+        status_update = get_session_status(session_id) or {}
+        status_update["last_heartbeat"] = time.time()
+        save_session_status(session_id, status_update)
 
 
 async def process_video_pipeline(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
@@ -327,9 +380,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         import asyncio
         
         # Update status
-        processing_status[session_id]["status"] = "processing"
-        processing_status[session_id]["current_step"] = "extracting_frames"
-        processing_status[session_id]["start_time"] = time.time()
+        status_update = get_session_status(session_id) or {}
+        status_update["status"] = "processing"
+        status_update["current_step"] = "extracting_frames"
+        status_update["start_time"] = time.time()
+        save_session_status(session_id, status_update)
         
         # Start keep-alive heartbeat to prevent Render sleep (every 60 seconds)
         heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
@@ -338,8 +393,10 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         # Step 1: Check ffmpeg availability
         if not FFMPEG_AVAILABLE:
             logger.error(f"[{session_id}] ❌ FFmpeg not available - cannot extract frames!")
-            processing_status[session_id]["status"] = "failed"
-            processing_status[session_id]["error"] = "FFmpeg not installed"
+            status_update = get_session_status(session_id) or {}
+            status_update["status"] = "failed"
+            status_update["error"] = "FFmpeg not installed"
+            save_session_status(session_id, status_update)
             return
         
         logger.info(f"[{session_id}] ✅ FFmpeg available, starting frame extraction")
@@ -425,10 +482,12 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
                     if output_jpgs:
                         logger.info(f"[STORAGE] Found {len(output_jpgs)} .jpg files in outputs/")
             
-            # Save frame list to processing_status for Railway persistence
-            processing_status[session_id]["extracted_frames"] = frame_paths
-            processing_status[session_id]["frame_count"] = len(frame_paths)
-            processing_status[session_id]["session_dir"] = str(session_dir)
+            # Save frame list to processing_status for persistence
+            status_update = get_session_status(session_id) or {}
+            status_update["extracted_frames"] = frame_paths
+            status_update["frame_count"] = len(frame_paths)
+            status_update["session_dir"] = str(session_dir)
+            save_session_status(session_id, status_update)
             
         except Exception as e:
             # Fallback to basic frame extractor if intelligent one fails
@@ -451,9 +510,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             # Get frames from fallback extraction (only frame_*.jpg, not temp files)
             fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("frame_*.jpg")])
             logger.info(f"[FALLBACK] Found {len(fallback_frames)} frames in {session_dir}/extracted")
-            processing_status[session_id]["extracted_frames"] = fallback_frames
-            processing_status[session_id]["frame_count"] = len(fallback_frames)
-            processing_status[session_id]["session_dir"] = str(session_dir)
+            status_update = get_session_status(session_id) or {}
+            status_update["extracted_frames"] = fallback_frames
+            status_update["frame_count"] = len(fallback_frames)
+            status_update["session_dir"] = str(session_dir)
+            save_session_status(session_id, status_update)
             logger.info(f"[FALLBACK] Stored {len(fallback_frames)} frames in processing_status")
         
         finally:
@@ -462,11 +523,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             settings.EXTRACTED_DIR = original_extracted_dir
             settings.OUTPUTS_DIR = original_outputs_dir
         
-        processing_status[session_id]["processing_steps"].append("frame_extraction")
-        processing_status[session_id]["progress"] = 20
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("frame_extraction")
+        status_update["progress"] = 20
         
         # Step 2: Generate telemetry
-        processing_status[session_id]["current_step"] = "generating_telemetry"
+        status_update["current_step"] = "generating_telemetry"
+        save_session_status(session_id, status_update)
         logger.info(f"[PIPELINE] Generating telemetry for session {session_id}")
         
         # session_dir is ALREADY the extracted folder (e.g., data/sessions/{id}/extracted)
@@ -500,11 +563,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             logger.error(f"Telemetry generation stderr: {result.stderr}")
             raise Exception(f"Telemetry generation failed: {result.stderr}")
         
-        processing_status[session_id]["processing_steps"].append("telemetry_generation")
-        processing_status[session_id]["progress"] = 40
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("telemetry_generation")
+        status_update["progress"] = 40
         
         # Step 3: Vision analysis
-        processing_status[session_id]["current_step"] = "analyzing_frames"
+        status_update["current_step"] = "analyzing_frames"
+        save_session_status(session_id, status_update)
         logger.info(f"[PIPELINE] Running vision analysis for session {session_id}")
         logger.info(f"[PIPELINE] Looking for frames in: {settings.EXTRACTED_DIR}")
         
@@ -541,11 +606,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         if result.returncode != 0:
             raise Exception(f"Vision analysis failed: {result.stderr}")
         
-        processing_status[session_id]["processing_steps"].append("vision_analysis")
-        processing_status[session_id]["progress"] = 60
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("vision_analysis")
+        status_update["progress"] = 60
         
         # Step 4: Alert generation
-        processing_status[session_id]["current_step"] = "generating_alerts"
+        status_update["current_step"] = "generating_alerts"
+        save_session_status(session_id, status_update)
         logger.info(f"[PIPELINE] Generating alerts for session {session_id}")
         
         alerts_dir = session_root / "alerts"
@@ -559,11 +626,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         if result.returncode != 0:
             raise Exception(f"Alert generation failed: {result.stderr}")
         
-        processing_status[session_id]["processing_steps"].append("alert_generation")
-        processing_status[session_id]["progress"] = 80
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("alert_generation")
+        status_update["progress"] = 80
         
         # Step 5: Person tracking
-        processing_status[session_id]["current_step"] = "tracking_persons"
+        status_update["current_step"] = "tracking_persons"
+        save_session_status(session_id, status_update)
         logger.info(f"[PIPELINE] Running person tracking for session {session_id}")
         
         # Use existing session_root (parent of extracted_dir)
@@ -575,11 +644,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             sys.executable, "src/person_tracker.py"
         ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
         
-        processing_status[session_id]["processing_steps"].append("person_tracking")
-        processing_status[session_id]["progress"] = 90
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("person_tracking")
+        status_update["progress"] = 90
         
         # Step 6: Session summary
-        processing_status[session_id]["current_step"] = "generating_summary"
+        status_update["current_step"] = "generating_summary"
+        save_session_status(session_id, status_update)
         logger.info(f"Generating session summary for session {session_id}")
         
         result = subprocess.run([
@@ -594,11 +665,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         settings.TELEMETRY_DIR = original_telemetry_dir
         settings.OUTPUTS_DIR = original_outputs_dir
         
-        processing_status[session_id]["processing_steps"].append("session_summary")
-        processing_status[session_id]["progress"] = 100
-        processing_status[session_id]["status"] = "completed"
-        processing_status[session_id]["current_step"] = "completed"
-        processing_status[session_id]["completion_time"] = datetime.now().isoformat()
+        status_update = get_session_status(session_id) or {}
+        status_update.setdefault("processing_steps", []).append("session_summary")
+        status_update["progress"] = 100
+        status_update["status"] = "completed"
+        status_update["current_step"] = "completed"
+        status_update["completion_time"] = datetime.now().isoformat()
+        save_session_status(session_id, status_update)
         
         logger.info(f"Processing completed for session {session_id}")
         
@@ -611,9 +684,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
     except Exception as e:
         logger.error(f"Processing failed for session {session_id}: {str(e)}")
-        processing_status[session_id]["status"] = "failed"
-        processing_status[session_id]["error"] = str(e)
-        processing_status[session_id]["current_step"] = "failed"
+        status_update = get_session_status(session_id) or {}
+        status_update["status"] = "failed"
+        status_update["error"] = str(e)
+        status_update["current_step"] = "failed"
+        save_session_status(session_id, status_update)
         
         # Cancel keep-alive heartbeat on failure
         heartbeat_task.cancel()
@@ -665,27 +740,29 @@ def get_frame_alert(frame_id: str):
 def get_session_frames(session_id: str):
     """Get frames for a specific session"""
     logger.info(f"[FRAMES API] Request for session: {session_id}")
-    logger.info(f"[FRAMES API] processing_status keys: {list(processing_status.keys())}")
     
     try:
-        # 1. Check processing_status first (Railway persistence)
-        if session_id in processing_status:
-            stored_frames = processing_status[session_id].get("extracted_frames", [])
+        # 1. Check persistent storage first (MongoDB or memory)
+        session_status = get_session_status(session_id)
+        if session_status:
+            stored_frames = session_status.get("extracted_frames", [])
             logger.info(f"[FRAMES API] Found session, extracted_frames: {len(stored_frames)}")
             if stored_frames:
                 # Extract just the filename from full paths
                 try:
                     frame_names = [Path(str(f)).name for f in stored_frames]
-                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from memory")
-                    return {"frames": frame_names, "source": "memory", "count": len(frame_names)}
+                    logger.info(f"[FRAMES API] Returning {len(frame_names)} frames from storage")
+                    source = "mongodb" if mongodb_storage.is_connected() else "memory"
+                    return {"frames": frame_names, "source": source, "count": len(frame_names)}
                 except Exception as e:
                     logger.error(f"[FRAMES API] Error extracting frame names: {e}")
                     # Return the stored frames as-is if path extraction fails
-                    return {"frames": [str(f) for f in stored_frames], "source": "memory_raw", "count": len(stored_frames)}
+                    source = "mongodb_raw" if mongodb_storage.is_connected() else "memory_raw"
+                    return {"frames": [str(f) for f in stored_frames], "source": source, "count": len(stored_frames)}
         else:
-            logger.warning(f"[FRAMES API] Session {session_id} not found in processing_status")
+            logger.warning(f"[FRAMES API] Session {session_id} not found in storage")
     except Exception as e:
-        logger.error(f"[FRAMES API] Error accessing processing_status: {e}")
+        logger.error(f"[FRAMES API] Error accessing session storage: {e}")
     
     # 2. Session-specific extracted directory (fallback) - only frame_*.jpg
     session_extracted_dir = Path("data") / "sessions" / session_id / "extracted"
@@ -893,9 +970,10 @@ def get_session_frame_image(session_id: str, frame_name: str):
         Path("data") / "sessions" / session_id / "session" / frame_name,
     ]
     
-    # Check processing_status for stored path
-    if session_id in processing_status:
-        stored_frames = processing_status[session_id].get("extracted_frames", [])
+    # Check persistent storage for stored path
+    session_status = get_session_status(session_id)
+    if session_status:
+        stored_frames = session_status.get("extracted_frames", [])
         logger.info(f"[FRAME IMAGE] Stored frames count: {len(stored_frames)}")
         logger.info(f"[FRAME IMAGE] Looking for: {frame_name}")
         for i, frame_path in enumerate(stored_frames[:3]):  # Log first 3

@@ -20,7 +20,7 @@ class MongoDBStorage:
         self._connect()
     
     def _connect(self):
-        """Connect to MongoDB."""
+        """Connect to MongoDB with proper SSL handling for Cloud Run."""
         try:
             # Get MongoDB URI from environment
             mongo_uri = os.environ.get('MONGODB_URI')
@@ -29,7 +29,36 @@ class MongoDBStorage:
                 logger.warning("MONGODB_URI not set, using local MongoDB")
                 mongo_uri = "mongodb://localhost:27017/"
             
-            self.client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+            # Connection options for Cloud Run / container environments
+            connection_options = {
+                'serverSelectionTimeoutMS': 10000,
+                'connectTimeoutMS': 10000,
+                'socketTimeoutMS': 30000,
+                'retryWrites': True,
+                'w': 'majority'
+            }
+            
+            # Handle SSL/TLS for different URI types
+            if mongo_uri.startswith('mongodb+srv://'):
+                # SRV connection string - SSL usually enabled by default
+                logger.info("Using MongoDB SRV connection string")
+                # For Atlas SRV connections, sometimes we need to allow invalid certs
+                # due to container CA certificate issues
+                connection_options['tlsAllowInvalidCertificates'] = True
+                self.client = MongoClient(mongo_uri, **connection_options)
+            elif 'ssl=true' in mongo_uri.lower() or 'tls=true' in mongo_uri.lower():
+                # Non-SRV with SSL enabled
+                logger.info("Using MongoDB non-SRV connection with SSL")
+                connection_options['tlsAllowInvalidCertificates'] = True
+                self.client = MongoClient(mongo_uri, **connection_options)
+            else:
+                # Local or non-SSL connection
+                logger.info("Using MongoDB connection without SSL")
+                self.client = MongoClient(mongo_uri, **connection_options)
+            
+            # Test connection
+            self.client.admin.command('ping')
+            
             self.db = self.client.drone_security
             self.fs = GridFS(self.db)
             self.sessions_collection = self.db.sessions
