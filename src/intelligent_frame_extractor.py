@@ -147,6 +147,15 @@ class IntelligentFrameExtractor:
         
         # Sort frames by timestamp
         frames.sort(key=lambda x: x.timestamp)
+
+        if len(frames) > max_total_frames:
+            if strategy == ExtractionStrategy.UNIFORM:
+                step = max(1, len(frames) // max_total_frames)
+                frames = frames[::step][:max_total_frames]
+            else:
+                frames.sort(key=lambda x: x.importance_score, reverse=True)
+                frames = frames[:max_total_frames]
+                frames.sort(key=lambda x: x.timestamp)
         
         # Renumber frames sequentially and rename from temp files
         for i, frame in enumerate(frames):

@@ -1,7 +1,7 @@
 """
 qa_agent.py — Conversational Q&A agent for drone security session.
 
-- Uses Pinecone search, session context, and GPT-4o for answers
+- Uses Pinecone search, session context, and Gemini for answers
 - Maintains conversation history and saves to qa_log.json
 """
 
@@ -9,8 +9,8 @@ import json
 import time
 from pathlib import Path
 from typing import List, Dict, Any
-from openai import OpenAI
 from src.config import settings
+from src.gemini_client import generate_text
 from src.pinecone_indexer import search_frames
 
 QA_LOG_PATH = settings.SESSION_DIR / "qa_log.json"
@@ -33,7 +33,6 @@ class SecurityQAAgent:
         self.session_context = self._load_json(settings.SESSION_DIR / "session_context.json")
         self.all_analyses = self._load_json(settings.ANALYSIS_DIR / "all_analysis.json")
         self.all_alerts = self._load_json(settings.ALERTS_DIR / "all_alerts.json")
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
     def _load_json(self, path: Path):
         if path.exists():
@@ -59,13 +58,8 @@ class SecurityQAAgent:
             f"Context: {json.dumps(context, indent=2)}"
         )
         start = time.time()
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=512
-        )
+        answer = generate_text(prompt, max_output_tokens=512).strip()
         elapsed = int((time.time() - start) * 1000)
-        answer = response.choices[0].message.content.strip()
         qa_entry = {
             "qa_id": len(self.conversation_history) // 2 + 1,
             "question": question,

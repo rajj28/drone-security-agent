@@ -25,8 +25,9 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from src.config import settings
 from src.intelligent_frame_extractor import IntelligentFrameExtractor
 from src.telemetry_generator import generate_telemetry
+from src.session_bootstrap import apply_session_layout
 from src.vision_analyzer import analyze_all_frames
-from src.context_manager import load_context_summaries, load_session_context
+from src.unified_context import get_unified_context
 
 def test_frame_extraction(video_path: str, max_frames: int = 10):
     """Test frame extraction with quality filtering"""
@@ -39,15 +40,11 @@ def test_frame_extraction(video_path: str, max_frames: int = 10):
     
     # Create test session directory
     session_id = f"test_{int(time.time())}"
-    session_dir = Path("data/test_sessions") / session_id
-    extracted_dir = session_dir / "extracted"
-    extracted_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Override settings for test
+    import os
+    os.environ["SESSION_ID"] = session_id
+    apply_session_layout(session_id)
+    extracted_dir = settings.EXTRACTED_DIR
     settings.VIDEO_FILE = video_file
-    settings.EXTRACTED_DIR = extracted_dir
-    settings.OUTPUTS_DIR = session_dir / "outputs"
-    settings.OUTPUTS_DIR.mkdir(exist_ok=True)
     
     print(f"Video: {video_path}")
     print(f"Session: {session_id}")
@@ -55,7 +52,14 @@ def test_frame_extraction(video_path: str, max_frames: int = 10):
     
     # Extract frames
     start = time.time()
-    frames = extractor.extract_hybrid(video_file, str(extracted_dir), max_frames=max_frames)
+    from src.intelligent_frame_extractor import ExtractionStrategy
+    frames = extractor.extract_frames_intelligently(
+        video_file, extracted_dir, ExtractionStrategy.HYBRID, max_total_frames=max_frames
+    )
+    extractor.save_extraction_log(
+        frames, video_file, ExtractionStrategy.HYBRID,
+        output_path=settings.OUTPUTS_DIR / "extraction_log.json",
+    )
     elapsed = time.time() - start
     
     print(f"\n✅ Extracted {len(frames)} frames in {elapsed:.1f}s")
@@ -76,15 +80,11 @@ def test_telemetry_generation(session_id: str, frames: list):
     print("📊 STEP 2: TELEMETRY GENERATION")
     print("="*60)
     
-    session_dir = Path("data/test_sessions") / session_id
-    settings.EXTRACTED_DIR = session_dir / "extracted"
-    settings.OUTPUTS_DIR = session_dir / "outputs"
-    settings.TELEMETRY_DIR = session_dir / "telemetry"
-    settings.TELEMETRY_DIR.mkdir(exist_ok=True)
-    
-    # Generate telemetry
+    apply_session_layout(session_id)
+    with open(settings.OUTPUTS_DIR / "extraction_log.json", encoding="utf-8") as f:
+        frame_meta = json.load(f)["frames"]
     start = time.time()
-    generate_telemetry()
+    generate_telemetry(frame_meta, output_dir=settings.TELEMETRY_DIR)
     elapsed = time.time() - start
     
     # Check output
@@ -113,15 +113,10 @@ def test_vision_analysis(session_id: str, frames: list):
     print("👁️  STEP 3: VISION ANALYSIS (CLIP + BLIP + GPT-4o)")
     print("="*60)
     
-    session_dir = Path("data/test_sessions") / session_id
-    
-    # Set up all directories
-    settings.EXTRACTED_DIR = session_dir / "extracted"
-    settings.OUTPUTS_DIR = session_dir / "outputs"
-    settings.TELEMETRY_DIR = session_dir / "telemetry"
-    settings.ANALYSIS_DIR = session_dir / "analysis"
-    settings.ANALYSIS_DIR.mkdir(exist_ok=True)
-    
+    apply_session_layout(session_id)
+    import src.api as api_module
+    api_module.get_latest_extracted_folder = lambda: settings.EXTRACTED_DIR
+
     # Run analysis
     start = time.time()
     try:
@@ -164,13 +159,12 @@ def check_context_summaries(session_id: str):
     
     # Check if MongoDB context exists
     try:
-        context_store = load_context_summaries()
-        if context_store:
-            print(f"✅ Context summaries loaded: {len(context_store)} entries")
-            # Show latest
-            if context_store:
-                latest = list(context_store.values())[-1] if isinstance(context_store, dict) else context_store[-1]
-                print(f"   Latest summary: {latest.get('situation_summary', 'N/A')[:100]}...")
+        ctx = get_unified_context()
+        store = ctx.load_summaries_store()
+        summaries = store.get("summaries", [])
+        if summaries:
+            print(f"✅ Context summaries loaded: {len(summaries)} entries")
+            print(f"   Latest: {summaries[-1].get('context_summary', 'N/A')[:100]}...")
         else:
             print("⚠️  No context summaries found (MongoDB may not be connected)")
     except Exception as e:

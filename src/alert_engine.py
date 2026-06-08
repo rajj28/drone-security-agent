@@ -2,7 +2,7 @@
 alert_engine.py — Two-layer alert system for drone security frames.
 
 - Layer 1: Rule-based alerting (fast, deterministic)
-- Layer 2: LLM (GPT-4o) validation for borderline cases
+- Layer 2: Gemini validation for borderline cases
 - Saves per-frame and combined alert JSONs
 """
 
@@ -10,11 +10,11 @@ import json
 import time
 from pathlib import Path
 from typing import Dict, Any, List
-from openai import OpenAI
 from datetime import datetime
 from langchain.memory import ConversationSummaryBufferMemory
-from langchain_openai import ChatOpenAI
 from src.config import settings
+from src.gemini_client import generate_text
+from src.gemini_langchain import GeminiLangChain
 from src.behavioral_analyzer import analyze_behavioral_threats
 
 RULES = [
@@ -212,17 +212,15 @@ def _persist_context_summary(
     _write_json_file(path, context_store)
 
 def llm_validate_alert(alert: Dict[str, Any], analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> Dict[str, Any]:
-    client = OpenAI(api_key=settings.OPENAI_API_KEY)
     user_prompt = f"Frame analysis: {json.dumps(analysis)}\nTelemetry: {json.dumps(telemetry)}\nRule-based alert: {json.dumps(alert)}"
     start = time.time()
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": LLM_PROMPT}, {"role": "user", "content": user_prompt}],
-            max_tokens=256
+        content = generate_text(
+            user_prompt,
+            system_instruction=LLM_PROMPT,
+            max_output_tokens=256,
         )
         elapsed = int((time.time() - start) * 1000)
-        content = response.choices[0].message.content
         try:
             llm_result = json.loads(content.replace("'", '"'))
         except Exception:
@@ -236,7 +234,7 @@ class AlertEngineAgent:
     """Stateful alert engine agent with memory and session context."""
 
     def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4o", openai_api_key=settings.OPENAI_API_KEY)
+        self.llm = GeminiLangChain(model=settings.GEMINI_MODEL)
         self.memory = ConversationSummaryBufferMemory(
             llm=self.llm,
             max_token_limit=2000,

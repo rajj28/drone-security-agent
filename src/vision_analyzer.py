@@ -14,21 +14,14 @@ import time
 from pathlib import Path
 from typing import Dict, Any
 from PIL import Image
-from openai import OpenAI
 from src.config import settings
+from src.gemini_client import generate_vision
 from src.api import get_latest_extracted_folder
 import os
 
-# Handle SESSION_ID from environment (set by API subprocess)
-SESSION_ID = os.environ.get("SESSION_ID")
-if SESSION_ID:
-    # Use session-specific directories
-    SESSION_DIR = Path("data/sessions") / SESSION_ID
-    settings.SESSION_DIR = SESSION_DIR
-    settings.ANALYSIS_DIR = SESSION_DIR / "analysis"
-    settings.ALERTS_DIR = SESSION_DIR / "alerts"
-    settings.TELEMETRY_DIR = SESSION_DIR / "telemetry"
-    print(f"[Vision Analyzer] Using session directory: {SESSION_DIR}")
+from src.session_bootstrap import apply_session_layout
+
+apply_session_layout()
 
 SESSION_CONTEXT_PATH = settings.SESSION_DIR / "session_context.json"
 CONTEXT_SUMMARIES_PATH = settings.SESSION_DIR / "context_summaries.json"
@@ -41,10 +34,10 @@ USE_CLOUD_ANALYZER = os.getenv("USE_CLOUD_ANALYZER", "true").lower() == "true"  
 
 print(f"Analyzer Configuration:")
 print(f"  Ultimate Analyzer (Local CLIP+BLIP+GPT-4o): {USE_ULTIMATE_ANALYZER}")
-print(f"  Cloud Analyzer (HF CLIP+BLIP + Local GPT-4o): {USE_CLOUD_ANALYZER}")
+print(f"  Cloud Analyzer (HF CLIP+BLIP + Gemini): {USE_CLOUD_ANALYZER}")
 print(f"  BLIP Analyzer: {USE_BLIP_ANALYZER}")
 print(f"  CLIP Analyzer: {USE_CLIP_ANALYZER}")
-print(f"  Standard GPT-4o Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZER or USE_CLIP_ANALYZER or USE_CLOUD_ANALYZER)}")
+print(f"  Standard Gemini Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZER or USE_CLIP_ANALYZER or USE_CLOUD_ANALYZER)}")
 
 # System and user prompts - Universal Security Threat Detection
 SYSTEM_PROMPT = """
@@ -181,10 +174,19 @@ def _extract_partial_json(json_str: str) -> Dict[str, Any]:
     """Extract partial data from truncated/incomplete JSON string."""
     result = {}
     
-    # Try to extract vlm_description
-    vlm_match = re.search(r'"vlm_description"\s*:\s*"([^"]*)"', json_str)
+    # vlm_description — handle truncated JSON (unclosed string)
+    vlm_match = re.search(r'"vlm_description"\s*:\s*"(.*)', json_str, re.DOTALL)
     if vlm_match:
-        result["vlm_description"] = vlm_match.group(1)
+        desc = vlm_match.group(1)
+        if '",' in desc:
+            desc = desc.split('",', 1)[0]
+        desc = desc.replace('\\n', '\n').replace('\\"', '"').strip()
+        if len(desc) > 15:
+            result["vlm_description"] = desc
+    # threat_level from partial JSON
+    threat_match = re.search(r'"threat_level"\s*:\s*"([^"]+)"', json_str)
+    if threat_match:
+        result["threat_level"] = threat_match.group(1)
     
     # Try to extract scene_type
     scene_match = re.search(r'"scene_type"\s*:\s*"([^"]*)"', json_str)
@@ -736,30 +738,33 @@ def persist_context_summary(
     alert_summary: Dict[str, Any],
     context_store: Dict[str, Any],
 ) -> None:
-    """Appends a new per-frame context summary entry and saves both session files."""
-    frames_analyzed = int(session_context.get("frames_analyzed", 0))
-    summary_entry = {
-        "after_frame": frame_id,
-        "timestamp": telemetry.get("timestamp"),
-        "frames_analyzed": frames_analyzed,
-        "frames_remaining": max(0, settings.MAX_FRAMES - frames_analyzed),
-        "context_summary": build_context_summary(frame_id, telemetry, analysis, session_context, alert_summary),
-        "running_stats": {
-            "total_alerts": session_context.get("total_alerts", 0),
-            "people_detected": session_context.get("people_detected", 0),
-            "vehicles_detected": session_context.get("vehicles_detected", 0),
-            "high_severity_events": session_context.get("high_alerts", 0),
-        },
-        "agent_memory_snapshot": session_context.get("running_narrative", ""),
-    }
+    """Persists frame context via unified layer (JSON + structured + optional Mongo)."""
+    from src.unified_context import get_unified_context
 
-    context_store.setdefault("summaries", []).append(summary_entry)
+    ctx = get_unified_context(session_dir=settings.SESSION_DIR)
+    ctx.record_frame(frame_id, telemetry, analysis, alert_summary)
 
-    with open(CONTEXT_SUMMARIES_PATH, "w", encoding="utf-8") as handle:
-        json.dump(context_store, handle, indent=2)
+def _use_offline_vision() -> bool:
+    return os.getenv("OFFLINE_VISION", "").lower() in ("1", "true", "yes")
 
-    with open(SESSION_CONTEXT_PATH, "w", encoding="utf-8") as handle:
-        json.dump(session_context, handle, indent=2)
+
+def _save_offline_result(
+    frame_id: str,
+    image_path: Path,
+    telemetry: Dict[str, Any],
+    output_dir: Path,
+) -> Dict[str, Any]:
+    from src.offline_vision_fallback import analyze_frame_offline
+    from src.api_retry import quota_exhausted
+
+    reason = "OFFLINE_VISION=true" if _use_offline_vision() else "API quota/rate limit"
+    print(f"[VISION] Using offline fallback ({reason}) for {frame_id}")
+    result = analyze_frame_offline(frame_id, image_path, telemetry)
+    out_path = output_dir / f"{frame_id}_analysis.json"
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2)
+    return result
+
 
 def analyze_frame(
     frame_id: str,
@@ -778,6 +783,11 @@ def analyze_frame(
     - Standard: GPT-4o only (fastest)
     """
     print(f"\nAnalyzing {frame_id}...")
+
+    from src.api_retry import quota_exhausted
+
+    if _use_offline_vision() or quota_exhausted():
+        return _save_offline_result(frame_id, image_path, telemetry, output_dir)
     
     # Use Ultimate Analyzer if configured
     if USE_ULTIMATE_ANALYZER:
@@ -825,7 +835,7 @@ def analyze_frame(
     if USE_CLOUD_ANALYZER:
         try:
             from src.cloud_enhanced_analyzer import analyze_frame_cloud
-            print("[CLOUD] Using Cloud-Enhanced Analyzer (HF CLIP + BLIP + Local GPT-4o)...")
+            print("[CLOUD] Using Cloud-Enhanced Analyzer (HF CLIP + BLIP + Gemini)...")
             print("   Requires HF_API_TOKEN environment variable")
             result = analyze_frame_cloud(image_path, telemetry)
             
@@ -861,7 +871,7 @@ def analyze_frame(
                     "timestamp": telemetry["timestamp"],
                     "location": telemetry["location"],
                     **analysis,
-                    "model_used": "cloud-clip-blip-gpt4o",
+                    "model_used": "cloud-clip-blip-gemini",
                     "processing_time_ms": result.get('processing_time_ms', 0)
                 }
                 
@@ -871,9 +881,12 @@ def analyze_frame(
                 print(f"[CLOUD] Cloud analysis saved for {frame_id}")
                 return final_result
             else:
-                print(f"[WARNING] Cloud analysis GPT-4o failed: {result.get('gpt4o_analysis', {}).get('error', 'Unknown')}")
+                print(f"[WARNING] Cloud Gemini analysis failed: {result.get('gpt4o_analysis', {}).get('error', 'Unknown')}")
         except Exception as e:
             print(f"[CLOUD] Cloud Analyzer failed, falling back to standard: {e}")
+
+        if quota_exhausted():
+            return _save_offline_result(frame_id, image_path, telemetry, output_dir)
     
     # Use BLIP Analyzer if configured
     if USE_BLIP_ANALYZER:
@@ -951,32 +964,26 @@ def analyze_frame(
         except Exception as e:
             print(f"CLIP Analyzer failed, falling back to standard: {e}")
     
-    # Standard GPT-4o Vision (default)
-    print("Using Standard GPT-4o Vision...")
-    img_b64 = image_to_base64(image_path)
+    # Standard Gemini Vision (default)
+    print("Using Standard Gemini Vision...")
+    from src.unified_context import get_vlm_prompt_context
+
+    frame_history = get_vlm_prompt_context(frame_id, window=5)
     user_prompt = USER_PROMPT_TEMPLATE.replace("{telemetry}", json.dumps(telemetry, indent=2))
-    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    user_prompt = (
+        f"=== PRIOR SESSION CONTEXT ===\n{frame_history}\n\n=== CURRENT FRAME ===\n{user_prompt}"
+    )
+    full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
     start = time.time()
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": user_prompt},
-                        {
-                            "type": "image_url",
-                            "image_url": {"url": f"data:image/jpeg;base64,{img_b64}"}
-                        }
-                    ]
-                }
-            ],
-            max_tokens=512
-        )
+        from src.api_retry import is_quota_exhausted_error, mark_quota_exhausted
+
+        gemini = generate_vision(full_prompt, image_path, max_output_tokens=4096, temperature=0.2)
+        if not gemini.get("success"):
+            raise RuntimeError(gemini.get("error", "Gemini vision failed"))
         elapsed = int((time.time() - start) * 1000)
-        content = response.choices[0].message.content
+        content = gemini["text"]
+        model_label = gemini.get("model_used", settings.GEMINI_MODEL)
         try:
             analysis = extract_json_payload(content)
         except Exception:
@@ -990,7 +997,7 @@ def analyze_frame(
             "timestamp": telemetry["timestamp"],
             "location": telemetry["location"],
             **analysis,
-            "model_used": "gpt-4o",
+            "model_used": model_label,
             "processing_time_ms": elapsed
         }
         out_path = output_dir / f"{frame_id}_analysis.json"
@@ -1000,6 +1007,10 @@ def analyze_frame(
         return result
     except Exception as e:
         print(f"Vision analysis failed for {frame_id}: {e}")
+        if is_quota_exhausted_error(e):
+            mark_quota_exhausted()
+        if quota_exhausted() or _use_offline_vision():
+            return _save_offline_result(frame_id, image_path, telemetry, output_dir)
         return {}
 
 def analyze_all_frames():
@@ -1017,14 +1028,20 @@ def analyze_all_frames():
     telemetry_lookup = {t.get("frame_id", f"frame_{i+1:03d}"): t 
                          for i, t in enumerate(all_telemetry)}
     
+    from src.unified_context import get_unified_context
+
+    unified = get_unified_context(session_dir=settings.SESSION_DIR)
     session_context = load_session_context()
     context_store = load_context_summaries()
     all_results = []
     for i, frame in enumerate(frame_meta):
         frame_id = f"frame_{i+1:03}"
-        # Use the latest extracted folder instead of the default extracted directory
-        latest_extracted_folder = get_latest_extracted_folder()
-        image_path = Path(latest_extracted_folder) / frame["filename"]
+        extracted_root = settings.EXTRACTED_DIR
+        if not os.environ.get("SESSION_ID"):
+            latest_extracted_folder = get_latest_extracted_folder()
+            if latest_extracted_folder and Path(latest_extracted_folder).exists():
+                extracted_root = Path(latest_extracted_folder)
+        image_path = extracted_root / frame["filename"]
         
         # Get telemetry by frame_id (handles rejected frames gracefully)
         telemetry = telemetry_lookup.get(frame_id)
@@ -1042,14 +1059,15 @@ def analyze_all_frames():
             # Skip this frame and continue
             all_results.append(None)
             continue
-            
+
+        telemetry = unified.ensure_telemetry_session_id(telemetry)
         result = analyze_frame(frame_id, image_path, telemetry)
         all_results.append(result)
 
         if result:
             alert_summary = derive_alert_from_analysis(result, telemetry)
-            session_context = update_session_context(session_context, telemetry, result, alert_summary)
-            persist_context_summary(frame_id, telemetry, result, session_context, alert_summary, context_store)
+            session_context = unified.record_frame(frame_id, telemetry, result, alert_summary)
+            context_store = unified.load_summaries_store()
     # Save combined
     combined_path = settings.ANALYSIS_DIR / "all_analysis.json"
     with open(combined_path, "w", encoding="utf-8") as f:

@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-from openai import OpenAI
+from src.gemini_client import generate_text
 from src.config import settings
 
 SUMMARY_PATH = settings.SESSION_DIR / "session_summary.json"
@@ -330,14 +330,8 @@ def _enforce_summary_schema(
 
 def generate_one_line_summary(session_context: dict) -> str:
     prompt = ONE_LINE_PROMPT.format(**session_context)
-    client = OpenAI(api_key=settings.OPENAI_API_KEY)
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=60,
-        )
-        return response.choices[0].message.content.strip()
+        return generate_text(prompt, max_output_tokens=60).strip()
     except Exception:
         return (
             f"Session processed {session_context.get('frames_analyzed', 0)} frames with "
@@ -346,18 +340,15 @@ def generate_one_line_summary(session_context: dict) -> str:
         )
 
 
-def _request_session_summary(client: OpenAI, prompt: str) -> str:
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=1200,
-        response_format={"type": "json_object"},
-    )
-    return response.choices[0].message.content.strip()
+def _request_session_summary(prompt: str) -> str:
+    return generate_text(
+        prompt + "\n\nRespond with valid JSON only.",
+        max_output_tokens=1200,
+        temperature=0.2,
+    ).strip()
 
 
 def _generate_summary_with_retries(
-    client: OpenAI,
     base_prompt: str,
     all_analysis: List[Dict[str, Any]],
     all_alerts: Dict[str, Any],
@@ -378,7 +369,7 @@ def _generate_summary_with_retries(
             )
 
         try:
-            raw = _request_session_summary(client, attempt_prompt)
+            raw = _request_session_summary(attempt_prompt)
             parsed = _extract_json_payload(raw)
             if parsed is None:
                 previous_response = raw
@@ -397,14 +388,12 @@ def generate_session_summary():
         all_alerts = json.load(f)
     with open(settings.SESSION_DIR / "session_context.json", "r", encoding="utf-8") as f:
         session_context = json.load(f)
-    client = OpenAI(api_key=settings.OPENAI_API_KEY)
     prompt = SESSION_PROMPT + json.dumps({
         "all_analysis": all_analysis,
         "all_alerts": all_alerts,
         "session_context": session_context
     }, indent=2)
     summary = _generate_summary_with_retries(
-        client=client,
         base_prompt=prompt,
         all_analysis=all_analysis,
         all_alerts=all_alerts,

@@ -21,21 +21,17 @@ import time
 import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from openai import OpenAI
 from src.config import settings
+from src.gemini_client import generate_vision
+from src.api_retry import quota_exhausted, is_quota_exhausted_error
 
-# Import context management
+# Unified context (JSON + structured timeline + optional Mongo)
 try:
-    from src.context_manager import (
-        get_session_context, 
-        update_frame_context,
-        get_frame_context_summary,
-        save_session_context
-    )
+    from src.unified_context import get_unified_context, get_vlm_prompt_context
     CONTEXT_AVAILABLE = True
 except ImportError:
     CONTEXT_AVAILABLE = False
-    print("[WARNING] Context manager not available")
+    print("[WARNING] Unified context not available")
 
 # Hugging Face API configuration
 HF_API_TOKEN = settings.HF_API_TOKEN
@@ -51,11 +47,25 @@ class CloudEnhancedAnalyzer:
     """Cloud-based analyzer using Hugging Face Inference API + local GPT-4o."""
     
     def __init__(self):
-        self.openai_client = OpenAI(api_key=settings.OPENAI_API_KEY)
         self.hf_headers = {
             "Authorization": f"Bearer {HF_API_TOKEN}"
         } if HF_API_TOKEN else {}
         self.request_count = 0
+        self.skip_hf = os.environ.get("SKIP_HF_APIS", "").lower() in ("1", "true", "yes")
+        self.single_gpt_stage = os.environ.get("GPT_SINGLE_STAGE", "true").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
+
+    def _hf_post(self, url: str, label: str, **kwargs) -> requests.Response:
+        """HF inference with backoff (429/503/409)."""
+
+        def _do() -> requests.Response:
+            self.request_count += 1
+            return requests.post(url, headers=self.hf_headers, timeout=60, **kwargs)
+
+        return call_with_retry(_do, label=label)
         
     def analyze_frame_cloud(self, image_path: Path, telemetry: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -71,22 +81,20 @@ class CloudEnhancedAnalyzer:
         start_time = time.time()
         print(f"[CLOUD] Starting cloud-enhanced analysis for {image_path.name}")
         
-        # Get session ID from telemetry or environment
-        session_id = telemetry.get('session_id', os.environ.get('SESSION_ID', 'default'))
+        telemetry = dict(telemetry)
         frame_id = telemetry.get('frame_id', 'unknown')
-        frame_number = int(frame_id.split('_')[1]) if 'frame_' in frame_id else 0
-        
-        # Load previous context from MongoDB
-        session_context = None
+
         frame_history = ""
-        if CONTEXT_AVAILABLE and session_id != 'default':
+        if CONTEXT_AVAILABLE:
             try:
-                session_context = get_session_context(session_id)
-                frame_history = get_frame_context_summary(session_id, frame_number, window_size=5)
-                print(f"[CLOUD] Loaded context for session {session_id}, frame {frame_id}")
-                print(f"[CLOUD] Previous context: {frame_history[:200]}...")
+                unified = get_unified_context()
+                telemetry = unified.ensure_telemetry_session_id(telemetry)
+                frame_history = get_vlm_prompt_context(frame_id, window=5)
+                print(f"[CLOUD] Session {telemetry.get('session_id')} | context loaded ({len(frame_history)} chars)")
+                if frame_history:
+                    print(f"[CLOUD] Context preview: {frame_history[:200]}...")
             except Exception as e:
-                print(f"[WARNING] Failed to load context: {e}")
+                print(f"[WARNING] Failed to load unified context: {e}")
         
         # Load and encode image
         with open(image_path, "rb") as f:
@@ -100,31 +108,34 @@ class CloudEnhancedAnalyzer:
             'blip_analysis': None,
             'gpt4o_analysis': None,
             'overall_threat_level': 'UNKNOWN',
-            'analysis_method': 'Cloud CLIP + BLIP + GPT-4o',
+            'analysis_method': 'Cloud CLIP + BLIP + Gemini',
             'model_used': 'CloudEnhancedAnalyzer',
             'processing_time_ms': 0,
             'session_context': frame_history  # Store for reference
         }
         
-        # Step 1: Cloud CLIP Analysis (parallel with BLIP)
-        print("[CLOUD] Calling Hugging Face CLIP API...")
-        try:
-            clip_results = self._analyze_with_clip_cloud(image_b64)
-            results['clip_analysis'] = clip_results
-            print(f"[OK] CLIP analysis complete - Threat score: {clip_results.get('threat_score', 0)}")
-        except Exception as e:
-            print(f"[WARNING] CLIP API failed: {e}")
-            results['clip_analysis'] = {'error': str(e), 'threat_score': 0}
-        
-        # Step 2: Cloud BLIP Analysis (parallel with CLIP)
-        print("[CLOUD] Calling Hugging Face BLIP API...")
-        try:
-            blip_results = self._analyze_with_blip_cloud(image_b64, image_bytes)
-            results['blip_analysis'] = blip_results
-            print(f"[OK] BLIP analysis complete - Caption: {blip_results.get('caption', 'N/A')[:50]}...")
-        except Exception as e:
-            print(f"[WARNING] BLIP API failed: {e}")
-            results['blip_analysis'] = {'error': str(e), 'caption': ''}
+        if self.skip_hf or quota_exhausted():
+            print("[CLOUD] Skipping HF CLIP/BLIP (SKIP_HF_APIS or quota guard)")
+            results["clip_analysis"] = {"skipped": True, "threat_score": 0, "matches": []}
+            results["blip_analysis"] = {"skipped": True, "caption": "", "insights": {}}
+        else:
+            print("[CLOUD] Calling Hugging Face CLIP API...")
+            try:
+                clip_results = self._analyze_with_clip_cloud(image_b64)
+                results["clip_analysis"] = clip_results
+                print(f"[OK] CLIP complete - threat score: {clip_results.get('threat_score', 0)}")
+            except Exception as e:
+                print(f"[WARNING] CLIP API failed: {e}")
+                results["clip_analysis"] = {"error": str(e), "threat_score": 0}
+
+            print("[CLOUD] Calling Hugging Face BLIP API...")
+            try:
+                blip_results = self._analyze_with_blip_cloud(image_b64, image_bytes)
+                results["blip_analysis"] = blip_results
+                print(f"[OK] BLIP complete - caption: {blip_results.get('caption', 'N/A')[:50]}...")
+            except Exception as e:
+                print(f"[WARNING] BLIP API failed: {e}")
+                results["blip_analysis"] = {"error": str(e), "caption": ""}
         
         # Step 3: Build enhanced context from CLIP + BLIP
         enhanced_context = self._build_enhanced_context(
@@ -133,12 +144,13 @@ class CloudEnhancedAnalyzer:
         )
         results['enhanced_context'] = enhanced_context
         
-        # Step 4: TWO-STAGE GPT-4o Analysis
-        # Stage 1: Initial analysis with neutral prompt
-        print("[AI] Stage 1: Initial GPT-4o analysis...")
+        # Step 4: TWO-STAGE Gemini VLM analysis
+        print("[AI] Stage 1: Initial Gemini analysis...")
         gpt4o_results_stage1 = None
         try:
-            gpt4o_results_stage1 = self._analyze_with_gpt4o(image_path, enhanced_context, telemetry, stage=1)
+            gpt4o_results_stage1 = self._analyze_with_gemini(
+                image_path, enhanced_context, telemetry, stage=1, frame_history=frame_history
+            )
             results['gpt4o_analysis_stage1'] = gpt4o_results_stage1
             
             # Check if suspicious keywords detected in stage 1
@@ -158,25 +170,39 @@ class CloudEnhancedAnalyzer:
             stage1_lower = stage1_text.lower()
             suspicious_detected = [kw for kw in suspicious_keywords if kw in stage1_lower]
             
-            if suspicious_detected:
-                print(f"[ALERT] Suspicious keywords detected in Stage 1: {suspicious_detected}")
-                print("[AI] Stage 2: Running security-focused analysis...")
-                
-                # Stage 2: Security-focused analysis
-                enhanced_context_stage2 = enhanced_context + f"\n\n[SECURITY ALERT] Stage 1 detected suspicious behaviors: {', '.join(suspicious_detected)}. Analyze specifically for theft/concealment behaviors."
-                
-                gpt4o_results = self._analyze_with_gpt4o(image_path, enhanced_context_stage2, telemetry, stage=2)
-                results['gpt4o_analysis'] = gpt4o_results
-                results['suspicious_keywords_detected'] = suspicious_detected
-                print("[OK] Two-stage analysis complete with security focus")
+            if suspicious_detected and not self.single_gpt_stage:
+                print(f"[ALERT] Suspicious keywords in Stage 1: {suspicious_detected}")
+                print("[AI] Stage 2: security-focused analysis...")
+                enhanced_context_stage2 = (
+                    enhanced_context
+                    + f"\n\n[SECURITY ALERT] Stage 1: {', '.join(suspicious_detected)}."
+                )
+                gpt4o_results = self._analyze_with_gemini(
+                    image_path,
+                    enhanced_context_stage2,
+                    telemetry,
+                    stage=2,
+                    frame_history=frame_history,
+                )
+                results["gpt4o_analysis"] = gpt4o_results
+                results["suspicious_keywords_detected"] = suspicious_detected
+                print("[OK] Two-stage analysis complete")
+            elif suspicious_detected and self.single_gpt_stage:
+                results["gpt4o_analysis"] = gpt4o_results_stage1
+                results["suspicious_keywords_detected"] = suspicious_detected
+                print("[OK] Single-stage mode — skipping extra GPT call (rate limit guard)")
             else:
                 # No suspicious activity, use stage 1 results
                 results['gpt4o_analysis'] = gpt4o_results_stage1
                 print("[OK] Stage 1 sufficient - no suspicious activity detected")
                 
         except Exception as e:
-            print(f"[ERROR] GPT-4o analysis failed: {e}")
-            results['gpt4o_analysis'] = {'success': False, 'error': str(e)}
+            print(f"[ERROR] Gemini analysis failed: {e}")
+            if is_quota_exhausted_error(e):
+                from src.api_retry import mark_quota_exhausted
+
+                mark_quota_exhausted()
+            results["gpt4o_analysis"] = {"success": False, "error": str(e)}
         
         # Step 5: Calculate overall threat
         results['overall_threat_level'] = self._calculate_overall_threat(
@@ -188,25 +214,7 @@ class CloudEnhancedAnalyzer:
         results['processing_time_ms'] = int((time.time() - start_time) * 1000)
         print(f"[OK] Cloud-enhanced analysis complete in {results['processing_time_ms']}ms")
         
-        # Step 6: Update and save session context
-        if CONTEXT_AVAILABLE and session_id != 'default':
-            try:
-                frame_data = {
-                    'frame_id': frame_id,
-                    'timestamp': telemetry.get('timestamp', 0),
-                    'threat_level': results['overall_threat_level'],
-                    'threat_type': results.get('threat_type', 'clear'),
-                    'people_count': results.get('people_count', 0),
-                    'activity': results.get('activity', ''),
-                    'security_signals': results.get('security_signals', []),
-                    'vlm_description': results.get('vlm_description', '')
-                }
-                
-                updated_context = update_frame_context(session_id, frame_data)
-                print(f"[CONTEXT] Updated context: {updated_context.running_summary}")
-            except Exception as e:
-                print(f"[WARNING] Failed to update context: {e}")
-        
+        # Context persistence is handled by vision_analyzer.analyze_all_frames via unified_context
         return results
     
     def _analyze_with_clip_cloud(self, image_b64: str) -> Dict[str, Any]:
@@ -297,16 +305,15 @@ class CloudEnhancedAnalyzer:
         
         try:
             # Call Hugging Face CLIP API
-            response = requests.post(
+            response = self._hf_post(
                 f"{HF_API_URL}/{CLIP_MODEL}",
-                headers=self.hf_headers,
+                "hf-clip",
                 json={
                     "inputs": {
                         "image": image_b64,
-                        "candidate_labels": security_prompts
+                        "candidate_labels": security_prompts[:20],
                     }
                 },
-                timeout=30
             )
             
             if response.status_code == 200:
@@ -374,11 +381,10 @@ class CloudEnhancedAnalyzer:
         
         try:
             # Get image caption
-            caption_response = requests.post(
+            caption_response = self._hf_post(
                 f"{HF_API_URL}/{BLIP_CAPTION_MODEL}",
-                headers=self.hf_headers,
-                data=image_bytes,  # BLIP models usually take raw bytes
-                timeout=30
+                "hf-blip",
+                data=image_bytes,
             )
             
             caption = ""
@@ -461,18 +467,16 @@ class CloudEnhancedAnalyzer:
         
         return "\n".join(context_parts) if context_parts else "No enhanced context available."
     
-    def _analyze_with_gpt4o(self, image_path: Path, enhanced_context: str, 
-                           telemetry: Dict[str, Any], stage: int = 1) -> Dict[str, Any]:
-        """Analyze with GPT-4o using enhanced context.
-        
-        Stage 1: Neutral observation to detect suspicious keywords
-        Stage 2: Security-focused analysis for confirmed threats
-        """
+    def _analyze_with_gemini(
+        self,
+        image_path: Path,
+        enhanced_context: str,
+        telemetry: Dict[str, Any],
+        stage: int = 1,
+        frame_history: str = "",
+    ) -> Dict[str, Any]:
+        """Analyze with Gemini VLM using enhanced context."""
         try:
-            # Encode image
-            with open(image_path, "rb") as img_file:
-                base64_image = base64.b64encode(img_file.read()).decode('utf-8')
-            
             # Stage-specific prompts
             if stage == 1:
                 # STAGE 1: Initial observation with context-aware analysis
@@ -622,28 +626,21 @@ Provide security assessment in JSON:
 
 IMPORTANT: Consider WHERE the action is happening. "Person reaching toward register" is VERY different from "Person reaching toward shelf"!"""
 
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": prompt},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/jpeg;base64,{base64_image}",
-                                    "detail": "high"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                max_tokens=1500,
-                temperature=0.2
+            gemini = generate_vision(
+                prompt,
+                image_path,
+                max_output_tokens=1500,
+                temperature=0.2,
             )
-            
-            content = response.choices[0].message.content
+            if not gemini.get("success"):
+                return {
+                    "success": False,
+                    "error": gemini.get("error", "Gemini vision failed"),
+                    "gpt4o_analysis": None,
+                }
+
+            content = gemini["text"]
+            model_used = gemini.get("model_used", settings.GEMINI_MODEL)
             
             # Parse JSON to extract threat fields
             import json
@@ -656,23 +653,23 @@ IMPORTANT: Consider WHERE the action is happening. "Person reaching toward regis
                     parsed = json.loads(json_str)
                     
                     return {
-                        'success': True,
-                        'gpt4o_analysis': content,
-                        'model': 'gpt-4o',
-                        'threat_level': parsed.get('threat_level', 'UNKNOWN'),
-                        'threat_type': parsed.get('threat_type', 'unknown'),
-                        'confidence': parsed.get('confidence', 0.0),
-                        'parsed_data': parsed
+                        "success": True,
+                        "gpt4o_analysis": content,
+                        "model": model_used,
+                        "threat_level": parsed.get("threat_level", "UNKNOWN"),
+                        "threat_type": parsed.get("threat_type", "unknown"),
+                        "confidence": parsed.get("confidence", 0.0),
+                        "parsed_data": parsed,
                     }
             except Exception as e:
-                print(f"[WARNING] Could not parse GPT-4o JSON: {e}")
-            
+                print(f"[WARNING] Could not parse Gemini JSON: {e}")
+
             return {
-                'success': True,
-                'gpt4o_analysis': content,
-                'model': 'gpt-4o',
-                'threat_level': 'UNKNOWN',
-                'threat_type': 'unknown'
+                "success": True,
+                "gpt4o_analysis": content,
+                "model": model_used,
+                "threat_level": "UNKNOWN",
+                "threat_type": "unknown",
             }
             
         except Exception as e:

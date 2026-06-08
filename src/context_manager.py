@@ -1,8 +1,10 @@
 """
-context_manager.py - Session Context Management with MongoDB Integration
+context_manager.py - Session context across frames (situation memory).
 
-Tracks what's happening across frames to enable situation understanding.
-Stores context summaries in MongoDB for persistence.
+Persistence order for local testing:
+  1. In-process memory (current run)
+  2. Local JSON under settings.SESSION_DIR / rich_context.json
+  3. MongoDB (optional, when MONGODB_URI connects)
 """
 
 import json
@@ -177,16 +179,68 @@ class SessionContext:
 
 
 class ContextStore:
-    """Manages storing and retrieving context from MongoDB"""
-    
+    """Session context: memory + local JSON; MongoDB optional for cloud deploy."""
+
     def __init__(self):
         self.client = None
         self.db = None
         self.collection = None
-        self._memory_store: Dict[str, SessionContext] = {}  # Fallback
-        
-        if MONGODB_AVAILABLE:
+        self._memory_store: Dict[str, SessionContext] = {}
+        self._use_mongo = os.environ.get("USE_MONGO_CONTEXT", "").lower() in ("1", "true", "yes")
+
+        if MONGODB_AVAILABLE and self._use_mongo:
             self._connect_mongodb()
+
+    def _local_context_path(self) -> Path:
+        from src.config import settings
+
+        settings.SESSION_DIR.mkdir(parents=True, exist_ok=True)
+        return settings.SESSION_DIR / "rich_context.json"
+
+    def _context_to_dict(self, session_id: str, context: SessionContext) -> Dict[str, Any]:
+        return {
+            "session_id": session_id,
+            "frames": [asdict(f) for f in context.frames],
+            "running_summary": context.running_summary,
+            "total_people_seen": context.total_people_seen,
+            "threat_timeline": context.threat_timeline,
+            "suspicious_activities": context.suspicious_activities,
+            "last_updated": context.last_updated,
+        }
+
+    def _context_from_dict(self, doc: Dict[str, Any]) -> SessionContext:
+        context = SessionContext(
+            session_id=doc["session_id"],
+            running_summary=doc.get("running_summary", ""),
+            total_people_seen=doc.get("total_people_seen", 0),
+            threat_timeline=doc.get("threat_timeline", []),
+            suspicious_activities=doc.get("suspicious_activities", []),
+            last_updated=doc.get("last_updated", ""),
+        )
+        for frame in doc.get("frames", []):
+            context.frames.append(FrameContext(**frame))
+        return context
+
+    def _save_local(self, session_id: str, context: SessionContext) -> None:
+        path = self._local_context_path()
+        payload = self._context_to_dict(session_id, context)
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=2)
+        print(f"[CONTEXT] Saved local context -> {path}")
+
+    def _load_local(self, session_id: str) -> Optional[SessionContext]:
+        path = self._local_context_path()
+        if not path.exists():
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                doc = json.load(handle)
+            if doc.get("session_id") != session_id:
+                return None
+            return self._context_from_dict(doc)
+        except Exception as exc:
+            print(f"[CONTEXT] Local context load failed: {exc}")
+            return None
     
     def _connect_mongodb(self):
         """Connect to MongoDB"""
@@ -194,71 +248,55 @@ class ContextStore:
             mongo_uri = os.environ.get('MONGODB_URI', '')
             if mongo_uri:
                 self.client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
-                self.client.admin.command('ping')  # Test connection
-                self.db = self.client['drone_security']
-                self.collection = self.db['session_contexts']
-                print(f"[CONTEXT] MongoDB connected for context storage")
+                self.client.admin.command("ping")
+                self.db = self.client["drone_security"]
+                self.collection = self.db["session_contexts"]
+                print("[CONTEXT] MongoDB connected (USE_MONGO_CONTEXT=true)")
             else:
-                print("[CONTEXT] No MONGODB_URI, using in-memory storage")
+                print("[CONTEXT] No MONGODB_URI — local JSON context only")
         except Exception as e:
-            print(f"[CONTEXT] MongoDB connection failed: {e}, using in-memory storage")
+            print(f"[CONTEXT] MongoDB connection failed: {e} — local JSON context only")
             self.client = None
     
     def save_context(self, session_id: str, context: SessionContext):
-        """Save context to MongoDB or memory"""
+        """Save context to memory, local JSON, and optionally MongoDB."""
         try:
-            # Always save to memory
             self._memory_store[session_id] = context
-            
-            # Try MongoDB if available
+            self._save_local(session_id, context)
+
             if self.collection:
-                context_dict = {
-                    'session_id': session_id,
-                    'frames': [asdict(f) for f in context.frames],
-                    'running_summary': context.running_summary,
-                    'total_people_seen': context.total_people_seen,
-                    'threat_timeline': context.threat_timeline,
-                    'suspicious_activities': context.suspicious_activities,
-                    'last_updated': context.last_updated
-                }
-                
                 self.collection.update_one(
-                    {'session_id': session_id},
-                    {'$set': context_dict},
-                    upsert=True
+                    {"session_id": session_id},
+                    {"$set": self._context_to_dict(session_id, context)},
+                    upsert=True,
                 )
-                print(f"[CONTEXT] Saved context for session {session_id}")
+                print(f"[CONTEXT] Saved MongoDB context for session {session_id}")
         except Exception as e:
-            print(f"[CONTEXT] Save failed (using memory): {e}")
-    
+            print(f"[CONTEXT] Save failed (memory/local may still be OK): {e}")
+
     def load_context(self, session_id: str) -> Optional[SessionContext]:
-        """Load context from MongoDB or memory"""
-        # Check memory first
+        """Load context: memory -> local file -> MongoDB."""
         if session_id in self._memory_store:
             return self._memory_store[session_id]
-        
-        # Try MongoDB
+
+        context = self._load_local(session_id)
+        if context is not None:
+            self._memory_store[session_id] = context
+            print(f"[CONTEXT] Loaded local context for session {session_id}")
+            return context
+
         if self.collection:
             try:
-                doc = self.collection.find_one({'session_id': session_id})
+                doc = self.collection.find_one({"session_id": session_id})
                 if doc:
-                    context = SessionContext(
-                        session_id=doc['session_id'],
-                        running_summary=doc.get('running_summary', ''),
-                        total_people_seen=doc.get('total_people_seen', 0),
-                        threat_timeline=doc.get('threat_timeline', []),
-                        suspicious_activities=doc.get('suspicious_activities', []),
-                        last_updated=doc.get('last_updated', '')
-                    )
-                    # Restore frames
-                    for f in doc.get('frames', []):
-                        context.frames.append(FrameContext(**f))
-                    
+                    context = self._context_from_dict(doc)
                     self._memory_store[session_id] = context
+                    self._save_local(session_id, context)
+                    print(f"[CONTEXT] Loaded MongoDB context for session {session_id}")
                     return context
             except Exception as e:
-                print(f"[CONTEXT] Load failed: {e}")
-        
+                print(f"[CONTEXT] MongoDB load failed: {e}")
+
         return None
     
     def get_or_create_context(self, session_id: str) -> SessionContext:

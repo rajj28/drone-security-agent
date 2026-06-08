@@ -13,15 +13,9 @@ from typing import List, Dict
 from datetime import datetime, timedelta
 from src.config import settings
 
-# Handle SESSION_ID from environment (set by API subprocess)
-SESSION_ID = os.environ.get("SESSION_ID")
-if SESSION_ID:
-    # Use session-specific directories
-    SESSION_DIR = Path("data/sessions") / SESSION_ID
-    settings.SESSION_DIR = SESSION_DIR
-    settings.TELEMETRY_DIR = SESSION_DIR / "telemetry"
-    settings.EXTRACTED_DIR = SESSION_DIR / "extracted"
-    print(f"[Telemetry Generator] Using session directory: {SESSION_DIR}")
+from src.session_bootstrap import apply_session_layout
+
+apply_session_layout()
 
 
 def generate_telemetry(
@@ -48,8 +42,10 @@ def generate_telemetry(
         location = locations[i % len(locations)]
         zone = "restricted" if location in ["Back Entrance", "Restricted Zone"] else "public"
         after_hours = dt.hour < 6 or dt.hour >= 22
+        session_id = os.environ.get("SESSION_ID", "local_dev")
         telemetry = {
             "frame_id": frame_id,
+            "session_id": session_id,
             "timestamp": timestamp,
             "unix_time": unix_time,
             "drone": {
