@@ -31,6 +31,32 @@ Ever wished your security cameras could **actually understand** what they're see
 - API: `https://drone-security-api-27774218566.us-central1.run.app`
 - Dashboard: (deployed separately)
 
+### ⚠️ Known Deployment Issues (Being Fixed)
+
+| Issue | Status | Workaround |
+|-------|--------|------------|
+| Cloud Build substitution errors | 🔧 In Progress | Use `--source` deployment instead |
+| Docker Desktop build timeouts | 🔧 In Progress | Use Cloud Build or gCloud Run deploy |
+| SSL/TLS issues with MongoDB Atlas | ✅ Fixed | Added `tlsAllowInvalidCertificates` for container env |
+| In-memory session loss | ✅ Fixed | MongoDB persistence implemented |
+
+**Current Blockers:**
+1. `gcloud builds submit` fails with substitution key errors - use direct source deployment
+2. Docker Desktop on Windows has SSL issues with MongoDB - works fine in Cloud Run
+3. Need to verify API health endpoint after deployment
+
+**Working Deployment Command:**
+```bash
+gcloud run deploy drone-security-api \
+  --source . \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --memory 2Gi \
+  --cpu 2 \
+  --set-env-vars "GEMINI_API_KEY=your_key,PINECONE_API_KEY=your_key,MONGODB_URI=your_uri"
+```
+
 ---
 
 ### 🔥 The Magic Behind the Scenes
