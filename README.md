@@ -46,46 +46,31 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    DRONE SECURITY ANALYST AGENT                       │
-└─────────────────────────────────────────────────────────────────────┘
+<p align="center">
+  <img src="docs/images/architecture-diagram.svg" alt="System Architecture Diagram" width="100%"/>
+</p>
 
- Video Upload          Processing Pipeline              Outputs
-┌──────────┐    ┌──────────────────────────┐    ┌─────────────────┐
-│  MP4/AVI │───▶│ Intelligent Frame        │───▶│ Extracted Frames│
-│  MOV/DAV │    │ Extractor (hybrid/motion │    │ + Telemetry     │
-│  MKV/WMV │    │ /scene_change/uniform)   │    └────────┬────────┘
-│  +10 more│    └──────────────────────────┘             │
-└──────────┘                                             ▼
-                                              ┌─────────────────────┐
-                                              │ Gemini 2.5 Vision   │
-                                              │ + Cloud Analyzer     │
-                                              │ (CLIP/BLIP optional) │
-                                              └────────┬────────────┘
-                                                       │
-                          ┌────────────────────────────┼──────────────┐
-                          │                            │              │
-                          ▼                            ▼              ▼
-                 ┌─────────────────┐        ┌──────────────┐  ┌───────────┐
-                 │  Alert Engine   │        │ Pinecone     │  │ Session   │
-                 │  (5 rules +    │        │ Vector Index │  │ Summarizer│
-                 │   LLM validate)│        │ (semantic    │  │           │
-                 └────────┬───────┘        │  search)     │  └─────┬─────┘
-                          │                └──────┬───────┘        │
-                          │                       │                │
-                          ▼                       ▼                ▼
-                 ┌─────────────────────────────────────────────────────┐
-                 │           FastAPI Backend (src/api.py)               │
-                 │  /upload-video  /frames  /alerts  /search  /qa      │
-                 └──────────────────────────┬──────────────────────────┘
-                                            │
-                                            ▼
-                 ┌─────────────────────────────────────────────────────┐
-                 │        React + TypeScript Dashboard (Vite)           │
-                 │  Video Upload · Frame Viewer · Alerts · Search · QA │
-                 └─────────────────────────────────────────────────────┘
-```
+---
+
+## UI Screenshots
+
+### Homepage / Landing Page
+
+<p align="center">
+  <img src="docs/images/homepage.png" alt="Dashboard Homepage" width="90%"/>
+</p>
+
+### Frame Analysis View
+
+<p align="center">
+  <img src="docs/images/frame-analysis.jpg" alt="Frame Analysis" width="90%"/>
+</p>
+
+### AI Security Agent (Q&A)
+
+<p align="center">
+  <img src="docs/images/security-agent.jpg" alt="Security Agent Q&A" width="90%"/>
+</p>
 
 ---
 

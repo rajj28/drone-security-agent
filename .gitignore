@@ -30,3 +30,9 @@ frontend/node_modules/
 *.pdf
 sample-video.mp4
 production_reasoning_summary.txt
+
+# Allow doc images
+!docs/images/*.png
+!docs/images/*.jpg
+!docs/images/*.jpeg
+!docs/images/*.svg
