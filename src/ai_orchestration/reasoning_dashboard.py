@@ -67,7 +67,7 @@ class ReasoningDashboard:
             'avg_execution_time': orch_metrics['total_execution_time_ms'] / max(orch_metrics['workflows_executed'], 1),
             'active_agents': len([agent for agent in orch_metrics['agent_usage'].values() if agent > 0]),
             'total_reasoning_steps': sum(
-                agent['metrics']['total_reasoning_steps'] 
+                agent.get('metrics', {}).get('metrics', {}).get('total_reasoning_steps', 0)
                 for agent in metrics['agent_status'].values()
             )
         }
@@ -78,20 +78,22 @@ class ReasoningDashboard:
         performance_data = {}
         
         for agent_name, agent_info in agent_status.items():
-            metrics = agent_info['metrics']
+            metrics_outer = agent_info['metrics']
+            # The inner 'metrics' dict contains actual counters
+            metrics = metrics_outer.get('metrics', metrics_outer)
             
             performance_data[agent_name] = {
-                'tasks_completed': metrics['tasks_completed'],
-                'tasks_failed': metrics['tasks_failed'],
+                'tasks_completed': metrics.get('tasks_completed', 0),
+                'tasks_failed': metrics.get('tasks_failed', 0),
                 'success_rate': (
-                    metrics['tasks_completed'] / max(metrics['tasks_completed'] + metrics['tasks_failed'], 1) * 100
+                    metrics.get('tasks_completed', 0) / max(metrics.get('tasks_completed', 0) + metrics.get('tasks_failed', 0), 1) * 100
                 ),
-                'avg_confidence': metrics['avg_confidence'],
-                'total_processing_time': metrics['total_processing_time_ms'],
+                'avg_confidence': metrics.get('avg_confidence', 0.0),
+                'total_processing_time': metrics.get('total_processing_time_ms', 0),
                 'avg_processing_time': (
-                    metrics['total_processing_time_ms'] / max(metrics['tasks_completed'], 1)
+                    metrics.get('total_processing_time_ms', 0) / max(metrics.get('tasks_completed', 1), 1)
                 ),
-                'reasoning_steps': metrics['total_reasoning_steps']
+                'reasoning_steps': metrics.get('total_reasoning_steps', 0)
             }
             
             # Add agent-specific metrics

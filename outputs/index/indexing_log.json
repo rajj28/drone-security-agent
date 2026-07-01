@@ -1,0 +1,71 @@
+{
+  "total_indexed": 12,
+  "index_name": "flytbase",
+  "namespace": "theft_newsflare_008",
+  "integrated_inference": true,
+  "embedding_model": "llama-text-embed-v2 (Pinecone integrated)",
+  "dimensions": 768,
+  "text_field": "text",
+  "frames": [
+    {
+      "frame_id": "frame_001",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_002",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_003",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_004",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_005",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_006",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_007",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_008",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_009",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_010",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_011",
+      "status": "success",
+      "processing_time_ms": 1725
+    },
+    {
+      "frame_id": "frame_012",
+      "status": "success",
+      "processing_time_ms": 1725
+    }
+  ]
+}

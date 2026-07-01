@@ -5,11 +5,24 @@ Loads all environment variables, constants, and directory paths using pydantic f
 """
 
 import os
+import sys
 from pathlib import Path
 from typing import List
 from pydantic_settings import BaseSettings
 from pydantic import Field, ValidationError
 from dotenv import load_dotenv
+
+# Ensure stdout/stderr can emit Unicode (emoji in logs/prints) on Windows consoles
+# and pipes, which default to cp1252 and otherwise crash with UnicodeEncodeError.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+# Clear proxy settings process-wide if they cause httpx/openai client validation errors
+for env_var in ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"]:
+    os.environ.pop(env_var, None)
 
 # Load .env file
 load_dotenv()
@@ -17,6 +30,10 @@ load_dotenv()
 class Settings(BaseSettings):
     # Google Gemini (primary LLM / VLM)
     GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
+    # Optional additional keys (different GCP projects) for round-robin load sharing,
+    # which multiplies the free-tier rate limit. Leave blank if unused.
+    GEMINI_API_KEY_2: str = Field("", env="GEMINI_API_KEY_2")
+    GEMINI_API_KEY_3: str = Field("", env="GEMINI_API_KEY_3")
     GEMINI_MODEL: str = Field("gemini-2.5-pro", env="GEMINI_MODEL")
     GEMINI_FALLBACK_MODEL: str = Field("gemini-2.5-flash", env="GEMINI_FALLBACK_MODEL")
     # Production: try Flash first to avoid 4× Pro retries (~30s) on every 429
@@ -33,8 +50,12 @@ class Settings(BaseSettings):
     OPENAI_EMBEDDING_DIMENSION: int = Field(768, env="OPENAI_EMBEDDING_DIMENSION")
     
     # Agent LLM Provider (for Q&A - allows using free alternatives to Gemini)
-    AGENT_LLM_PROVIDER: str = Field("gemini", env="AGENT_LLM_PROVIDER")  # gemini, groq, ollama, openai
+    AGENT_LLM_PROVIDER: str = Field("gemini", env="AGENT_LLM_PROVIDER")  # gemini, groq, nvidia, ollama, openai
+    VISION_PROVIDER: str = Field("gemini", env="VISION_PROVIDER")  # gemini, groq
+    GROQ_VISION_MODEL: str = Field("meta-llama/llama-4-scout-17b-16e-instruct", env="GROQ_VISION_MODEL")
     GROQ_API_KEY: str = Field("", env="GROQ_API_KEY")  # Free tier: 20 req/min, 1M tokens/day
+    NVIDIA_API_KEY: str = Field("", env="NVIDIA_API_KEY")  # NVIDIA NIM free endpoint
+    NVIDIA_MODEL: str = Field("nvidia/nemotron-3-ultra-550b-a55b", env="NVIDIA_MODEL")
     OLLAMA_BASE_URL: str = Field("http://localhost:11434", env="OLLAMA_BASE_URL")
     OLLAMA_MODEL: str = Field("llama3.1", env="OLLAMA_MODEL")
 
@@ -61,17 +82,25 @@ class Settings(BaseSettings):
     # Hugging Face (for Cloud Enhanced Analyzer)
     HF_API_TOKEN: str = Field("", env="HF_API_TOKEN")
     USE_CLOUD_ANALYZER: bool = Field(True, env="USE_CLOUD_ANALYZER")
+    # Skip Hugging Face CLIP/BLIP calls (read directly via os.environ in analyzers)
+    SKIP_HF_APIS: bool = Field(False, env="SKIP_HF_APIS")
+    # Number of frames analyzed concurrently in vision analysis
+    MAX_VISION_WORKERS: int = Field(5, env="MAX_VISION_WORKERS")
 
     # One video = one session (see session_bootstrap.py)
     SESSION_ID: str = Field("", env="SESSION_ID")
     USE_MONGO_CONTEXT: bool = Field(False, env="USE_MONGO_CONTEXT")
+
+    # Pipeline execution mode: "in_process" (fast, default) runs analysis stages in the
+    # API process; "subprocess" runs each stage as a separate Python process (legacy).
+    PIPELINE_MODE: str = Field("in_process", env="PIPELINE_MODE")
 
     # App Config
     DATA_DIR: Path = Field(Path("data"), env="DATA_DIR")
     FRAMES_DIR: Path = Field(Path("data/frames"), env="FRAMES_DIR")
     EXTRACTED_DIR: Path = Field(Path("data/extracted"), env="EXTRACTED_DIR")
     OUTPUTS_DIR: Path = Field(Path("outputs"), env="OUTPUTS_DIR")
-    MAX_FRAMES: int = Field(25, env="MAX_FRAMES")
+    MAX_FRAMES: int = Field(20, env="MAX_FRAMES")
     VIDEO_FILE: Path = Field(Path("data/video.mp4"), env="VIDEO_FILE")
     VIDEO_DURATION_SECONDS: int = Field(3599, env="VIDEO_DURATION_SECONDS")
     VIDEO_FPS: int = Field(15, env="VIDEO_FPS")

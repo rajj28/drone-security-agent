@@ -1,0 +1,33 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up GCP auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        
+      - name: Build and push API
+        run: |
+          gcloud builds submit --tag gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:latest
+          
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy drone-security-api \
+            --image gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:latest \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --memory 2Gi \
+            --cpu 2

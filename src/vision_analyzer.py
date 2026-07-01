@@ -7,6 +7,16 @@ vision_analyzer.py — Analyzes each frame using GPT-4o Vision and generates str
 - OPTIMIZED: Supports multi-model analysis (CLIP, BLIP, GPT-4o) for enhanced accuracy
 """
 
+import sys
+
+# Force UTF-8 on stdout/stderr to prevent UnicodeEncodeError with emoji/unicode
+# on Windows (cp1252) when running as a subprocess or under uvicorn.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 import base64
 import json
 import re
@@ -69,21 +79,31 @@ The SAME action can be innocent or CRITICAL depending on context:
   * Person lingering near valuables without purpose
   * Vehicle following people or idling suspiciously
   * Concealing items under clothing
+  * Multiple people near a counter/display with one handling merchandise
+  * Person grabbing/picking up phones or electronics from display
+  * Coordinated behavior (one distracts staff, another takes item)
+  * Quick hand movements near merchandise displays
   
 - MEDIUM: Suspicious but unconfirmed
   * Loitering without clear purpose >30 seconds
   * Unattended bags in public areas
   * Vehicle parked in no-parking zones
   * Person acting nervous, checking surroundings frequently
+  * Multiple people gathered near phone/electronics displays
+  * Customer handling multiple high-value items simultaneously
   
 - LOW: Minor concern
   * Unfamiliar person in public area
   * Minor rule violations
   
 - CLEAR: Normal activity
-  * Shoppers browsing in retail areas
+  * Single person browsing casually with staff present
   * People walking through public spaces normally
-  * Employees in authorized areas
+  * Employees clearly performing work duties
+
+IMPORTANT: In retail/phone store environments, BIAS TOWARD HIGHER THREAT LEVELS.
+If you see multiple people near phone displays or counters with merchandise being handled,
+default to at least MEDIUM unless it is clearly a normal transaction with staff involvement.
 
 === CONTEXT-AWARE BEHAVIORAL THREATS ===
 HIGH PRIORITY INDICATORS:
@@ -131,11 +151,29 @@ Analyze this surveillance frame for security threats using SITUATION UNDERSTANDI
 4. CORRELATE BEHAVIOR: Match person's actions to their location context
 5. DETECT COVERT ACTIONS: Look for quick hand movements, concealment, nervous behavior
 
+=== DO NOT ASSUME ROLES (CRITICAL) ===
+Do NOT assume a person is an "employee", "staff", or "customer" unless they wear a visible
+uniform/badge. Thieves often stand behind counters or reach into displays exactly like staff.
+Report ONLY the OBSERVED ACTION, not an assumed role. "Person behind the counter handling
+phones" is a FACT; "employee assisting a customer" is an ASSUMPTION — avoid it.
+
+=== THEFT / SHOPLIFTING FOCUS ===
+This is a theft-detection system. For EACH person, state precisely what their hands are doing
+with merchandise/items. Treat these as suspicious and set threat_level to at least MEDIUM
+(HIGH if multiple indicators), and add to security_signals:
+- Reaching into / behind a display case, counter, shelf, or drawer
+- Picking up, holding, or taking merchandise (especially phones/electronics)
+- Putting an item into a pocket, bag, waistband, or under clothing (concealment)
+- Multiple people clustered at a counter/case while one takes items (distraction/teamwork)
+- Quickly looking around while handling items (checking for observers)
+If people are handling high-value goods in a way that is not clearly a normal supervised
+sale, flag it for operator review rather than dismissing it as normal.
+
 === KEY QUESTIONS TO ANSWER ===
 - How many people are ACTUALLY visible? (Be precise: 1, 2, 3, etc.)
-- Where exactly is each person positioned? (near counter, by door, in aisle)
-- What are their hands doing? (reaching, holding items, in pockets)
-- Does their behavior match the location? (shopper in retail vs intruder in warehouse)
+- Where exactly is each person positioned? (near counter, by door, in aisle, behind counter)
+- What EXACTLY are each person's hands doing with items? (reaching into case, taking phone, pocketing, holding)
+- Is anyone taking/concealing merchandise or reaching into restricted areas?
 - Are they aware of being watched? (looking at camera, checking surroundings)
 
 Respond ONLY with valid JSON:
@@ -426,6 +464,19 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
     # Update normalized values
     normalized["threat_level"] = threat_level
     normalized["threat_type"] = threat_type
+    normalized["threat_assessment"] = threat_level
+
+    # Ensure confidence is a float between 0 and 1
+    conf = normalized.get("confidence")
+    if conf is None:
+        normalized["confidence"] = 0.85
+    else:
+        try:
+            normalized["confidence"] = float(conf)
+            if not (0.0 <= normalized["confidence"] <= 1.0):
+                normalized["confidence"] = 0.85
+        except Exception:
+            normalized["confidence"] = 0.85
 
     normalized["objects_detected"] = _as_string_list(normalized.get("objects_detected", []))
     normalized["vehicles_detected"] = _as_string_list(normalized.get("vehicles_detected", []))
@@ -535,7 +586,7 @@ def derive_alert_from_analysis(analysis: Dict[str, Any], telemetry: Dict[str, An
 
     objects_detected = analysis.get("objects_detected", []) or []
     people_count = int(analysis.get("people_count", 0) or 0)
-    threat_assessment = str(analysis.get("threat_assessment", "none") or "none").lower()
+    threat_assessment = str(analysis.get("threat_level") or analysis.get("threat_assessment", "none") or "none").lower()
     activity = str(analysis.get("activity", "") or "").lower()
     security_signals = [str(item).lower() for item in analysis.get("security_signals", []) or []]
     alert_priority_signals = [str(item).lower() for item in analysis.get("alert_priority_signals", []) or []]
@@ -562,11 +613,11 @@ def derive_alert_from_analysis(analysis: Dict[str, Any], telemetry: Dict[str, An
         severity = "MEDIUM"
         alert_type = "loitering_detected"
         reasons.append("loitering activity observed")
-    elif threat_assessment == "high":
+    elif threat_assessment not in ["clear", "low", "none", "unknown"]:
         alert_triggered = True
-        severity = "HIGH"
+        severity = "HIGH" if any(t in threat_assessment for t in ["high", "critical"]) else "MEDIUM"
         alert_type = "threat_assessment_high"
-        reasons.append("model threat assessment is high")
+        reasons.append(f"model threat assessment is {threat_assessment}")
 
     if not alert_triggered:
         if any(signal in {"after_hours_presence", "restricted_zone_presence", "restricted_zone_vehicle"} for signal in security_signals):
@@ -713,6 +764,9 @@ def update_session_context(
                 "severity": alert_summary.get("severity"),
                 "alert_type": alert_summary.get("alert_type"),
                 "reasoning": alert_summary.get("reasoning"),
+                "threat_type": analysis.get("threat_type"),
+                "description": analysis.get("vlm_description"),
+                "activity": analysis.get("activity"),
             }
         )
 
@@ -978,7 +1032,7 @@ def analyze_frame(
     try:
         from src.api_retry import is_quota_exhausted_error, mark_quota_exhausted
 
-        gemini = generate_vision(full_prompt, image_path, max_output_tokens=4096, temperature=0.2)
+        gemini = generate_vision(full_prompt, image_path, max_output_tokens=2048, temperature=0.2)
         if not gemini.get("success"):
             raise RuntimeError(gemini.get("error", "Gemini vision failed"))
         elapsed = int((time.time() - start) * 1000)
@@ -1016,6 +1070,7 @@ def analyze_frame(
 def analyze_all_frames():
     """
     Runs analysis for all frames using telemetry and extracted images.
+    Supports parallel VLM processing for speedup, followed by thread-safe sequential post-processing.
     """
     meta_path = settings.OUTPUTS_DIR / "extraction_log.json"
     with open(meta_path, "r", encoding="utf-8") as f:
@@ -1029,11 +1084,12 @@ def analyze_all_frames():
                          for i, t in enumerate(all_telemetry)}
     
     from src.unified_context import get_unified_context
+    from concurrent.futures import ThreadPoolExecutor
 
     unified = get_unified_context(session_dir=settings.SESSION_DIR)
-    session_context = load_session_context()
-    context_store = load_context_summaries()
-    all_results = []
+    
+    # Compile a list of tasks for VLM analysis
+    tasks = []
     for i, frame in enumerate(frame_meta):
         frame_id = f"frame_{i+1:03}"
         extracted_root = settings.EXTRACTED_DIR
@@ -1047,27 +1103,55 @@ def analyze_all_frames():
         telemetry = telemetry_lookup.get(frame_id)
         if telemetry is None:
             print(f"WARNING: No telemetry for {frame_id} - frame may have been rejected")
-            all_results.append(None)
             continue
-        # Debug: Print the actual path being used
-        print(f"Processing frame {i+1}/{len(frame_meta)}: {frame_id}")
-        print(f"Looking for image at: {image_path}")
-        print(f"Image exists: {image_path.exists()}")
-        
+            
         if not image_path.exists():
             print(f"ERROR: Image file not found: {image_path}")
-            # Skip this frame and continue
+            continue
+            
+        telemetry = unified.ensure_telemetry_session_id(telemetry)
+        tasks.append((frame_id, image_path, telemetry))
+
+    # Run VLM requests in parallel
+    # Note: max_workers is set to 5 by default, but can be controlled via environment variable
+    max_workers = int(os.environ.get("MAX_VISION_WORKERS", "5"))
+    print(f"\n[VISION] Running parallel VLM analysis for {len(tasks)} frames using {max_workers} workers...")
+    
+    def _worker(task):
+        fid, img_path, tel = task
+        try:
+            print(f"Analyzing {fid} in parallel...")
+            res = analyze_frame(fid, img_path, tel)
+            return fid, tel, res
+        except Exception as exc:
+            print(f"FAILED to analyze {fid} in parallel: {exc}")
+            return fid, tel, None
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        completed = list(executor.map(_worker, tasks))
+        
+    # Sort completed tasks by frame_id to preserve chronological order
+    completed.sort(key=lambda x: x[0])
+    
+    # Sequential, thread-safe session context updates
+    all_results = []
+    # Build complete dict mapping to reconstruct the original list structure with None placeholders
+    result_map = {fid: (tel, res) for fid, tel, res in completed}
+    
+    for i, frame in enumerate(frame_meta):
+        frame_id = f"frame_{i+1:03}"
+        if frame_id not in result_map:
+            # Re-insert skipped/rejected placeholders
             all_results.append(None)
             continue
-
-        telemetry = unified.ensure_telemetry_session_id(telemetry)
-        result = analyze_frame(frame_id, image_path, telemetry)
+            
+        telemetry, result = result_map[frame_id]
         all_results.append(result)
-
+        
         if result:
             alert_summary = derive_alert_from_analysis(result, telemetry)
-            session_context = unified.record_frame(frame_id, telemetry, result, alert_summary)
-            context_store = unified.load_summaries_store()
+            unified.record_frame(frame_id, telemetry, result, alert_summary)
+            
     # Save combined
     combined_path = settings.ANALYSIS_DIR / "all_analysis.json"
     with open(combined_path, "w", encoding="utf-8") as f:

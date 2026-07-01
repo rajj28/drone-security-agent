@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_008",
+  "frame_id": "frame_008",
+  "timestamp": "16:00:56",
+  "location": "Main Gate",
+  "alert_triggered": true,
+  "severity": "HIGH",
+  "alert_type": "potential_theft_scenario",
+  "message": "Alert for frame_008 at Main Gate 16:00:56",
+  "objects_involved": [
+    "person",
+    "counter",
+    "glass case"
+  ],
+  "rule_triggered": "potential_theft_scenario",
+  "llm_validated": true,
+  "llm_reasoning": "The current frame shows suspicious behavior with three individuals interacting near the counter, and the body language of the individuals behind the counter suggests they may be hiding something or are uncomfortable, which warrants a high threat level.",
+  "recommended_action": "Security personnel should monitor the situation closely and approach the individuals to determine their intentions.",
+  "acknowledged": false,
+  "auto_escalate": true,
+  "structured_reasoning": {
+    "severity": "HIGH",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The current frame shows suspicious behavior with three individuals interacting near the counter, and the body language of the individuals behind the counter suggests they may be hiding something or are uncomfortable, which warrants a high threat level.",
+    "recommended_action": "Security personnel should monitor the situation closely and approach the individuals to determine their intentions.",
+    "confidence": 0.7,
+    "context_signal": "Recent alerts for potential theft scenarios at Driveway and Side Entrance, with similar suspicious behavior and interactions near counters."
+  }
+}

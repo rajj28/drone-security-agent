@@ -1,0 +1,56 @@
+{
+  "query": "people",
+  "namespace": "drone-security",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T23:03:27",
+  "results": [
+    {
+      "frame_id": "frame_008",
+      "similarity_score": 0.1894,
+      "timestamp": "16:00:56",
+      "location": "Main Gate",
+      "description": "Three people are visible in a retail store. Two individuals are standing behind the counter, while one person is standing on the customer side of the counter. The person behind the counter, wearing a white sweater, has their back to the camera and appears to be handling an item. The two individuals behind the counter are leaning on it, with one covering their mouth and the other with their arms crossed.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_007",
+      "similarity_score": 0.1483,
+      "timestamp": "16:00:48",
+      "location": "Side Entrance",
+      "description": "A man with dark hair and a gray sweatshirt is standing behind the counter, reaching into a drawer or handling items on the counter. Three other people are standing across from him, two on the right side of the frame and one on the left, all appearing to be waiting or observing. The scene appears to be a retail store, possibly a phone store given the 'VIVO' and 'SMARTPHONE' signage.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_010",
+      "similarity_score": 0.144,
+      "timestamp": "16:01:12",
+      "location": "Garage",
+      "description": "A single individual is standing near the counter area of what appears to be a retail store, possibly a mobile phone store, given the presence of Vivo branding and various mobile phones on display.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.1268,
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "description": "Three men are standing near the counter of a retail store. One man, wearing a gray jacket, is standing closest to the camera, holding a phone in his right hand. Another man, wearing a black jacket, is standing to his right, looking down at the phone. A third man, wearing a green jacket, is standing behind them, looking down at something on the counter.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_009",
+      "similarity_score": 0.1162,
+      "timestamp": "16:01:04",
+      "location": "Perimeter North",
+      "description": "Three men are present in a retail store. One man is standing behind the counter, handling a phone. Another man is standing near the counter, looking down. A third man is standing to the right, looking down.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_003",
+      "similarity_score": 0.11,
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "description": "Four men are gathered around a counter in a retail store. One man is standing on the customer side of the counter, while the other three are on the staff side. The standing man is holding a phone and appears to be interacting with the staff.",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

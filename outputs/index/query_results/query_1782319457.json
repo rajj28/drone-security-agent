@@ -1,0 +1,48 @@
+{
+  "query": "Show me all high severity alerts",
+  "namespace": "drone-security",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T22:14:17",
+  "results": [
+    {
+      "frame_id": "frame_004",
+      "similarity_score": 0.0243,
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "description": "Three men are gathered around a counter in a retail store. The man in the center is holding a white smartphone and appears to be showing it to the other two men. The man on the right is wearing a black jacket and holding the phone with his left hand. The man on the left is wearing a green shirt and appears to be observing the phone. The counter has glass display cases on top and blue drawers underneath.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_005",
+      "similarity_score": 0.0221,
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "description": "Five men are present in a retail store, specifically behind and in front of the counter. One man is handling items on the counter, while another is opening a drawer. The scene appears to be a cell phone store.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_010",
+      "similarity_score": 0.0209,
+      "timestamp": "16:01:12",
+      "location": "Garage",
+      "description": "A single individual is standing near the counter area of what appears to be a retail store, possibly a mobile phone store, given the presence of Vivo branding and various mobile phones on display.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_007",
+      "similarity_score": 0.0119,
+      "timestamp": "16:00:48",
+      "location": "Side Entrance",
+      "description": "A man with dark hair and a gray sweatshirt is standing behind the counter, reaching into a drawer or handling items on the counter. Three other people are standing across from him, two on the right side of the frame and one on the left, all appearing to be waiting or observing. The scene appears to be a retail store, possibly a phone store given the 'VIVO' and 'SMARTPHONE' signage.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_002",
+      "similarity_score": -0.0,
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "description": "Four men are gathered around a counter in a retail store. One man, wearing a gray sweater, stands on the customer side of the counter, holding a phone in his right hand. Three men, wearing jackets, stand on the other side of the counter, looking down at the counter area.",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

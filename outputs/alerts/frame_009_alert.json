@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_009",
+  "frame_id": "frame_009",
+  "timestamp": "16:01:04",
+  "location": "Perimeter North",
+  "alert_triggered": true,
+  "severity": "MEDIUM",
+  "alert_type": "potential_theft_scenario",
+  "message": "Alert for frame_009 at Perimeter North 16:01:04",
+  "objects_involved": [
+    "person",
+    "smartphone",
+    "display case"
+  ],
+  "rule_triggered": "potential_theft_scenario",
+  "llm_validated": true,
+  "llm_reasoning": "The scene shows suspicious behavior with a man taking a photo of the display case contents, but it does not directly indicate a high-level threat.",
+  "recommended_action": "Monitor the individuals for further suspicious activity, check if they are customers or employees, and verify their purpose in the store.",
+  "acknowledged": false,
+  "auto_escalate": false,
+  "structured_reasoning": {
+    "severity": "MEDIUM",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The scene shows suspicious behavior with a man taking a photo of the display case contents, but it does not directly indicate a high-level threat.",
+    "recommended_action": "Monitor the individuals for further suspicious activity, check if they are customers or employees, and verify their purpose in the store.",
+    "confidence": 0.6,
+    "context_signal": "Recent alerts for potential_theft_scenario at Side Entrance and Main Gate"
+  }
+}

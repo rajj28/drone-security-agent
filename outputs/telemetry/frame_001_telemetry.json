@@ -1,5 +1,6 @@
 {
   "frame_id": "frame_001",
+  "session_id": "local_dev",
   "timestamp": "16:00:00",
   "unix_time": 1675267200.0,
   "drone": {

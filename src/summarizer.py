@@ -15,7 +15,22 @@ from typing import Any, Dict, List
 from src.gemini_client import generate_text
 from src.config import settings
 
-SUMMARY_PATH = settings.SESSION_DIR / "session_summary.json"
+def _summary_path() -> Path:
+    """Resolve the summary output path at call time (session-aware)."""
+    return settings.SESSION_DIR / "session_summary.json"
+
+
+def _load_json_safe(path: Path, default: Any) -> Any:
+    """Load JSON, returning a default if the file is missing or unreadable.
+
+    Pipeline stages may produce no session_context/alerts when every vision frame fails
+    (e.g. rate limits); the summary must still complete with a graceful degraded result.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return default
 
 ONE_LINE_PROMPT = """
 You are a security operations center AI.
@@ -182,24 +197,31 @@ def _build_fallback_summary(
         else:
             no_trigger_alerts += 1
 
-    total_frames = _safe_int(session_context.get("frames_analyzed", len(all_analysis)))
+    # Authoritative counts derived directly from the per-frame analysis (not the
+    # session_context counters, which are incremented by multiple stages and would
+    # double-count). people_count = max people seen in any single frame (a sane proxy
+    # for "how many people were present"), since summing per-frame counts inflates it.
+    per_frame_people = [_safe_int(row.get("people_count", 0)) for row in all_analysis if isinstance(row, dict)]
+    max_people = max(per_frame_people) if per_frame_people else 0
+    valid_frame_count = sum(1 for row in all_analysis if isinstance(row, dict))
+    total_frames = valid_frame_count or _safe_int(session_context.get("frames_analyzed", len(all_analysis)))
     locations = _as_string_list(session_context.get("locations_visited", []))
 
     return {
         "session_summary": {
             "date": time.strftime("%Y-%m-%d"),
             "total_frames_analyzed": total_frames,
-            "total_alerts": _safe_int(session_context.get("total_alerts", triggered_alerts)),
-            "high_alerts": _safe_int(session_context.get("high_alerts", severity_counts["HIGH"])),
-            "medium_alerts": _safe_int(session_context.get("medium_alerts", severity_counts["MEDIUM"])),
-            "low_alerts": _safe_int(session_context.get("low_alerts", severity_counts["LOW"])),
+            "total_alerts": triggered_alerts,
+            "high_alerts": severity_counts["HIGH"],
+            "medium_alerts": severity_counts["MEDIUM"],
+            "low_alerts": severity_counts["LOW"],
             "common_objects_detected": common_objects,
-            "people_count": _safe_int(session_context.get("people_detected", 0)),
+            "people_count": max_people,
             "vehicles_count": _safe_int(session_context.get("vehicles_detected", 0)),
             "locations_visited": locations,
             "session_highlights": (
-                f"Processed {total_frames} frames with {_safe_int(session_context.get('total_alerts', triggered_alerts))} alerts. "
-                f"Highest severity count: {_safe_int(session_context.get('high_alerts', severity_counts['HIGH']))}."
+                f"Processed {total_frames} frames with {triggered_alerts} alerts. "
+                f"Highest severity count: {severity_counts['HIGH']}."
             ),
         },
         "system_operations": {
@@ -251,20 +273,17 @@ def _enforce_summary_schema(
     normalized = {
         "session_summary": {
             "date": str(session_summary.get("date") or fallback["session_summary"]["date"]),
-            "total_frames_analyzed": _safe_int(
-                session_summary.get("total_frames_analyzed"),
-                fallback["session_summary"]["total_frames_analyzed"],
-            ),
-            "total_alerts": _safe_int(session_summary.get("total_alerts"), fallback["session_summary"]["total_alerts"]),
-            "high_alerts": _safe_int(session_summary.get("high_alerts"), fallback["session_summary"]["high_alerts"]),
-            "medium_alerts": _safe_int(
-                session_summary.get("medium_alerts"), fallback["session_summary"]["medium_alerts"]
-            ),
-            "low_alerts": _safe_int(session_summary.get("low_alerts"), fallback["session_summary"]["low_alerts"]),
+            # Frame/people/alert counts are authoritative from data — never trust the LLM's
+            # echoed numbers here (it tends to hallucinate or repeat inflated counts).
+            "total_frames_analyzed": fallback["session_summary"]["total_frames_analyzed"],
+            "total_alerts": fallback["session_summary"]["total_alerts"],
+            "high_alerts": fallback["session_summary"]["high_alerts"],
+            "medium_alerts": fallback["session_summary"]["medium_alerts"],
+            "low_alerts": fallback["session_summary"]["low_alerts"],
             "common_objects_detected": _as_string_list(
                 session_summary.get("common_objects_detected", fallback["session_summary"]["common_objects_detected"])
             ),
-            "people_count": _safe_int(session_summary.get("people_count"), fallback["session_summary"]["people_count"]),
+            "people_count": fallback["session_summary"]["people_count"],
             "vehicles_count": _safe_int(session_summary.get("vehicles_count"), fallback["session_summary"]["vehicles_count"]),
             "locations_visited": _as_string_list(
                 session_summary.get("locations_visited", fallback["session_summary"]["locations_visited"])
@@ -348,15 +367,27 @@ def _request_session_summary(prompt: str) -> str:
     ).strip()
 
 
+def _use_offline_summary() -> bool:
+    import os
+    return (
+        os.getenv("OFFLINE_VISION", "").lower() in ("1", "true", "yes") or
+        os.getenv("OFFLINE_SUMMARY", "").lower() in ("1", "true", "yes")
+    )
+
+
 def _generate_summary_with_retries(
     base_prompt: str,
     all_analysis: List[Dict[str, Any]],
     all_alerts: Dict[str, Any],
     session_context: Dict[str, Any],
-    max_attempts: int = 3,
+    max_attempts: int = 1,
 ) -> Dict[str, Any]:
     """Retries summary generation and parse repair before deterministic fallback."""
     fallback = _build_fallback_summary(all_analysis, all_alerts, session_context)
+    if _use_offline_summary():
+        print("[SUMMARIZER] Using offline fallback summary (OFFLINE_VISION/OFFLINE_SUMMARY is true)")
+        return _enforce_summary_schema(fallback, all_analysis, all_alerts, session_context)
+
     previous_response = ""
 
     for attempt in range(1, max_attempts + 1):
@@ -378,16 +409,14 @@ def _generate_summary_with_retries(
         except Exception as exc:
             previous_response = f"Attempt {attempt} failed: {exc}"
 
+    print("[SUMMARIZER] VLM/LLM summary generation failed or rate limited, falling back to local summary.")
     return _enforce_summary_schema(fallback, all_analysis, all_alerts, session_context)
 
 def generate_session_summary():
     print("\nGenerating session summary...")
-    with open(settings.ANALYSIS_DIR / "all_analysis.json", "r", encoding="utf-8") as f:
-        all_analysis = json.load(f)
-    with open(settings.ALERTS_DIR / "all_alerts.json", "r", encoding="utf-8") as f:
-        all_alerts = json.load(f)
-    with open(settings.SESSION_DIR / "session_context.json", "r", encoding="utf-8") as f:
-        session_context = json.load(f)
+    all_analysis = _load_json_safe(settings.ANALYSIS_DIR / "all_analysis.json", [])
+    all_alerts = _load_json_safe(settings.ALERTS_DIR / "all_alerts.json", {"alerts": []})
+    session_context = _load_json_safe(settings.SESSION_DIR / "session_context.json", {})
     prompt = SESSION_PROMPT + json.dumps({
         "all_analysis": all_analysis,
         "all_alerts": all_alerts,
@@ -401,10 +430,22 @@ def generate_session_summary():
         max_attempts=3,
     )
 
-    summary["one_line_summary"] = generate_one_line_summary(session_context)
-    with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
+    # Feed the one-line summary the authoritative numbers, not the double-counted context.
+    _ss = summary.get("session_summary", {})
+    corrected_context = {
+        "frames_analyzed": _ss.get("total_frames_analyzed", 0),
+        "total_alerts": _ss.get("total_alerts", 0),
+        "high_alerts": _ss.get("high_alerts", 0),
+        "people_detected": _ss.get("people_count", 0),
+        "vehicles_detected": _ss.get("vehicles_count", 0),
+        "incidents": session_context.get("incidents", []),
+        "locations_visited": _ss.get("locations_visited", []),
+    }
+    summary["one_line_summary"] = generate_one_line_summary(corrected_context)
+    summary_path = _summary_path()
+    with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
-    print(f"Session summary saved to {SUMMARY_PATH}")
+    print(f"Session summary saved to {summary_path}")
     return summary
 
 if __name__ == "__main__":

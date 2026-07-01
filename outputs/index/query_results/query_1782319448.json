@@ -1,0 +1,48 @@
+{
+  "query": "What happened at the restricted zone?",
+  "namespace": "drone-security",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T22:14:08",
+  "results": [
+    {
+      "frame_id": "frame_003",
+      "similarity_score": 0.0909,
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "description": "Four men are gathered around a counter in a retail store. One man is standing on the customer side of the counter, while the other three are on the staff side. The standing man is holding a phone and appears to be interacting with the staff.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.0884,
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "description": "Three men are standing near the counter of a retail store. One man, wearing a gray jacket, is standing closest to the camera, holding a phone in his right hand. Another man, wearing a black jacket, is standing to his right, looking down at the phone. A third man, wearing a green jacket, is standing behind them, looking down at something on the counter.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_005",
+      "similarity_score": 0.0716,
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "description": "Five men are present in a retail store, specifically behind and in front of the counter. One man is handling items on the counter, while another is opening a drawer. The scene appears to be a cell phone store.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_002",
+      "similarity_score": 0.071,
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "description": "Four men are gathered around a counter in a retail store. One man, wearing a gray sweater, stands on the customer side of the counter, holding a phone in his right hand. Three men, wearing jackets, stand on the other side of the counter, looking down at the counter area.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_008",
+      "similarity_score": 0.0639,
+      "timestamp": "16:00:56",
+      "location": "Main Gate",
+      "description": "Three people are visible in a retail store. Two individuals are standing behind the counter, while one person is standing on the customer side of the counter. The person behind the counter, wearing a white sweater, has their back to the camera and appears to be handling an item. The two individuals behind the counter are leaning on it, with one covering their mouth and the other with their arms crossed.",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

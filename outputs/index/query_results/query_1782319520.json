@@ -1,0 +1,48 @@
+{
+  "query": "Was anything detected after hours?",
+  "namespace": "drone-security",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T22:15:20",
+  "results": [
+    {
+      "frame_id": "frame_012",
+      "similarity_score": 0.069,
+      "timestamp": "16:01:28",
+      "location": "Restricted Zone",
+      "description": "The surveillance footage shows a single individual standing inside a retail store, specifically in the staff area. The man has dark hair and is wearing a gray hoodie and blue jeans. He appears to be leaning on a counter or shelf with his right hand.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_011",
+      "similarity_score": 0.0618,
+      "timestamp": "16:01:20",
+      "location": "Back Entrance",
+      "description": "The surveillance footage shows a single individual inside a retail store, specifically in the staff area. The person is standing near the counter, with their back to the camera.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_007",
+      "similarity_score": 0.0578,
+      "timestamp": "16:00:48",
+      "location": "Side Entrance",
+      "description": "A man with dark hair and a gray sweatshirt is standing behind the counter, reaching into a drawer or handling items on the counter. Three other people are standing across from him, two on the right side of the frame and one on the left, all appearing to be waiting or observing. The scene appears to be a retail store, possibly a phone store given the 'VIVO' and 'SMARTPHONE' signage.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.0373,
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "description": "Three men are standing near the counter of a retail store. One man, wearing a gray jacket, is standing closest to the camera, holding a phone in his right hand. Another man, wearing a black jacket, is standing to his right, looking down at the phone. A third man, wearing a green jacket, is standing behind them, looking down at something on the counter.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_008",
+      "similarity_score": 0.0237,
+      "timestamp": "16:00:56",
+      "location": "Main Gate",
+      "description": "Three people are visible in a retail store. Two individuals are standing behind the counter, while one person is standing on the customer side of the counter. The person behind the counter, wearing a white sweater, has their back to the camera and appears to be handling an item. The two individuals behind the counter are leaning on it, with one covering their mouth and the other with their arms crossed.",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

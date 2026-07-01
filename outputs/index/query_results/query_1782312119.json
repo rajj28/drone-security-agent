@@ -1,0 +1,32 @@
+{
+  "query": "suspicious activity near cash register",
+  "namespace": "theft_newsflare_008",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T20:11:59",
+  "results": [
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.3676,
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "description": "Three men are present in a retail store. One man, wearing a gray sweatshirt and blue jeans, is standing behind the counter with his hands reaching into the display case. Two other men, one wearing a green shirt and the other a black jacket, are standing beside him, closely watching. The man in the gray sweatshirt appears to be handling items from the display case.",
+      "threat_assessment": "CRITICAL"
+    },
+    {
+      "frame_id": "frame_005",
+      "similarity_score": 0.3521,
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "description": "Five men are gathered around the counter area of a retail store. One man, wearing a gray jacket, is reaching into the counter. Another man to his left is also reaching toward the counter area. The rest are observing.",
+      "threat_assessment": "CRITICAL"
+    },
+    {
+      "frame_id": "frame_008",
+      "similarity_score": 0.3358,
+      "timestamp": "16:00:56",
+      "location": "Main Gate",
+      "description": "Three individuals are visible in a retail store. Two are standing behind the counter, while one is standing on the customer side. The individual on the customer side is facing the counter with their back to the camera, wearing a white sweater and blue jeans. The two behind the counter are leaning on the counter, one with their hand near their face and the other with their arms crossed.",
+      "threat_assessment": "HIGH"
+    }
+  ]
+}

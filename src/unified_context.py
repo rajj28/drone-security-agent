@@ -154,6 +154,9 @@ class UnifiedContext:
                     "location": location,
                     "severity": sev,
                     "alert_type": alert_summary.get("alert_type"),
+                    "threat_type": analysis.get("threat_type"),
+                    "description": analysis.get("vlm_description"),
+                    "activity": analysis.get("activity"),
                 }
             )
 

@@ -21,12 +21,14 @@ apply_session_layout()
 def generate_telemetry(
     frame_metadata: List[Dict],
     start_unix: int = settings.VIDEO_START_UNIX,
-    output_dir: Path = settings.TELEMETRY_DIR
+    output_dir: Path = None
 ) -> List[Dict]:
     """
     Generates telemetry for each frame and saves per-frame JSON.
     Returns list of all telemetry dicts.
     """
+    if output_dir is None:
+        output_dir = settings.TELEMETRY_DIR
     print("\nGenerating telemetry for frames...")
     locations = settings.LOCATIONS
     battery = 100.0

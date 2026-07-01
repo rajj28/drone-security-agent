@@ -24,12 +24,30 @@ RULES = [
     (lambda a, t: t["is_after_hours"] and any(v not in ["sedan","SUV"] for v in a.get("vehicles_detected", [])), "HIGH", "unknown_vehicle_after_hours"),
     (lambda a, t: "loitering" in a.get("activity", "").lower(), "MEDIUM", "loitering_detected"),
     (lambda a, t: a.get("threat_assessment") == "high", "HIGH", "threat_assessment_high"),
-    # Enhanced theft detection rules
-    (lambda a, t: a.get("people_count", 0) >= 2 and "shop" in a.get("vlm_description", "").lower(), "MEDIUM", "potential_theft_scenario"),
+    
+    # Generic security threats detection
+    # 1. Intrusions / Trespassing / Fence climbing
+    (lambda a, t: any(w in a.get("vlm_description", "").lower() or w in a.get("activity", "").lower() for w in ["climbing", "fence", "scaling", "gate", "trespass", "intruder", "restricted area"]), "HIGH", "perimeter_intrusion"),
+    
+    # 2. Weapons & Violence
+    (lambda a, t: any(w in a.get("vlm_description", "").lower() or w in a.get("activity", "").lower() for w in ["weapon", "gun", "knife", "pistol", "rifle", "assault", "fight", "altercation", "physical conflict"]), "CRITICAL", "weapons_violence_detected"),
+    
+    # 3. Fire & Environmental Hazards
+    (lambda a, t: any(w in a.get("vlm_description", "").lower() or w in a.get("activity", "").lower() for w in ["fire", "smoke", "flames", "hazard", "blocked exit", "lying on the ground", "injured"]), "CRITICAL", "fire_safety_hazard"),
+    
+    # 4. Forced Entry & Tampering
+    (lambda a, t: any(w in a.get("vlm_description", "").lower() or w in a.get("activity", "").lower() for w in ["forced entry", "pry", "tamper", "picking lock", "break in", "broken window", "shattered glass"]), "HIGH", "forced_entry_tampering"),
+    
+    # 5. Shoplifting / Theft
+    (lambda a, t: a.get("people_count", 0) >= 2 and any(w in a.get("vlm_description", "").lower() for w in ["shop", "store", "retail", "counter"]), "MEDIUM", "potential_theft_scenario"),
     (lambda a, t: any(action in str(a.get("person_features", [])).lower() for action in ["pocket", "conceal", "hide", "reach"]), "HIGH", "suspicious_hand_actions"),
     (lambda a, t: any(word in a.get("vlm_description", "").lower() for word in ["phone", "mobile", "electronics"]) and a.get("people_count", 0) >= 2, "MEDIUM", "electronics_theft_risk"),
     (lambda a, t: any(word in a.get("activity", "").lower() for word in ["distract", "avoid", "nervous", "suspicious"]), "HIGH", "suspicious_behavior"),
+    
+    # 6. Vehicles
+    (lambda a, t: any(w in a.get("vlm_description", "").lower() for w in ["tailgating", "unauthorized parking", "blocking gate"]), "MEDIUM", "suspicious_vehicle_behavior"),
     (lambda a, t: a.get("people_count", 0) >= 4 and "interior" in a.get("scene_type", "").lower(), "HIGH", "multiple_persons_interior"),
+    
     # Behavioral analysis rules
     (lambda a, t: _behavioral_threat_check(a, t), "HIGH", "behavioral_threat_detected"),
     (lambda a, t: _shoplifting_pattern_check(a, t), "HIGH", "shoplifting_pattern_detected"),
@@ -230,17 +248,36 @@ def llm_validate_alert(alert: Dict[str, Any], analysis: Dict[str, Any], telemetr
     except Exception as e:
         return {"llm_validated": False, "llm_reasoning": str(e), "severity": alert["severity"], "recommended_action": "Manual review required"}
 
+class _AlertConversationMemory:
+    """Persists via alert_memory_log.json; avoids LangChain LLM and HF network checks."""
+
+    def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, Any]) -> None:
+        pass
+
+    def load_memory_variables(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+        return {"chat_history": []}
+
+
 class AlertEngineAgent:
     """Stateful alert engine agent with memory and session context."""
 
     def __init__(self):
-        self.llm = GeminiLangChain(model=settings.GEMINI_MODEL)
-        self.memory = ConversationSummaryBufferMemory(
-            llm=self.llm,
-            max_token_limit=2000,
-            return_messages=True,
-            memory_key="chat_history",
-        )
+        # Use Groq for alert reasoning (faster, avoids NVIDIA 503s)
+        import os
+        from langchain_openai import ChatOpenAI
+        groq_api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
+        
+        if groq_api_key:
+            self.llm = ChatOpenAI(
+                model="llama-3.3-70b-versatile",
+                base_url="https://api.groq.com/openai/v1",
+                openai_api_key=groq_api_key,
+                temperature=0.1
+            )
+        else:
+            self.llm = GeminiLangChain(model=settings.GEMINI_MODEL)
+        
+        self.memory = _AlertConversationMemory()
         self.session_context = self._load_session_context()
         self.alert_runs: List[Dict[str, Any]] = []
 
@@ -283,9 +320,27 @@ class AlertEngineAgent:
         recent_context = _load_recent_context_summaries(limit=4)
         recent_memory = self._serialize_recent_memory(limit=4)
         prompt = f"""
-You are the security alert reasoning layer for a docked drone monitoring system.
-Decide whether the rule-based alert should be confirmed, escalated, reduced, or left unchanged.
-Use only the supplied data and keep the answer in JSON.
+You are the security alert reasoning layer for a surveillance monitoring system.
+Your job is to ACTIVELY DETECT threats — especially THEFT/SHOPLIFTING — from the frame
+analysis below, then decide the alert severity. Do not be passive: if the description or
+person behaviors show anything suspicious, RAISE an alert.
+
+THEFT / SHOPLIFTING INDICATORS (raise HIGH if present):
+- A person concealing an item (putting merchandise in pockets, bag, waistband, or under clothing)
+- Grabbing/picking up products and walking away from a display or counter
+- Reaching into a display case, shelf, or behind a counter
+- Handling high-value items (phones, electronics) then moving away quickly
+- Looking around nervously / checking for observers while handling items
+- Two or more people coordinating (one distracts, another takes)
+OTHER THREATS: weapons/violence (CRITICAL), forced entry/intrusion (HIGH), loitering in
+restricted areas (MEDIUM), unauthorized vehicles (MEDIUM).
+
+Use the vlm_description, activity, person_features, and security_signals as evidence.
+Theft is often spread ACROSS frames — use the recent context to connect actions
+(e.g., picked up item earlier, now concealing it). If you are reasonably confident a
+theft or threat is occurring, set "alert_triggered": true with the right severity, EVEN IF
+the initial threat level was CLEAR/NONE. If the scene is genuinely normal shopping/activity
+with no suspicious behavior, set severity "NONE".
 
 Current frame:
 {json.dumps({
@@ -303,10 +358,11 @@ Recent memory:
 
 Return JSON with keys:
 {{
-  "severity": "HIGH|MEDIUM|LOW|NONE",
+  "severity": "CRITICAL|HIGH|MEDIUM|LOW|NONE",
   "alert_triggered": true,
+  "alert_type": "theft|shoplifting|weapons_violence|intrusion|loitering|suspicious_behavior|unauthorized_vehicle|clear",
   "llm_validated": true,
-  "llm_reasoning": "brief explanation",
+  "llm_reasoning": "what behavior you saw and why it is/ isn't a threat",
   "recommended_action": "operator action",
   "confidence": 0.0,
   "context_signal": "what prior context influenced the decision"
@@ -394,7 +450,6 @@ Return JSON with keys:
             return False
         processed_frames.append(frame_id)
         return True
-        _persist_context_summary(analysis.get("frame_id", "unknown_frame"), analysis, telemetry, self.session_context, alert_json)
 
     def _build_alert_json(
         self,
@@ -436,9 +491,23 @@ Return JSON with keys:
 
         start = time.time()
         alert = rule_based_alert(analysis, telemetry)
-        if alert.get("severity") in ["MEDIUM", "HIGH"]:
+        people_count = int(analysis.get("people_count", 0) or 0)
+        has_people = people_count > 0 or bool(analysis.get("person_features"))
+        # Run the LLM reasoning layer on every frame that has people (not just rule-flagged
+        # ones) so it can actively detect theft/suspicious behavior the rules miss. The LLM
+        # may escalate a CLEAR/NONE frame into an alert.
+        if alert.get("severity") in ["MEDIUM", "HIGH"] or has_people:
             llm_result = self._reason_about_alert(frame_id, analysis, telemetry, alert)
             alert.update(llm_result)
+            sev = str(alert.get("severity", "NONE")).upper()
+            alert["severity"] = sev
+            alert["alert_triggered"] = sev in ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+            if alert["alert_triggered"] and not alert.get("rule_triggered"):
+                alert["rule_triggered"] = (
+                    alert.get("alert_type")
+                    or analysis.get("threat_type")
+                    or "llm_detected_threat"
+                )
 
         alert_json = self._build_alert_json(frame_id, analysis, telemetry, alert)
         alert_json["structured_reasoning"] = {
@@ -452,6 +521,7 @@ Return JSON with keys:
         }
         _write_json_file(settings.ALERTS_DIR / f"{frame_id}_alert.json", alert_json)
         self._update_session_context(analysis, telemetry, alert_json)
+        _persist_context_summary(frame_id, analysis, telemetry, self.session_context, alert_json)
 
         summary = (
             f"Processed {frame_id} at {telemetry.get('location', 'unknown location')} with severity {alert_json['severity']}. "

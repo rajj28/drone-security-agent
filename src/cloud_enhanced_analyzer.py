@@ -543,65 +543,48 @@ BE PRECISE about positions and actions. Location context matters!"""
 {enhanced_context}
 
 === CONTEXT-AWARE THREAT ASSESSMENT ===
-CRITICAL RETAIL THEFT INDICATORS (CRITICAL):
-- ANY hand reaching toward drawers, cabinets, storage below counter
-- Person opening or reaching into staff-only areas behind counter
-- Group of 3+ people where some distract while others access storage
-- Reaching/touching cash register, safe, phone display cases
-- Opening drawers, cabinets, or storage compartments unauthorized
-
-HIGH THREAT PATTERNS:
-- Person with hands inside/opening drawers or cabinets
-- Multiple people crowding counter with one reaching behind
-- Distracting staff while accomplice accesses storage
-- Attempting to open locked compartments
-- Concealing items under clothing while near counter
-
-MEDIUM SUSPICIOUS BEHAVIOR:
-- Hovering near cash register without purchasing
-- Repeatedly checking if anyone is watching
-- Group crowding staff while one lingers at storage
-- Handling items in restricted staff areas
+CRITICAL THREAT INDICATORS (CRITICAL / HIGH):
+- THEFT: Reaching toward drawers, register, safe, display cases; pocketing items, group distraction.
+- INTRUSION: Scaling fences/walls/gates, unauthorized entry into restricted/staff zones, tampering with entries.
+- WEAPONS & VIOLENCE: Brandishing weapons (guns, knives), physical fighting, assault, hostage situations.
+- SAFETY HAZARDS: Visible fire, smoke, safety violations, blocked fire exits, slips/falls (person lying down/injured).
+- VANDALISM: Tampering with locks, prying doors/windows, graffiti, property damage.
+- VEHICLES: Tailgating through security gates, blocking access roads/exits, unauthorized idling in restricted zones.
 
 THREAT LEVELS:
-- CRITICAL: 
-  * ANY reaching/touching drawers, cabinets, storage below counter
-  * Hand inside staff drawers or compartments
-  * Coordinated theft: group distracting + one accessing storage
-  * Unauthorized access behind counter with hand movements
-  * Reaching toward cash register, safe, high-value storage
-  * Weapons, fire, assault, forced entry
-  * After-hours presence in staff areas
+- CRITICAL:
+  * Weapons, fire, smoke, active physical altercations/violence.
+  * Reaching or opening cash register, safe, high-value storage, or drawers below counter.
+  * Intruder scaling fences/gates or forced entry in progress (lock prying, door forcing).
+  * Medical emergency (person collapsed/unconscious on ground).
+  * After-hours presence in restricted staff/vault zones.
 
 - HIGH:
-  * Person touching/opening drawers or cabinets
-  * Trespassing in non-public areas
-  * Concealing items or hiding behavior
-  * Attempting to open restricted containers/doors
-  * Coordinated suspicious behavior (distraction tactics)
+  * Person trespassing in restricted/staff-only zones.
+  * Concealing items under clothing or in bags in a retail/warehouse area.
+  * Attempting to open locked doors, gates, or containers.
+  * Coordinated suspicious behavior (e.g. distraction tactics).
+  * Loitering inside restricted/fenced areas.
 
 - MEDIUM:
-  * Group crowding staff with unclear purpose
-  * Nervous behavior while handling items
-  * Checking for observers frequently
-  * Loitering near valuables without purchasing
+  * Hovering near valuables, cash register, or entry gates without purpose.
+  * Repeatedly looking around or checking for cameras/observers (scouting).
+  * Group crowding staff or entry gates with unclear purpose.
+  * Vehicle parked in unauthorized area or tailgating a security gate.
 
 - LOW:
-  * Unfamiliar person in public area
-  * Minor rule violations
+  * Unfamiliar person in public area.
+  * Minor rule violations or loitering in non-restricted public spaces.
 
 - CLEAR:
-  * Normal shoppers browsing authorized areas
-  * Hands visible, not reaching toward storage
-  * Appropriate social distance from counter
+  * Normal authorized activity (shopping, walking, working).
+  * Appropriate social distance and actions relative to location.
 
 === KEY CONTEXT RULES ===
-1. DRAWERS/CABINETS: ANY hand reaching toward = CRITICAL (theft attempt)
-2. CASH REGISTERS: Reaching/touching = CRITICAL (theft attempt)  
-3. COORDINATED GROUPS: Distracting + accessing storage = CRITICAL
-4. STAFF-ONLY AREAS: Unauthorized person = HIGH minimum
-5. AFTER HOURS: Escalate any threat by +1 level
-6. HIGH-VALUE STORAGE: Any unauthorized access = CRITICAL
+1. WEAPONS/FIRE/SAFETY: Any indication = CRITICAL immediately.
+2. BOUNDARIES/INTRUSIONS: Scaling fence/gate or behind counter = HIGH minimum.
+3. RETAIL/STORAGE: Reaching drawers/register/valuables = CRITICAL.
+4. AFTER HOURS: Escalate any detected threat level by +1 level (e.g., MEDIUM becomes HIGH).
 
 === FRAME CONTEXT ===
 - Location: {telemetry.get('location', 'unknown')}
@@ -612,24 +595,24 @@ THREAT LEVELS:
 Provide security assessment in JSON:
 {{
   "threat_level": "CRITICAL|HIGH|MEDIUM|LOW|CLEAR",
-  "threat_type": "theft_behavior|loitering|trespassing|unauthorized_access|suspicious_behavior|clear",
+  "threat_type": "theft_behavior|loitering|trespassing|unauthorized_access|suspicious_behavior|weapons_violence|fire_safety_hazard|forced_entry|clear",
   "vlm_description": "Security-focused description with exact positions and actions",
-  "scene_type": "retail|warehouse|parking|interior|exterior|staff_area|storage",
+  "scene_type": "retail|warehouse|parking|interior|exterior|staff_area|storage|perimeter|gate",
   "people_count": 0,
   "person_features": ["Person 1: [position + action + security relevance]"],
-  "security_signals": ["reaching_staff_section", "unauthorized_area_access", "concealment_behavior"],
+  "security_signals": ["reaching_staff_section", "unauthorized_area_access", "concealment_behavior", "scaling_boundary", "tampering_lock", "smoke_detected", "weapon_visible"],
   "suspicious_elements": ["specific concerns with location context"],
   "reasoning": "EXPLAIN THE SITUATION: Person is [action] at [location] which is [threat level] because [specific contextual reason]. Connect action to location!",
   "recommended_action": "Specific security response",
   "confidence": 0.85
 }}
 
-IMPORTANT: Consider WHERE the action is happening. "Person reaching toward register" is VERY different from "Person reaching toward shelf"!"""
+IMPORTANT: Consider WHERE and WHEN the action is happening. Context is everything!"""
 
             gemini = generate_vision(
                 prompt,
                 image_path,
-                max_output_tokens=1500,
+                max_output_tokens=4096,
                 temperature=0.2,
             )
             if not gemini.get("success"):
@@ -698,13 +681,21 @@ IMPORTANT: Consider WHERE the action is happening. "Person reaching toward regis
         
         # Parse GPT-4o security assessment if available
         if gpt4o_results and gpt4o_results.get('success'):
-            content = gpt4o_results.get('gpt4o_analysis', '')
-            if 'HIGH' in content.upper() or 'CRITICAL' in content.upper():
+            t_level = str(gpt4o_results.get('threat_level', '')).upper()
+            if 'CRITICAL' in t_level or 'HIGH' in t_level or 'ELEVATED' in t_level:
                 threat_scores.append(80)
-            elif 'MEDIUM' in content.upper():
+            elif 'MEDIUM' in t_level:
                 threat_scores.append(50)
-            elif 'LOW' in content.upper():
+            elif 'LOW' in t_level:
                 threat_scores.append(20)
+            else:
+                content = gpt4o_results.get('gpt4o_analysis', '')
+                if 'HIGH' in content.upper() or 'CRITICAL' in content.upper() or 'ELEVATED' in content.upper():
+                    threat_scores.append(80)
+                elif 'MEDIUM' in content.upper():
+                    threat_scores.append(50)
+                elif 'LOW' in content.upper():
+                    threat_scores.append(20)
         
         if not threat_scores:
             return 'UNKNOWN'

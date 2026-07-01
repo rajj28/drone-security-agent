@@ -53,6 +53,8 @@ def is_rate_or_quota_error(exc: BaseException) -> bool:
 
 def is_quota_exhausted_error(exc: BaseException) -> bool:
     text = str(exc).lower()
+    if "retry in" in text or "please retry" in text or "429" in text:
+        return False
     return "insufficient_quota" in text or "exceeded your current quota" in text
 
 
@@ -81,18 +83,34 @@ class ApiRateLimiter:
 
 
 _limiter: Optional[ApiRateLimiter] = None
+# When set (e.g. scaled by number of API keys), overrides settings.API_MIN_INTERVAL_SEC.
+_effective_interval: Optional[float] = None
+
+
+def configure_min_interval(per_key_interval: float, num_keys: int = 1) -> None:
+    """Configure global call spacing, scaled down by the number of API keys.
+
+    With N keys rotating round-robin, the global throughput can be N× higher while each
+    individual key still respects its own per-key minimum interval.
+    """
+    global _effective_interval, _limiter
+    _effective_interval = max(0.0, float(per_key_interval) / max(1, int(num_keys)))
+    _limiter = ApiRateLimiter(_effective_interval)
 
 
 def get_rate_limiter() -> ApiRateLimiter:
     global _limiter
     if _limiter is None:
-        try:
-            from src.config import settings
+        if _effective_interval is not None:
+            _limiter = ApiRateLimiter(_effective_interval)
+        else:
+            try:
+                from src.config import settings
 
-            interval = float(settings.API_MIN_INTERVAL_SEC)
-        except Exception:
-            interval = float(os.environ.get("API_MIN_INTERVAL_SEC", "12"))
-        _limiter = ApiRateLimiter(interval)
+                interval = float(settings.API_MIN_INTERVAL_SEC)
+            except Exception:
+                interval = float(os.environ.get("API_MIN_INTERVAL_SEC", "12"))
+            _limiter = ApiRateLimiter(interval)
     return _limiter
 
 

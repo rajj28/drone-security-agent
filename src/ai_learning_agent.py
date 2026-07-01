@@ -10,6 +10,12 @@ and learning from video analysis. It implements a stateful agent that can:
 - Provide contextual analysis with memory
 """
 
+import os
+
+# Clear proxy settings process-wide if they cause httpx/openai client validation errors
+for env_var in ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"]:
+    os.environ.pop(env_var, None)
+
 import asyncio
 import json
 import logging
@@ -108,12 +114,34 @@ class AILearningAgent:
         self.knowledge_base_path = Path(knowledge_base_path)
         self.knowledge_base_path.mkdir(parents=True, exist_ok=True)
         
-        # Initialize LLM
-        self.llm = ChatOpenAI(
-            model="gpt-4",
-            temperature=0.1,
-            openai_api_key=openai_api_key or "sk-proj-..."
-        )
+        # Initialize LLM — learning agent uses NVIDIA NIM or Groq for reasoning.
+        from src.config import settings
+        
+        nvidia_api_key = getattr(settings, 'NVIDIA_API_KEY', '') or os.environ.get("NVIDIA_API_KEY", "")
+        nvidia_model = getattr(settings, 'NVIDIA_MODEL', '') or os.environ.get("NVIDIA_MODEL", "nvidia/nemotron-3-ultra-550b-a55b")
+        groq_api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
+        llm_provider = os.environ.get("AGENT_LLM_PROVIDER", getattr(settings, 'AGENT_LLM_PROVIDER', 'nvidia')).lower()
+        
+        if nvidia_api_key and llm_provider == "nvidia":
+            self.llm = ChatOpenAI(
+                model=nvidia_model,
+                base_url="https://integrate.api.nvidia.com/v1",
+                openai_api_key=nvidia_api_key,
+                temperature=0.1
+            )
+        elif groq_api_key:
+            self.llm = ChatOpenAI(
+                model="llama-3.3-70b-versatile",
+                base_url="https://api.groq.com/openai/v1",
+                openai_api_key=groq_api_key,
+                temperature=0.1
+            )
+        else:
+            self.llm = ChatOpenAI(
+                model="gpt-4",
+                temperature=0.1,
+                openai_api_key=openai_api_key or "sk-proj-..."
+            )
         
         # Knowledge storage
         self.patterns_file = self.knowledge_base_path / "patterns.json"

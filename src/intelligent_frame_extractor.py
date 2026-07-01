@@ -166,6 +166,9 @@ class IntelligentFrameExtractor:
             new_path = output_dir / new_filename
             
             if old_path.exists():
+                # On Windows, rename fails if target exists — remove it first
+                if new_path.exists():
+                    new_path.unlink()
                 old_path.rename(new_path)
                 frame.filename = new_filename
                 frame.frame_number = i + 1
@@ -230,7 +233,7 @@ class IntelligentFrameExtractor:
         video_info: Dict, 
         max_frames: int
     ) -> List[FrameInfo]:
-        """Extract frames based on motion detection."""
+        """Extract frames based on motion detection using frame differencing."""
         logger.info("Analyzing video for motion-based extraction...")
         
         # Open video for motion analysis
@@ -249,33 +252,39 @@ class IntelligentFrameExtractor:
         
         logger.info(f"Analyzing {frame_count} frames for motion...")
         
+        # Only analyze first 80% of video — ads/outros at the end cause false positives
+        analysis_cutoff = int(frame_count * 0.8)
+        
         while True:
             ret, frame = cap.read()
             if not ret:
                 break
             
+            # Stop analyzing after 80% of video
+            if frame_number > analysis_cutoff:
+                break
+            
             # Sample every 10th frame for efficiency
             if frame_number % 10 == 0:
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # Resize for faster processing
+                small = cv2.resize(frame, (320, 240))
+                gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+                gray = cv2.GaussianBlur(gray, (21, 21), 0)
                 
                 if prev_gray is not None:
-                    # Calculate motion using optical flow
-                    flow = cv2.calcOpticalFlowPyrLK(
-                        prev_gray, gray, 
-                        np.array([[100, 100]], dtype=np.float32).reshape(-1, 1, 2),
-                        None
-                    )[0]
+                    # Frame differencing — measures actual pixel changes across entire frame
+                    frame_diff = cv2.absdiff(prev_gray, gray)
+                    _, thresh = cv2.threshold(frame_diff, 25, 255, cv2.THRESH_BINARY)
+                    # Motion score = percentage of pixels that changed significantly
+                    motion_magnitude = float(np.sum(thresh > 0)) / thresh.size * 100
+                    timestamp = frame_number / fps
                     
-                    if flow is not None and len(flow) > 0:
-                        motion_magnitude = np.linalg.norm(flow)
-                        timestamp = frame_number / fps
-                        
-                        if motion_magnitude > self.motion_threshold:
-                            motion_events.append({
-                                "timestamp": timestamp,
-                                "motion_score": float(motion_magnitude),
-                                "frame_number": frame_number
-                            })
+                    if motion_magnitude > 2.0:  # At least 2% of frame changed
+                        motion_events.append({
+                            "timestamp": timestamp,
+                            "motion_score": motion_magnitude,
+                            "frame_number": frame_number
+                        })
                 
                 prev_gray = gray
             
@@ -362,24 +371,25 @@ class IntelligentFrameExtractor:
         """Hybrid extraction combining uniform, motion, and scene change detection."""
         logger.info("Using hybrid extraction strategy...")
         
-        # Allocate frame budget
-        uniform_budget = max_frames // 3
-        motion_budget = max_frames // 3
-        scene_budget = max_frames - uniform_budget - motion_budget
+        # Allocate frame budget — prioritize motion frames for security footage
+        # 60% motion (most likely to capture action), 25% uniform (baseline), 15% scene change
+        motion_budget = int(max_frames * 0.6)
+        uniform_budget = int(max_frames * 0.25)
+        scene_budget = max_frames - motion_budget - uniform_budget
         
         frames = []
         
-        # 1. Extract uniform frames (baseline)
-        uniform_frames = self._extract_uniform_frames(
-            video_path, output_dir, video_info, target_fps * 0.5
-        )
-        frames.extend(uniform_frames[:uniform_budget])
-        
-        # 2. Extract motion-based frames
+        # 1. Extract motion-based frames FIRST (highest priority for security)
         motion_frames = self._extract_motion_frames(
             video_path, output_dir, video_info, motion_budget
         )
         frames.extend(motion_frames)
+        
+        # 2. Extract uniform frames (baseline coverage)
+        uniform_frames = self._extract_uniform_frames(
+            video_path, output_dir, video_info, target_fps * 0.5
+        )
+        frames.extend(uniform_frames[:uniform_budget])
         
         # 3. Extract scene change frames
         scene_frames = self._extract_scene_change_frames(
@@ -428,7 +438,6 @@ class IntelligentFrameExtractor:
             "-i", str(video_path),
             "-frames:v", "1",
             "-q:v", "2",  # High quality
-            "-vf", "scale=1920:1080",  # Standardize resolution
             str(output_path)
         ]
         
@@ -444,9 +453,9 @@ class IntelligentFrameExtractor:
                 
                 # QUALITY CHECK: Filter out text/menu/bad frames before saving
                 frame_cv = cv2.imread(str(output_path))
-                is_acceptable, reason = self._is_frame_quality_acceptable(frame_cv)
+                is_acceptable, quality_reason = self._is_frame_quality_acceptable(frame_cv)
                 if not is_acceptable:
-                    logger.warning(f"Frame {frame_number} at {timestamp:.2f}s rejected: {reason}")
+                    logger.warning(f"Frame {frame_number} at {timestamp:.2f}s rejected: {quality_reason}")
                     output_path.unlink()  # Delete bad frame
                     return None
                 
@@ -455,7 +464,7 @@ class IntelligentFrameExtractor:
                 frame_info = FrameInfo(
                     frame_number=frame_number,
                     timestamp=timestamp,
-                    filename=final_frame_name,  # Will be updated after deduplication
+                    filename=temp_name,  # Use temp_name as the filename initially so it matches physical file on disk
                     file_size_kb=file_size_kb,
                     extraction_time_ms=elapsed_ms,
                     extraction_reason=reason,
@@ -530,13 +539,16 @@ class IntelligentFrameExtractor:
         frames: List[FrameInfo], 
         video_path: Path, 
         strategy: ExtractionStrategy,
-        output_path: Path = settings.OUTPUTS_DIR / "extraction_log.json"
+        output_path: Path = None
     ):
         """Save detailed extraction log."""
+        if output_path is None:
+            output_path = settings.OUTPUTS_DIR / "extraction_log.json"
         log = {
             "extraction_strategy": strategy.value,
             "video_path": str(video_path),
             "total_frames_extracted": len(frames),
+            "total_frames": len(frames),
             "extraction_timestamp": time.time(),
             "frames": [
                 {

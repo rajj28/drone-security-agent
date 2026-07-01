@@ -1,0 +1,47 @@
+{
+  "test": "end_to_end_rigorous",
+  "video": "Sneaky Thieves Caught Stealing Phones On Camera - Newsflare (1080p, h264) (1).mp4",
+  "session_id": "theft_newsflare_e2e_001",
+  "pinecone_index": "flytbase",
+  "pinecone_integrated": true,
+  "completed_at": "2026-06-01",
+  "exit_code": 0,
+  "steps": {
+    "extraction": {"status": "PASS", "frames": 6, "strategy": "uniform", "elapsed_sec": 5.2},
+    "telemetry": {"status": "PASS", "records": 6},
+    "vision": {
+      "status": "PASS_WITH_WARNINGS",
+      "frames_analyzed": 6,
+      "model": "gemini-2.5-flash (pro rate-limited)",
+      "avg_sec_per_frame": 52,
+      "warnings": ["JSON truncated at 1500 tokens on first run", "fixed via parser + 4096 token limit"]
+    },
+    "context": {
+      "status": "PASS",
+      "session_context.json": true,
+      "context_summaries.json": true,
+      "rich_context.json": true,
+      "summary_count": 10
+    },
+    "agent": {"status": "PASS", "questions_answered": 2},
+    "pinecone": {
+      "status": "PASS",
+      "indexed": 6,
+      "namespace": "theft_newsflare_e2e_001",
+      "search_top_score_after_reindex": 0.4433,
+      "query": "person stealing phone from display"
+    }
+  },
+  "fixes_applied_during_test": [
+    "agent.py: ConversationSummaryBufferMemory incompatible with Gemini — replaced with lightweight memory",
+    "run_full_pipeline.py: --with-pinecone, --skip-extraction, --skip-telemetry",
+    "vision_analyzer.py: truncated vlm_description extraction + max_output_tokens 4096",
+    "scripts/reindex_session.py: re-normalize + re-index after parser fix"
+  ],
+  "artifacts": {
+    "session_root": "data/sessions/theft_newsflare_e2e_001",
+    "pipeline_report": "data/sessions/theft_newsflare_e2e_001/outputs/pipeline_run_report.json",
+    "indexing_log": "data/sessions/theft_newsflare_e2e_001/index/indexing_log.json"
+  },
+  "overall": "PASS"
+}

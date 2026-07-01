@@ -6,10 +6,13 @@ Set AGENT_LLM_PROVIDER in .env to switch providers.
 
 from __future__ import annotations
 import os
+from typing import Any, List, Optional
+from langchain_core.language_models.llms import BaseLLM
+from langchain_core.outputs import LLMResult, Generation
 from src.gemini_client import generate_text
 
 
-class AgentLLM:
+class AgentLLM(BaseLLM):
     """Multi-provider LLM wrapper - drop-in for ChatOpenAI.invoke().
     
     Providers:
@@ -20,31 +23,37 @@ class AgentLLM:
     
     Set via AGENT_LLM_PROVIDER env var.
     """
+    provider: str = "gemini"
+    model: Optional[str] = None
+    temperature: float = 0.2
 
-    def __init__(self, model: str | None = None, temperature: float = 0.2):
+    def __init__(self, model: str | None = None, temperature: float = 0.2, **kwargs: Any):
+        super().__init__(model=model, temperature=temperature, **kwargs)
         self.provider = os.environ.get("AGENT_LLM_PROVIDER", "gemini").lower()
-        self.model = model
-        self.temperature = temperature
-        self._groq_client = None
-        self._ollama_client = None
+
+    @property
+    def _llm_type(self) -> str:
+        return "agent_llm"
 
     def _get_groq_client(self):
         """Lazy-load Groq client."""
-        if self._groq_client is None:
+        if "_groq_client" not in self.__dict__ or self.__dict__["_groq_client"] is None:
             try:
                 from groq import Groq
                 api_key = os.environ.get("GROQ_API_KEY", "")
                 if not api_key:
                     raise ValueError("GROQ_API_KEY not set")
-                self._groq_client = Groq(api_key=api_key)
+                self.__dict__["_groq_client"] = Groq(api_key=api_key)
             except ImportError:
                 raise ImportError("groq package not installed. Run: pip install groq")
-        return self._groq_client
+        return self.__dict__["_groq_client"]
 
     def _call_groq(self, prompt: str) -> str:
         """Call Groq API (free tier available)."""
         client = self._get_groq_client()
-        model = self.model or "llama-3.1-8b-instant"  # Fast, available free tier model
+        model = self.model
+        if not model or "gemini" in model.lower() or "gpt" in model.lower() or "llama3-8b" in model.lower() or "llama-3.1-8b" in model.lower():
+            model = "llama-3.3-70b-versatile"
         
         response = client.chat.completions.create(
             model=model,
@@ -112,7 +121,27 @@ class AgentLLM:
             temperature=self.temperature,
         )
 
-    def invoke(self, prompt: str):
+    def _generate(
+        self,
+        prompts: List[str],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[Any] = None,
+        **kwargs: Any,
+    ) -> LLMResult:
+        generations = []
+        for prompt in prompts:
+            if self.provider == "groq":
+                text = self._call_groq(prompt)
+            elif self.provider == "ollama":
+                text = self._call_ollama(prompt)
+            elif self.provider == "openai":
+                text = self._call_openai(prompt)
+            else:  # gemini (default)
+                text = self._call_gemini(prompt)
+            generations.append([Generation(text=text)])
+        return LLMResult(generations=generations)
+
+    def invoke(self, prompt: str, stop: Optional[List[str]] = None, **kwargs: Any):
         """Invoke LLM based on configured provider."""
         if self.provider == "groq":
             text = self._call_groq(prompt)

@@ -1,0 +1,32 @@
+{
+  "query": "person stealing phone or valuables",
+  "namespace": "theft_newsflare_008",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T20:11:57",
+  "results": [
+    {
+      "frame_id": "frame_009",
+      "similarity_score": 0.3014,
+      "timestamp": "16:01:04",
+      "location": "Perimeter North",
+      "description": "A man in a gray sweater is taking a photo of the items on the display case with his smartphone. Two other men are standing nearby, one wearing a brown vest and the other a gray jacket. The scene is set in a retail store with a glass display case containing various electronic devices.",
+      "threat_assessment": "MEDIUM"
+    },
+    {
+      "frame_id": "frame_011",
+      "similarity_score": 0.2959,
+      "timestamp": "16:01:20",
+      "location": "Back Entrance",
+      "description": "A single individual with short dark hair, wearing a gray sweater and blue jeans, is standing inside a retail store. The person is positioned near a display case with various mobile phones and accessories. Their back is to the camera, and their right hand appears to be reaching into the display case.",
+      "threat_assessment": "HIGH"
+    },
+    {
+      "frame_id": "frame_004",
+      "similarity_score": 0.2753,
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "description": "Three men are gathered around a counter in a retail store. One man, wearing a gray jacket, is standing with his hands near the counter. Another man in a black jacket is holding a phone. The third man is standing behind them, looking down.",
+      "threat_assessment": "LOW"
+    }
+  ]
+}

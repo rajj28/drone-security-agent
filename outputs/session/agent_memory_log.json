@@ -1,0 +1,194 @@
+{
+  "session_id": "SESSION_20260624_023447",
+  "events": [
+    {
+      "timestamp": "2026-06-24 02:34:47",
+      "role": "agent",
+      "input": "Search frames: What suspicious activity happened in this session?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:47",
+      "role": "agent",
+      "input": "Query event history for What suspicious activity happened in this session?",
+      "output": "Found 1 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:48",
+      "role": "agent",
+      "input": "Question: What suspicious activity happened in this session?",
+      "output": "Three men interacting with the counter and cashier area, possibly attempting to access or manipulate items, at the Back Entrance",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:50",
+      "role": "agent",
+      "input": "Search frames: How many people were visible and were there any high-threat moments?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:50",
+      "role": "agent",
+      "input": "Query event history for How many people were visible and were there any high-threat moments?",
+      "output": "Found 2 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:51",
+      "role": "agent",
+      "input": "Question: How many people were visible and were there any high-threat moments?",
+      "output": "14 people were visible with 1 medium-threat moment",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:54",
+      "role": "agent",
+      "input": "Search frames: Was there activity near a display case or counter?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:54",
+      "role": "agent",
+      "input": "Query event history for Was there activity near a display case or counter?",
+      "output": "Found 8 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 02:34:54",
+      "role": "agent",
+      "input": "Question: Was there activity near a display case or counter?",
+      "output": "Yes",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:01",
+      "role": "agent",
+      "input": "Search frames: What suspicious activity happened in this session?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:01",
+      "role": "agent",
+      "input": "Query event history for What suspicious activity happened in this session?",
+      "output": "Found 10 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:02",
+      "role": "agent",
+      "input": "Question: What suspicious activity happened in this session?",
+      "output": "The suspicious activity in this session is a retail shop theft where a person or group of suspects was caught stealing a phone from the display counter.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:04",
+      "role": "agent",
+      "input": "Search frames: How many people were visible?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:04",
+      "role": "agent",
+      "input": "Query event history for How many people were visible?",
+      "output": "Found 10 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:05",
+      "role": "agent",
+      "input": "Question: How many people were visible?",
+      "output": "A total of 48 people were visible during monitoring in the retail store where the theft occurred.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:08",
+      "role": "agent",
+      "input": "Search frames: How many people were visible and were there any high-threat moments?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:08",
+      "role": "agent",
+      "input": "Query event history for How many people were visible and were there any high-threat moments?",
+      "output": "Found 10 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:30",
+      "role": "agent",
+      "input": "Question: How many people were visible and were there any high-threat moments?",
+      "output": "A total of 48 people were visible during monitoring in the retail store where the theft occurred.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:33",
+      "role": "agent",
+      "input": "Search frames: Was there activity near a display case or counter?",
+      "output": "Found 0 matching frames.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:33",
+      "role": "agent",
+      "input": "Query event history for Was there activity near a display case or counter?",
+      "output": "Found 12 events in range 'all'.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    },
+    {
+      "timestamp": "2026-06-24 20:11:51",
+      "role": "agent",
+      "input": "Question: Was there activity near a display case or counter?",
+      "output": "Yes, there was suspicious activity near the phone display counter inside the retail shop where the theft occurred.",
+      "metadata": {
+        "source": "conversation_memory"
+      }
+    }
+  ]
+}

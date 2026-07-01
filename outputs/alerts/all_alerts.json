@@ -1,102 +1,365 @@
 {
-  "session_date": "2026-05-31",
-  "total_alerts": 0,
-  "high_severity": 0,
-  "medium_severity": 0,
-  "low_severity": 0,
+  "session_date": "2026-06-30",
+  "total_alerts": 9,
+  "high_severity": 5,
+  "medium_severity": 4,
+  "low_severity": 2,
   "alerts": [
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_001",
+      "frame_id": "frame_001",
+      "timestamp": "16:00:00",
+      "location": "Main Gate",
+      "alert_triggered": false,
+      "severity": "LOW",
+      "alert_type": "potential_theft_scenario",
+      "message": "Alert for frame_001 at Main Gate 16:00:00",
+      "objects_involved": [
+        "person",
+        "phone"
+      ],
+      "rule_triggered": "potential_theft_scenario",
+      "llm_validated": true,
+      "llm_reasoning": "The scene appears to be a normal interaction in a retail store during business hours. No immediate threats or suspicious behavior are observed.",
+      "recommended_action": "Continue monitoring for any changes in behavior.",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "LOW",
+        "alert_triggered": false,
+        "llm_validated": true,
+        "llm_reasoning": "The scene appears to be a normal interaction in a retail store during business hours. No immediate threats or suspicious behavior are observed.",
+        "recommended_action": "Continue monitoring for any changes in behavior.",
+        "confidence": 0.9,
+        "context_signal": "None"
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_002",
+      "frame_id": "frame_002",
+      "timestamp": "16:00:08",
+      "location": "Perimeter North",
+      "alert_triggered": true,
+      "severity": "MEDIUM",
+      "alert_type": "crowd_detected",
+      "message": "Alert for frame_002 at Perimeter North 16:00:08",
+      "objects_involved": [
+        "person",
+        "phone"
+      ],
+      "rule_triggered": "crowd_detected",
+      "llm_validated": true,
+      "llm_reasoning": "The scene shows suspicious behavior with four men interacting behind a counter, but their actions do not clearly indicate a high-level threat.",
+      "recommended_action": "Continue monitoring the situation for potential escalation or suspicious transactions.",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The scene shows suspicious behavior with four men interacting behind a counter, but their actions do not clearly indicate a high-level threat.",
+        "recommended_action": "Continue monitoring the situation for potential escalation or suspicious transactions.",
+        "confidence": 0.6,
+        "context_signal": "Recent context summary shows no high-severity events or alerts, but the current frame's suspicious behavior warrants continued monitoring."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_003",
+      "frame_id": "frame_003",
+      "timestamp": "16:00:16",
+      "location": "Garage",
+      "alert_triggered": true,
+      "severity": "HIGH",
+      "alert_type": "crowd_detected",
+      "message": "Alert for frame_003 at Garage 16:00:16",
+      "objects_involved": [
+        "person",
+        "phone",
+        "glass display case"
+      ],
+      "rule_triggered": "crowd_detected",
+      "llm_validated": true,
+      "llm_reasoning": "The presence of four men, with three behind the counter and one in front, is suspicious and suggests unauthorized access to the staff area.",
+      "recommended_action": "Security should investigate the identities and intentions of the individuals, especially those behind the counter.",
+      "acknowledged": false,
+      "auto_escalate": true,
+      "structured_reasoning": {
+        "severity": "HIGH",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The presence of four men, with three behind the counter and one in front, is suspicious and suggests unauthorized access to the staff area.",
+        "recommended_action": "Security should investigate the identities and intentions of the individuals, especially those behind the counter.",
+        "confidence": 0.7,
+        "context_signal": "Recent context summaries and memory indicate a pattern of suspicious behavior, with a previous MEDIUM severity crowd_detected alert at Perimeter North."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_004",
+      "frame_id": "frame_004",
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "alert_triggered": false,
+      "severity": "LOW",
+      "alert_type": "restricted_zone_person",
+      "message": "Alert for frame_004 at Back Entrance 16:00:24",
+      "objects_involved": [
+        "person",
+        "phone"
+      ],
+      "rule_triggered": "restricted_zone_person",
+      "llm_validated": true,
+      "llm_reasoning": "The current frame shows three men gathered around a counter, but their behavior is considered normal customer activity in a retail environment. The initial HIGH severity alert triggered by the restricted_zone_person rule is reduced due to the low threat assessment and lack of overtly suspicious actions.",
+      "recommended_action": "Continue monitoring the situation",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "LOW",
+        "alert_triggered": false,
+        "llm_validated": true,
+        "llm_reasoning": "The current frame shows three men gathered around a counter, but their behavior is considered normal customer activity in a retail environment. The initial HIGH severity alert triggered by the restricted_zone_person rule is reduced due to the low threat assessment and lack of overtly suspicious actions.",
+        "recommended_action": "Continue monitoring the situation",
+        "confidence": 0.7,
+        "context_signal": "Recent context summaries show no high-severity events or suspicious behavior in the restricted zone, supporting the reduction in alert severity."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_005",
+      "frame_id": "frame_005",
+      "timestamp": "16:00:32",
+      "location": "Restricted Zone",
+      "alert_triggered": true,
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "message": "Alert for frame_005 at Restricted Zone 16:00:32",
+      "objects_involved": [
+        "person",
+        "cell phone"
+      ],
+      "rule_triggered": "restricted_zone_person",
+      "llm_validated": true,
+      "llm_reasoning": "Multiple individuals are gathered around the counter area in a restricted zone, with two men reaching into the counter, indicating suspicious behavior and potential theft attempt.",
+      "recommended_action": "Security personnel should immediately investigate and intervene to prevent potential theft.",
+      "acknowledged": false,
+      "auto_escalate": true,
+      "structured_reasoning": {
+        "severity": "HIGH",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "Multiple individuals are gathered around the counter area in a restricted zone, with two men reaching into the counter, indicating suspicious behavior and potential theft attempt.",
+        "recommended_action": "Security personnel should immediately investigate and intervene to prevent potential theft.",
+        "confidence": 0.95,
+        "context_signal": "Recent context summaries show a pattern of crowd detection and restricted zone person alerts, with the current frame's behavior being more suspicious than previous frames."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_006",
+      "frame_id": "frame_006",
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "alert_triggered": true,
+      "severity": "HIGH",
+      "alert_type": "potential_theft_scenario",
+      "message": "Alert for frame_006 at Driveway 16:00:40",
+      "objects_involved": [
+        "person",
+        "display case",
+        "cell phones"
+      ],
+      "rule_triggered": "potential_theft_scenario",
+      "llm_validated": true,
+      "llm_reasoning": "The current frame shows a man behind the counter with his hands reaching into the display case, indicating potential theft behavior, and two other men watching closely, suggesting coordination or lookout behavior.",
+      "recommended_action": "Security personnel should immediately intervene and apprehend the individuals. The store manager should be notified to secure the premises and prevent further theft.",
+      "acknowledged": false,
+      "auto_escalate": true,
+      "structured_reasoning": {
+        "severity": "HIGH",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The current frame shows a man behind the counter with his hands reaching into the display case, indicating potential theft behavior, and two other men watching closely, suggesting coordination or lookout behavior.",
+        "recommended_action": "Security personnel should immediately intervene and apprehend the individuals. The store manager should be notified to secure the premises and prevent further theft.",
+        "confidence": 0.95,
+        "context_signal": "Recent context summaries and memory snapshots indicate a pattern of suspicious behavior in restricted zones, with previous alerts triggered by restricted_zone_person and crowd_detected rules."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_007",
+      "frame_id": "frame_007",
+      "timestamp": "16:00:48",
+      "location": "Side Entrance",
+      "alert_triggered": true,
+      "severity": "MEDIUM",
+      "alert_type": "potential_theft_scenario",
+      "message": "Alert for frame_007 at Side Entrance 16:00:48",
+      "objects_involved": [
+        "person",
+        "counter",
+        "phone"
+      ],
+      "rule_triggered": "potential_theft_scenario",
+      "llm_validated": true,
+      "llm_reasoning": "The scene shows suspicious behavior with three men interacting near the counter, but it does not directly indicate a high-level threat.",
+      "recommended_action": "Monitor the situation for further suspicious activity, verify the identity and authorization of the man behind the counter",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The scene shows suspicious behavior with three men interacting near the counter, but it does not directly indicate a high-level threat.",
+        "recommended_action": "Monitor the situation for further suspicious activity, verify the identity and authorization of the man behind the counter",
+        "confidence": 0.6,
+        "context_signal": "Recent alerts for potential_theft_scenario and restricted_zone_person"
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_008",
+      "frame_id": "frame_008",
+      "timestamp": "16:00:56",
+      "location": "Main Gate",
+      "alert_triggered": true,
+      "severity": "HIGH",
+      "alert_type": "potential_theft_scenario",
+      "message": "Alert for frame_008 at Main Gate 16:00:56",
+      "objects_involved": [
+        "person",
+        "counter",
+        "glass case"
+      ],
+      "rule_triggered": "potential_theft_scenario",
+      "llm_validated": true,
+      "llm_reasoning": "The current frame shows suspicious behavior with three individuals interacting near the counter, and the body language of the individuals behind the counter suggests they may be hiding something or are uncomfortable, which warrants a high threat level.",
+      "recommended_action": "Security personnel should monitor the situation closely and approach the individuals to determine their intentions.",
+      "acknowledged": false,
+      "auto_escalate": true,
+      "structured_reasoning": {
+        "severity": "HIGH",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The current frame shows suspicious behavior with three individuals interacting near the counter, and the body language of the individuals behind the counter suggests they may be hiding something or are uncomfortable, which warrants a high threat level.",
+        "recommended_action": "Security personnel should monitor the situation closely and approach the individuals to determine their intentions.",
+        "confidence": 0.7,
+        "context_signal": "Recent alerts for potential theft scenarios at Driveway and Side Entrance, with similar suspicious behavior and interactions near counters."
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_009",
+      "frame_id": "frame_009",
+      "timestamp": "16:01:04",
+      "location": "Perimeter North",
+      "alert_triggered": true,
+      "severity": "MEDIUM",
+      "alert_type": "potential_theft_scenario",
+      "message": "Alert for frame_009 at Perimeter North 16:01:04",
+      "objects_involved": [
+        "person",
+        "smartphone",
+        "display case"
+      ],
+      "rule_triggered": "potential_theft_scenario",
+      "llm_validated": true,
+      "llm_reasoning": "The scene shows suspicious behavior with a man taking a photo of the display case contents, but it does not directly indicate a high-level threat.",
+      "recommended_action": "Monitor the individuals for further suspicious activity, check if they are customers or employees, and verify their purpose in the store.",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The scene shows suspicious behavior with a man taking a photo of the display case contents, but it does not directly indicate a high-level threat.",
+        "recommended_action": "Monitor the individuals for further suspicious activity, check if they are customers or employees, and verify their purpose in the store.",
+        "confidence": 0.6,
+        "context_signal": "Recent alerts for potential_theft_scenario at Side Entrance and Main Gate"
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_010",
+      "frame_id": "frame_010",
+      "timestamp": "16:01:12",
+      "location": "Garage",
+      "alert_triggered": false,
+      "severity": "NONE",
+      "alert_type": null,
+      "message": "Alert for frame_010 at Garage 16:01:12",
+      "objects_involved": [
+        "person",
+        "glass counter",
+        "mobile phones"
+      ],
+      "rule_triggered": null,
+      "llm_validated": false,
+      "llm_reasoning": "",
+      "recommended_action": "No action required",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "NONE",
+        "alert_triggered": false,
+        "llm_validated": false,
+        "llm_reasoning": "",
+        "recommended_action": "No action required",
+        "confidence": 0.0,
+        "context_signal": ""
+      }
     },
     {
-      "duplicate": true
+      "alert_id": "ALT_20260624_011",
+      "frame_id": "frame_011",
+      "timestamp": "16:01:20",
+      "location": "Back Entrance",
+      "alert_triggered": true,
+      "severity": "HIGH",
+      "alert_type": "restricted_zone_person",
+      "message": "Alert for frame_011 at Back Entrance 16:01:20",
+      "objects_involved": [
+        "person",
+        "display_case",
+        "mobile_phones"
+      ],
+      "rule_triggered": "restricted_zone_person",
+      "llm_validated": true,
+      "llm_reasoning": "The person's behavior of reaching into the display case in a retail environment is suspicious and potentially indicative of theft, aligning with the 'restricted_zone_person' rule trigger.",
+      "recommended_action": "Security personnel should immediately investigate and approach the individual to assess the situation and prevent potential theft.",
+      "acknowledged": false,
+      "auto_escalate": true,
+      "structured_reasoning": {
+        "severity": "HIGH",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The person's behavior of reaching into the display case in a retail environment is suspicious and potentially indicative of theft, aligning with the 'restricted_zone_person' rule trigger.",
+        "recommended_action": "Security personnel should immediately investigate and approach the individual to assess the situation and prevent potential theft.",
+        "confidence": 0.8,
+        "context_signal": "Recent context summaries show a pattern of high-severity events and alerts related to potential theft scenarios, which supports the validation of this high-severity alert."
+      }
     },
     {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
-    },
-    {
-      "duplicate": true
+      "alert_id": "ALT_20260624_012",
+      "frame_id": "frame_012",
+      "timestamp": "16:01:28",
+      "location": "Restricted Zone",
+      "alert_triggered": true,
+      "severity": "MEDIUM",
+      "alert_type": "restricted_zone_person",
+      "message": "Alert for frame_012 at Restricted Zone 16:01:28",
+      "objects_involved": [
+        "person",
+        "chair",
+        "water cooler"
+      ],
+      "rule_triggered": "restricted_zone_person",
+      "llm_validated": true,
+      "llm_reasoning": "The individual's behavior of standing near the staff area and looking down is suspicious, but the confidence level is 0.6 and the threat level is MEDIUM, so the severity is reduced from HIGH to MEDIUM",
+      "recommended_action": "Monitor the individual's movements and determine if he has a legitimate reason for being in the staff area",
+      "acknowledged": false,
+      "auto_escalate": false,
+      "structured_reasoning": {
+        "severity": "MEDIUM",
+        "alert_triggered": true,
+        "llm_validated": true,
+        "llm_reasoning": "The individual's behavior of standing near the staff area and looking down is suspicious, but the confidence level is 0.6 and the threat level is MEDIUM, so the severity is reduced from HIGH to MEDIUM",
+        "recommended_action": "Monitor the individual's movements and determine if he has a legitimate reason for being in the staff area",
+        "confidence": 0.6,
+        "context_signal": "Recent context summaries show a pattern of alerts in restricted zones, but the current frame's threat level is MEDIUM, influencing the decision to reduce the severity"
+      }
     }
   ]
 }

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pinecone import Pinecone
 
@@ -54,8 +54,10 @@ def init_pinecone():
     return pc.index(name=INDEX_NAME)
 
 
-def _build_record(frame: Dict[str, Any]) -> Dict[str, Any]:
-    frame_id = frame["frame_id"]
+def _build_record(frame: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    frame_id = frame.get("frame_id")
+    if not frame_id:
+        return None
     desc = (frame.get("vlm_description") or frame.get("description") or "").strip()
     if not desc:
         desc = f"Frame {frame_id}: {frame.get('activity', 'no description')}"
@@ -87,7 +89,10 @@ def _index_integrated(index, frames: List[Dict[str, Any]]) -> List[Dict[str, Any
     for frame in frames:
         if frame is None:
             continue
-        batch.append(_build_record(frame))
+        record = _build_record(frame)
+        if record is None:
+            continue
+        batch.append(record)
         if len(batch) >= batch_size:
             log_entries.extend(_flush_integrated_batch(index, namespace, batch))
             batch = []

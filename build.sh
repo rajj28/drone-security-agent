@@ -9,7 +9,7 @@ pip install -r requirements.txt
 
 # Verify installation
 echo "✅ Verifying installations..."
-python -c "import fastapi; import streamlit; import torch; print('All core dependencies installed successfully')"
+python -c "import fastapi; import torch; print('All core dependencies installed successfully')"
 
 # Create necessary directories
 echo "📁 Creating output directories..."

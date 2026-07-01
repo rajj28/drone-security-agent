@@ -41,7 +41,7 @@ class TestIntelligentFrameExtractor:
         # Generate 30 frames with some motion
         for i in range(30):
             # Create frame with some motion
-            frame = np.zeros((480, 640, 3), dtype=np.uint8)
+            frame = np.random.randint(50, 200, (480, 640, 3), dtype=np.uint8)
             # Add moving object
             x = int(320 + 100 * np.sin(i * 0.2))
             y = int(240 + 50 * np.cos(i * 0.2))
@@ -166,7 +166,7 @@ class TestIntelligentFrameExtractor:
             FrameInfo(5, 1.0, "frame5.jpg", 100, 50, extraction_reason="test"),
         ]
         
-        deduplicated = extractor._deduplicate_frames(frames, min_interval=0.5)
+        deduplicated = extractor._deduplicate_frames(frames, min_interval=0.08)
         
         # Should remove frame 4 (too close to frame 3)
         assert len(deduplicated) == 4

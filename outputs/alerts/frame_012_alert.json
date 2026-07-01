@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_012",
+  "frame_id": "frame_012",
+  "timestamp": "16:01:28",
+  "location": "Restricted Zone",
+  "alert_triggered": true,
+  "severity": "MEDIUM",
+  "alert_type": "restricted_zone_person",
+  "message": "Alert for frame_012 at Restricted Zone 16:01:28",
+  "objects_involved": [
+    "person",
+    "chair",
+    "water cooler"
+  ],
+  "rule_triggered": "restricted_zone_person",
+  "llm_validated": true,
+  "llm_reasoning": "The individual's behavior of standing near the staff area and looking down is suspicious, but the confidence level is 0.6 and the threat level is MEDIUM, so the severity is reduced from HIGH to MEDIUM",
+  "recommended_action": "Monitor the individual's movements and determine if he has a legitimate reason for being in the staff area",
+  "acknowledged": false,
+  "auto_escalate": false,
+  "structured_reasoning": {
+    "severity": "MEDIUM",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The individual's behavior of standing near the staff area and looking down is suspicious, but the confidence level is 0.6 and the threat level is MEDIUM, so the severity is reduced from HIGH to MEDIUM",
+    "recommended_action": "Monitor the individual's movements and determine if he has a legitimate reason for being in the staff area",
+    "confidence": 0.6,
+    "context_signal": "Recent context summaries show a pattern of alerts in restricted zones, but the current frame's threat level is MEDIUM, influencing the decision to reduce the severity"
+  }
+}

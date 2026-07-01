@@ -1,0 +1,66 @@
+{
+  "video": "C:\\Users\\Acer\\drone-security-agent-1\\Sneaky Thieves Caught Stealing Phones On Camera - Newsflare (1080p, h264) (1).mp4",
+  "session_id": "eval_1780339094",
+  "session_dir": "C:\\Users\\Acer\\drone-security-agent-1\\data\\eval_sessions\\eval_1780339094",
+  "max_frames": 8,
+  "started_at": "2026-06-01T18:38:14.949096Z",
+  "video_meta": {
+    "fps": 25.0,
+    "frame_count": 2905,
+    "width": 1920,
+    "height": 1080,
+    "duration_sec": 116.2
+  },
+  "extraction": {
+    "elapsed_sec": 33.94,
+    "frames_extracted": 3,
+    "frame_files": [
+      "frame_001.jpg",
+      "frame_002.jpg",
+      "frame_003.jpg"
+    ],
+    "timestamps_sec": [
+      0.0,
+      1.0,
+      112.8
+    ],
+    "reasons": [
+      "quality_ok",
+      "quality_ok",
+      "quality_ok"
+    ],
+    "total_scanned": 3,
+    "rejected_count": 0,
+    "rejection_reasons": {}
+  },
+  "telemetry": {
+    "elapsed_sec": 0.0,
+    "count": 0,
+    "sample": null
+  },
+  "vision": {
+    "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\Acer\\\\drone-security-agent-1\\\\data\\\\eval_sessions\\\\eval_1780339094\\\\telemetry\\\\all_telemetry.json'",
+    "elapsed_sec": 0.0
+  },
+  "status": "FAILED",
+  "quality_filter": {
+    "cases": [
+      {
+        "case": "dark_frame",
+        "accepted": false,
+        "reason": "too_dark(0.0)"
+      },
+      {
+        "case": "bright_frame",
+        "accepted": false,
+        "reason": "overexposed(255.0)"
+      },
+      {
+        "case": "solid_color",
+        "accepted": false,
+        "reason": "low_contrast(0.0)"
+      }
+    ],
+    "pass": true
+  }
+}

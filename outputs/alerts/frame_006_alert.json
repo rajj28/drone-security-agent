@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_006",
+  "frame_id": "frame_006",
+  "timestamp": "16:00:40",
+  "location": "Driveway",
+  "alert_triggered": true,
+  "severity": "HIGH",
+  "alert_type": "potential_theft_scenario",
+  "message": "Alert for frame_006 at Driveway 16:00:40",
+  "objects_involved": [
+    "person",
+    "display case",
+    "cell phones"
+  ],
+  "rule_triggered": "potential_theft_scenario",
+  "llm_validated": true,
+  "llm_reasoning": "The current frame shows a man behind the counter with his hands reaching into the display case, indicating potential theft behavior, and two other men watching closely, suggesting coordination or lookout behavior.",
+  "recommended_action": "Security personnel should immediately intervene and apprehend the individuals. The store manager should be notified to secure the premises and prevent further theft.",
+  "acknowledged": false,
+  "auto_escalate": true,
+  "structured_reasoning": {
+    "severity": "HIGH",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The current frame shows a man behind the counter with his hands reaching into the display case, indicating potential theft behavior, and two other men watching closely, suggesting coordination or lookout behavior.",
+    "recommended_action": "Security personnel should immediately intervene and apprehend the individuals. The store manager should be notified to secure the premises and prevent further theft.",
+    "confidence": 0.95,
+    "context_signal": "Recent context summaries and memory snapshots indicate a pattern of suspicious behavior in restricted zones, with previous alerts triggered by restricted_zone_person and crowd_detected rules."
+  }
+}

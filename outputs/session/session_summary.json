@@ -1,17 +1,22 @@
 {
   "session_summary": {
-    "date": "2026-05-31",
-    "total_frames_analyzed": 31,
-    "total_alerts": 2,
-    "high_alerts": 0,
-    "medium_alerts": 2,
+    "date": "2026-06-24",
+    "total_frames_analyzed": 496,
+    "total_alerts": 89,
+    "high_alerts": 20,
+    "medium_alerts": 69,
     "low_alerts": 0,
     "common_objects_detected": [
-      "glass display counter",
-      "mobile phones",
-      "promotional posters"
+      "accessories",
+      "bag",
+      "chairs",
+      "display counter",
+      "display counters",
+      "door",
+      "graphics",
+      "mobile phones"
     ],
-    "people_count": 48,
+    "people_count": 356,
     "vehicles_count": 0,
     "locations_visited": [
       "Main Gate",
@@ -22,29 +27,29 @@
       "Driveway",
       "Side Entrance"
     ],
-    "session_highlights": "Two medium-level threat behaviors detected, involving potential theft behavior in a retail setting."
+    "session_highlights": "Processed 496 frames with 89 alerts. Highest severity count: 20."
   },
   "system_operations": {
-    "average_processing_time_ms": 3358,
+    "average_processing_time_ms": 2380,
     "most_frequent_model_used": "cloud-clip-blip-gpt4o",
     "max_confidence": 0.9,
-    "common_recommendation": "Continue monitoring"
+    "common_recommendation": "Review frame manually"
   },
   "alert_description": {
-    "total_alerts_with_no_trigger": 9,
-    "frames_triggers": 2
+    "total_alerts_with_no_trigger": 3,
+    "frames_triggers": 9
   },
   "battery_status": {
     "initial_battery_level": "unknown",
     "battery_issues_detected_in_frames": []
   },
-  "narrative": "During the session, 31 frames were analyzed with detection of potential theft behaviors leading to medium-level alerts. No vehicles were detected. All operations ran smoothly without any battery issues.",
+  "narrative": "Monitoring session covered 7 locations with 9 triggered alerts. System maintained continuous frame-level analysis and indexing throughout the run.",
   "statistics": {
-    "total_alerts": 2,
-    "frames_analyzed": 31,
-    "high_alerts": 0,
-    "medium_alerts": 2,
+    "total_alerts": 89,
+    "frames_analyzed": 496,
+    "high_alerts": 20,
+    "medium_alerts": 69,
     "low_alerts": 0
   },
-  "one_line_summary": "Today's drone monitoring detected 356 individuals, 89 alerts, including 20 high-severity incidents with multiple restricted zone breaches and crowd activities at key locations such as Restricted Zone, Back Entrance, and Garage."
+  "one_line_summary": "Session processed 496 frames with 89 alerts across 7 locations."
 }

@@ -1,710 +1,427 @@
 # 🛡️ Drone Security Analyst Agent
-### *AI-Powered Vision Intelligence for Next-Gen Security* 🔮
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-green)](https://fastapi.tiangolo.com)
-[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-purple)](https://openai.com)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+**AI-Powered Autonomous Security Surveillance System**
 
-> 🚁 **Transform your drone footage into actionable security intelligence in seconds**
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green)](https://fastapi.tiangolo.com)
+[![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
+[![Google Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployed-4285F4)](https://cloud.google.com/run)
+[![Gemini 2.5](https://img.shields.io/badge/Gemini-2.5%20Pro%20%2F%20Flash-orange)](https://ai.google.dev)
 
----
+> An end-to-end AI agent that ingests drone surveillance video, extracts frames using intelligent strategies, analyzes each frame with multi-model vision AI, detects security threats, generates alerts, and provides a natural-language Q&A interface — all exposed through a production REST API and React dashboard.
 
-## 🎯 What This Beast Can Do
-
-Ever wished your security cameras could **actually understand** what they're seeing? Meet your new AI security guard that never sleeps, never blinks, and catches threats humans miss!
+**Live Demo:** https://drone-security-dashboard-27774218566.us-central1.run.app/
 
 ---
 
-## 🆕 Recent Updates
+## Table of Contents
 
-### June 2026 - MongoDB Persistence & Cloud Run Deployment
-- ✅ **MongoDB Integration**: Added persistent session storage for video processing status
-- ✅ **Cloud Run Deployment**: Fully deployed API and Dashboard to Google Cloud Run
-- ✅ **Session Persistence**: Processing status now survives container restarts and autoscaling
-- ✅ **Health Check Endpoint**: Added `/health` endpoint with MongoDB connection status
-- ✅ **API Key Integration**: Support for Gemini API and Pinecone API keys
-- ✅ **Dashboard Connection**: Fixed dashboard to use correct Cloud Run API URL
-- ✅ **Docker Optimization**: Created lightweight Dockerfiles for faster builds
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+- [Processing Pipeline](#processing-pipeline)
+- [AI Models & Analysis](#ai-models--analysis)
+- [Alert System](#alert-system)
+- [Deployment](#deployment)
+- [Development](#development)
 
-**Deployment URLs:**
-- API: `https://drone-security-api-27774218566.us-central1.run.app`
-- Dashboard: (deployed separately)
+---
 
-### ⚠️ Known Deployment Issues (Being Fixed)
+## Overview
 
-| Issue | Status | Workaround |
-|-------|--------|------------|
-| Cloud Build substitution errors | ✅ Fixed | Use Docker build + push instead |
-| Docker Desktop build timeouts | ✅ Fixed | Use Docker build with cache |
-| SSL/TLS issues with MongoDB Atlas | ✅ Fixed | Added `tlsAllowInvalidCertificates` for container env |
-| In-memory session loss | ⚠️ Partial | MongoDB code implemented but connection failing |
-| pymongo `in_transaction` error | 🔧 In Progress | Use in-memory fallback for now |
+The Drone Security Analyst Agent automates physical security monitoring by processing drone surveillance footage through a multi-stage AI pipeline:
 
-**Current Status:**
-- ✅ API deployed and running: `https://drone-security-api-27774218566.us-central1.run.app`
-- ✅ Health endpoint responding: `{"status":"ok",...}`
-- ❌ MongoDB persistence: Failing with `'int' object has no attribute 'in_transaction'`
-- ✅ Fallback: In-memory storage (sessions lost on container restart)
+1. **Intelligent Frame Extraction** — hybrid strategy combining uniform sampling, motion detection, and scene-change detection to capture the most informative frames from any video.
+2. **Multi-Model Vision Analysis** — Gemini 2.5 Pro/Flash for deep scene understanding, with optional CLIP + BLIP cloud analyzers for supplementary pattern recognition.
+3. **Threat Classification** — a deterministic rule engine that escalates threat levels (CLEAR → LOW → MEDIUM → HIGH → CRITICAL) based on detected behaviors, time-of-day, and zone context.
+4. **Vector Search & Q&A** — frames are indexed in Pinecone with integrated inference embeddings, enabling natural-language semantic search and a conversational security agent.
+5. **Persistent Sessions** — each video upload creates an isolated session with MongoDB-backed status tracking that survives container restarts.
 
-**Working Deployment Command:**
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    DRONE SECURITY ANALYST AGENT                       │
+└─────────────────────────────────────────────────────────────────────┘
+
+ Video Upload          Processing Pipeline              Outputs
+┌──────────┐    ┌──────────────────────────┐    ┌─────────────────┐
+│  MP4/AVI │───▶│ Intelligent Frame        │───▶│ Extracted Frames│
+│  MOV/DAV │    │ Extractor (hybrid/motion │    │ + Telemetry     │
+│  MKV/WMV │    │ /scene_change/uniform)   │    └────────┬────────┘
+│  +10 more│    └──────────────────────────┘             │
+└──────────┘                                             ▼
+                                              ┌─────────────────────┐
+                                              │ Gemini 2.5 Vision   │
+                                              │ + Cloud Analyzer     │
+                                              │ (CLIP/BLIP optional) │
+                                              └────────┬────────────┘
+                                                       │
+                          ┌────────────────────────────┼──────────────┐
+                          │                            │              │
+                          ▼                            ▼              ▼
+                 ┌─────────────────┐        ┌──────────────┐  ┌───────────┐
+                 │  Alert Engine   │        │ Pinecone     │  │ Session   │
+                 │  (5 rules +    │        │ Vector Index │  │ Summarizer│
+                 │   LLM validate)│        │ (semantic    │  │           │
+                 └────────┬───────┘        │  search)     │  └─────┬─────┘
+                          │                └──────┬───────┘        │
+                          │                       │                │
+                          ▼                       ▼                ▼
+                 ┌─────────────────────────────────────────────────────┐
+                 │           FastAPI Backend (src/api.py)               │
+                 │  /upload-video  /frames  /alerts  /search  /qa      │
+                 └──────────────────────────┬──────────────────────────┘
+                                            │
+                                            ▼
+                 ┌─────────────────────────────────────────────────────┐
+                 │        React + TypeScript Dashboard (Vite)           │
+                 │  Video Upload · Frame Viewer · Alerts · Search · QA │
+                 └─────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **14+ Video Formats** | MP4, AVI, MOV, DAV, MKV, WMV, FLV, WebM, MPEG, 3GP, TS, M4V, M2TS |
+| **Intelligent Extraction** | Hybrid strategy (motion + scene change + uniform) extracts only meaningful frames |
+| **Gemini 2.5 Vision** | Two-stage analysis: neutral observation → security deep-dive |
+| **Cloud Enhanced Analyzer** | Optional CLIP + BLIP via Hugging Face Inference API |
+| **Person Tracking** | Cross-frame re-identification by clothing, features, and position |
+| **Threat Scoring** | 5-level severity with deterministic rule engine + LLM validation |
+| **Semantic Search** | Natural language queries over indexed frames via Pinecone |
+| **AI Q&A Agent** | Conversational security assistant with session context |
+| **MongoDB Persistence** | Session state survives container restarts and autoscaling |
+| **React Dashboard** | Modern glassmorphic UI with real-time processing status |
+| **Google Cloud Run** | Production deployment with auto-scaling and CI/CD |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Vision AI** | Google Gemini 2.5 Pro / Flash, CLIP (ViT-L/14), BLIP |
+| **Embeddings** | Pinecone integrated inference (llama-text-embed-v2, 768d) |
+| **Vector DB** | Pinecone (cosine similarity, metadata filtering) |
+| **Backend** | FastAPI, Uvicorn, Python 3.10+ |
+| **Frontend** | React 19, TypeScript, Vite 8, Lucide Icons |
+| **Database** | MongoDB Atlas (session persistence) |
+| **Frame Processing** | OpenCV, FFmpeg, Pillow |
+| **Deployment** | Google Cloud Run, Docker multi-stage builds |
+| **Optional LLMs** | Groq (free tier), Ollama (local) |
+
+---
+
+## Project Structure
+
+```
+drone-security-agent-1/
+├── src/                          # Core Python modules
+│   ├── api.py                    # FastAPI application & endpoints
+│   ├── config.py                 # Pydantic settings & env management
+│   ├── session_bootstrap.py      # Session directory layout
+│   ├── intelligent_frame_extractor.py  # Hybrid frame extraction
+│   ├── frame_extractor.py        # Basic FFmpeg extraction
+│   ├── vision_analyzer.py        # Gemini vision analysis
+│   ├── cloud_enhanced_analyzer.py # CLIP + BLIP cloud analysis
+│   ├── alert_engine.py           # Threat classification & alerts
+│   ├── pinecone_indexer.py       # Vector indexing & search
+│   ├── qa_agent.py               # Natural language Q&A agent
+│   ├── person_tracker.py         # Cross-frame person tracking
+│   ├── telemetry_generator.py    # Drone telemetry simulation
+│   ├── summarizer.py             # Session summary generation
+│   ├── gemini_client.py          # Gemini API client with retries
+│   ├── mongodb_storage.py        # MongoDB session storage
+│   ├── unified_context.py        # Unified session context
+│   ├── context_manager.py        # Rich context store
+│   └── ai_orchestration/         # Multi-agent orchestration
+├── frontend/                     # React + TypeScript dashboard
+│   ├── src/                      # React components
+│   ├── package.json              # Dependencies (React 19, Vite 8)
+│   └── vite.config.ts            # Vite configuration
+├── tests/                        # Test suite
+├── data/                         # Runtime data (frames, sessions)
+├── outputs/                      # Analysis outputs
+├── Dockerfile.light              # Production multi-stage build
+├── cloudbuild.yaml               # Google Cloud Build CI/CD
+├── requirements.txt              # Full Python dependencies
+├── requirements.light.txt        # Lightweight production deps
+└── .env.example                  # Environment variable template
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 20+ (for frontend)
+- FFmpeg installed and on PATH
+- API keys: Gemini, Pinecone (minimum required)
+
+### Local Development
+
 ```bash
-# Build and push
-docker build -f Dockerfile.light -t gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6 .
-docker push gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6
+# Clone the repository
+git clone https://github.com/rajj28/drone-security-agent.git
+cd drone-security-agent
 
-# Deploy
-gcloud run deploy drone-security-api \
-  --image gcr.io/project-9e4a6e94-3f27-47fe-8f4/drone-security-api:v6 \
+# Set up Python environment
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your API keys (at minimum: GEMINI_API_KEY, PINECONE_API_KEY)
+
+# Start the API server
+uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
+
+# (In another terminal) Start the frontend
+cd frontend
+npm install
+npm run dev
+```
+
+The API will be available at `http://localhost:8000` and the dashboard at `http://localhost:5173`.
+
+---
+
+## Configuration
+
+All configuration is managed through environment variables (`.env` file). Key variables:
+
+```bash
+# Required
+GEMINI_API_KEY=your_gemini_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+
+# Gemini model selection
+GEMINI_MODEL=gemini-2.5-pro
+GEMINI_FALLBACK_MODEL=gemini-2.5-flash
+GEMINI_PREFER_FLASH=true          # Use Flash first to save quota
+API_MIN_INTERVAL_SEC=12            # Rate limit pacing
+
+# Pinecone
+PINECONE_INDEX_NAME=flytbase
+PINECONE_DIMENSION=768
+PINECONE_USE_INTEGRATED=true       # Use llama-text-embed-v2 integrated inference
+PINECONE_NAMESPACE=drone-security
+
+# Optional: Cloud enhanced analysis (CLIP + BLIP)
+HF_API_TOKEN=your_huggingface_token
+USE_CLOUD_ANALYZER=true
+
+# Optional: Free LLM for Q&A agent (saves Gemini quota)
+AGENT_LLM_PROVIDER=groq            # gemini, groq, ollama
+GROQ_API_KEY=your_groq_key
+
+# Optional: MongoDB persistence
+MONGODB_URI=mongodb+srv://...
+
+# Session
+SESSION_ID=                         # Leave empty for API-managed sessions
+MAX_FRAMES=20
+```
+
+See `.env.example` for the full list.
+
+---
+
+## API Reference
+
+### Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | API info |
+| `GET` | `/health` | System health + MongoDB status |
+| `POST` | `/upload-video` | Upload video for processing |
+| `GET` | `/processing-status/{session_id}` | Processing progress |
+| `GET` | `/sessions` | List all sessions |
+| `GET` | `/frames` | List extracted frames |
+| `GET` | `/alerts` | Get security alerts |
+| `POST` | `/search` | Semantic frame search |
+| `POST` | `/qa` | Ask the security agent |
+| `GET` | `/session/summary` | Session summary report |
+
+### Upload Video
+
+```bash
+curl -X POST "https://drone-security-dashboard-27774218566.us-central1.run.app/upload-video" \
+  -F "file=@surveillance.mp4" \
+  -F "extraction_strategy=hybrid" \
+  -F "max_frames=100"
+```
+
+**Parameters:**
+- `file` — Video file (any of the 14 supported formats)
+- `session_id` — Optional; auto-generated UUID if omitted
+- `extraction_strategy` — `uniform`, `motion_based`, `scene_change`, or `hybrid` (default)
+- `max_frames` — 10–500 (default: 100)
+
+### Semantic Search
+
+```bash
+curl -X POST "http://localhost:8000/search" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "person reaching towards shelf", "top_k": 5}'
+```
+
+### Q&A Agent
+
+```bash
+curl -X POST "http://localhost:8000/qa" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Were there any suspicious activities near the entrance?"}'
+```
+
+---
+
+## Processing Pipeline
+
+When a video is uploaded, the system executes a 6-step background pipeline:
+
+```
+1. Frame Extraction (20%)     → Intelligent hybrid extraction (FFmpeg + OpenCV)
+2. Telemetry Generation (40%) → Simulated drone GPS, altitude, heading
+3. Vision Analysis (60%)      → Gemini 2.5 per-frame analysis
+4. Alert Generation (80%)     → Rule engine + LLM threat validation
+5. Person Tracking (90%)      → Cross-frame re-identification
+6. Session Summary (100%)     → Aggregated security report
+```
+
+Each step updates the session status in MongoDB, enabling real-time progress tracking from the frontend.
+
+---
+
+## AI Models & Analysis
+
+### Two-Stage Vision Analysis
+
+**Stage 1 — Neutral Observation:**
+The vision model describes the scene objectively (people, objects, actions, environment).
+
+**Stage 2 — Security Deep-Dive:**
+If suspicious keywords are detected (reaching, concealing, loitering, etc.), a focused security analysis extracts:
+- Threat level and type
+- Person descriptions and positions
+- Recommended actions
+
+### Cloud Enhanced Analyzer (Optional)
+
+When `USE_CLOUD_ANALYZER=true`, supplementary analysis runs via:
+- **CLIP (ViT-L/14):** Pattern matching against 20+ security behavior categories
+- **BLIP:** Natural language scene captioning with keyword extraction
+
+These results are fused with Gemini's analysis for higher confidence scoring.
+
+---
+
+## Alert System
+
+### Severity Levels
+
+| Level | Trigger | Action |
+|-------|---------|--------|
+| **CLEAR** | Normal activity | Log only |
+| **LOW** | Minor anomaly | Monitor |
+| **MEDIUM** | Suspicious behavior detected | Investigate |
+| **HIGH** | After-hours intrusion, loitering, threat | Immediate response |
+| **CRITICAL** | Weapons, fire, active threat | Emergency dispatch |
+
+### Escalation Rules
+
+1. Unknown signals → escalate to MEDIUM
+2. After-hours activity → escalate to HIGH
+3. Weapons / fire detection → escalate to CRITICAL
+4. Vehicle in restricted zone → escalate to MEDIUM
+5. Loitering detection → escalate to HIGH
+
+---
+
+## Deployment
+
+### Google Cloud Run (Production)
+
+The project is deployed as a single container serving both the FastAPI backend and the React frontend (static files served from `/frontend/dist/`).
+
+```bash
+# Build the production image
+docker build -f Dockerfile.light -t gcr.io/YOUR_PROJECT/drone-security-api:latest .
+
+# Push to Container Registry
+docker push gcr.io/YOUR_PROJECT/drone-security-api:latest
+
+# Deploy to Cloud Run
+gcloud run deploy drone-security-dashboard \
+  --image gcr.io/YOUR_PROJECT/drone-security-api:latest \
   --region us-central1 \
   --platform managed \
   --allow-unauthenticated \
   --memory 2Gi \
   --cpu 2 \
-  --set-env-vars "GEMINI_API_KEY=your_key,PINECONE_API_KEY=your_key,MONGODB_URI=your_uri"
+  --set-env-vars "GEMINI_API_KEY=...,PINECONE_API_KEY=...,MONGODB_URI=..."
 ```
 
----
-
-### 🔥 The Magic Behind the Scenes
-
-Our **Three-Brain Architecture** combines the power of:
-
-- 🧠 **CLIP** (Hugging Face) - Visual pattern recognition wizard
-- 📝 **BLIP** (Salesforce) - Scene understanding expert  
-- 🎯 **GPT-4o Vision** (OpenAI) - The security analyst mastermind
-
-**Result?** 95%+ threat detection accuracy that catches everything from petty theft to suspicious loitering!
-
----
-
-## ✨ Killer Features
-
-| Feature | What It Does | Why It Rocks |
-|---------|--------------|--------------|
-| 🎥 **Universal Video Support** | MP4, AVI, MOV, DAV, MKV, WMV, FLV | Upload ANY video, we handle it |
-| 🧠 **Triple AI Vision** | CLIP + BLIP + GPT-4o working together | Triple-check every frame |
-| 🎯 **Two-Stage Analysis** | Neutral scan → Security deep-dive | Catches hidden threats |
-| 📊 **Smart Threat Scoring** | 0-100 risk assessment | Know severity instantly |
-| 🚨 **Rule-Based Alerts** | 5 intelligent escalation rules | No false alarms |
-| 👥 **Person Tracking** | Cross-frame identification | Follow suspects across video |
-| 💬 **AI Security Assistant** | Ask natural language questions | "Show me all reaching behaviors" |
-| 📈 **Live Dashboard** | Real-time monitoring | Watch security unfold |
-| 🔧 **Production Ready** | Error handling, logging, tests | Deploy with confidence |
-| ⚡ **Blazing Fast** | Parallel processing | Results in seconds |
-
----
-
-## 🏗️ System Architecture
-
-```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                        🎯 THREE-BRAIN AI ENGINE                     │
-└─────────────────────────────────────────────────────────────────────┘
-
-  🎥 VIDEO INPUT          🔬 PROCESSING LAYER          🧠 AI ANALYSIS
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Upload Video   │───▶│ Frame Extraction  │───▶│  🧠 CLIP        │
-│  (Any Format)   │    │ + Enhancement     │    │  Pattern Match  │
-└─────────────────┘    └─────────────────┘    └────────┬────────┘
-                                                        │
-                              ┌─────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  📝 BLIP         │
-                    │  Scene Caption   │
-                    └────────┬────────┘
-                             │
-           ┌─────────────────┼─────────────────┐
-           │                 │                 │
-           ▼                 ▼                 ▼
-    ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐
-    │ Threat      │  │ Suspicious  │  │  🎯 GPT-4o      │
-    │ Categories  │  │ Keywords    │  │  Two-Stage      │
-    │ (20+ types) │  │ Detection   │  │  Analysis       │
-    └─────────────┘  └─────────────┘  └────────┬────────┘
-                                               │
-                    ┌──────────────────────────┘
-                    │
-                    ▼
-          ┌─────────────────┐
-          │ 📊 RULE ENGINE  │
-          │ 5 Escalation    │
-          │ Rules Applied   │
-          └────────┬────────┘
-                   │
-         ┌─────────┴─────────┐
-         │                   │
-         ▼                   ▼
-┌─────────────────┐  ┌─────────────────┐
-│  🚨 ALERTS      │  │  📈 DASHBOARD   │
-│  Real-time      │  │  Streamlit UI   │
-│  Notifications  │  │  Visual Metrics │
-└─────────────────┘  └─────────────────┘
-```
-
----
-
-## 🧠 How The Three-Brain Architecture Works
-
-### Brain #1: 🧠 CLIP (Visual Pattern Recognition)
-
-```text
-CLIP: "What do I see in this image?"
-┌─────────────────────────────────────┐
-│ 20+ Security Categories Tracked:   │
-│                                     │
-│ 1️⃣ THEFT & CONCEALMENT             │
-│    - reaching towards shelf         │
-│    - concealing object              │
-│    - putting in pocket              │
-│    - palming items                  │
-│                                     │
-│ 2️⃣ SUSPICIOUS BEHAVIORS             │
-│    - looking around nervously       │
-│    - loitering without purpose      │
-│    - crouching behind shelves       │
-│                                     │
-│ 3️⃣ MOVEMENT & FLIGHT                │
-│    - running in store               │
-│    - exiting rapidly                │
-│    - looking back while leaving     │
-│                                     │
-│ Output: threat_score + categories   │
-└─────────────────────────────────────┘
-```
-
-**CLIP tells us:** *"I see someone reaching with 85% confidence"*
-
----
-
-### Brain #2: 📝 BLIP (Scene Understanding)
-
-```text
-BLIP: "What's happening in this scene?"
-┌─────────────────────────────────────┐
-│ Natural Language Description:      │
-│                                     │
-│ "Person reaching towards display    │
-│  shelf while looking around         │
-│  suspiciously"                     │
-│                                     │
-│ Security Keywords Extracted:        │
-│ - reaching ✓                       │
-│ - looking around ✓                 │
-│ - suspiciously ✓                   │
-└─────────────────────────────────────┘
-```
-
-**BLIP tells us:** *"A person is reaching for items suspiciously"*
-
----
-
-### Brain #3: 🎯 GPT-4o (The Security Mastermind)
-
-```text
-GPT-4o: "Is this a security threat?"
-┌─────────────────────────────────────┐
-│ TWO-STAGE ANALYSIS PROCESS:         │
-│                                     │
-│ Stage 1: Neutral Observation          │
-│ "I see a person reaching toward     │
-│  the shelf with their right hand"   │
-│                                     │
-│ 🔍 Suspicious Keywords Detected?    │
-│    → YES: "reaching" found!        │
-│                                     │
-│ Stage 2: Security Deep-Dive         │
-│ "Analyzing for theft indicators..." │
-│ "This reaching behavior combined    │
-│  with nervous scanning suggests     │
-│  potential shoplifting"             │
-│                                     │
-│ Output: threat_level + reasoning   │
-└─────────────────────────────────────┘
-```
-
-**GPT-4o tells us:** *"MEDIUM threat - potential theft behavior detected"*
-
----
-
-### 🔧 The Rule Engine (Final Decision Maker)
-
-```text
-After all three brains analyze, the Rule Engine makes the final call:
-
-┌────────────────────────────────────────┐
-│ 5 INTELLIGENT ESCALATION RULES         │
-│                                        │
-│ Rule 0: UNKNOWN → MEDIUM               │
-│    "If signals exist, escalate!"        │
-│                                        │
-│ Rule 1: After Hours Escalation         │
-│    "Any threat at night → HIGH"         │
-│                                        │
-│ Rule 2: Critical Threats                 │
-│    "Weapons/Fire → CRITICAL"          │
-│                                        │
-│ Rule 3: Vehicle Restrictions           │
-│    "Vehicle in zone → MEDIUM"         │
-│                                        │
-│ Rule 4: Loitering Detection            │
-│    "Loitering → HIGH"                 │
-└────────────────────────────────────────┘
-```
-
-**Result:** 🚨 **HIGH Alert** (After hours + reaching detected)
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Docker & Docker Compose
-- OpenAI API Key
-- Pinecone API Key
-- LangChain API Key
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd drone-security-agent-1
-   ```
-
-2. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your API keys
-   ```
-
-3. **Start the system**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Access the dashboard**
-   - Dashboard: http://localhost:8501
-   - API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
-
----
-
-## 📹 Dynamic Video Processing
-
-### Supported Video Formats
-- MP4, AVI, MOV, DAV, MKV, WMV, FLV
-- Maximum file size: 500MB
-- Processing time: 5-10 minutes (varies with video length)
-
-### Processing Pipeline
-
-1. **Frame Extraction**: Intelligent frame extraction from video
-2. **Telemetry Generation**: Contextual metadata for each frame
-3. **AI Vision Analysis**: GPT-4o Vision with quality enhancement
-4. **Person Tracking**: Cross-frame identification and tracking
-5. **Alert Generation**: Security threat detection and validation
-6. **Session Summary**: Comprehensive security report
-
-### Upload Methods
-
-#### Method 1: Dashboard Upload
-1. Navigate to "📹 Video Upload" tab
-2. Select video file
-3. Click "Start Processing"
-4. Monitor progress in real-time
-
-#### Method 2: API Upload
-```bash
-curl -X POST "http://localhost:8000/upload-video" \
-  -H "accept: application/json" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@your_video.mp4"
-```
-
----
-
-## 🤖 AI Capabilities
-
-### Vision Analysis Features
-
-#### Person Detection & Tracking
-- **Clothing Analysis**: Color, type, pattern recognition
-- **Physical Attributes**: Body type (slim/average/heavy), height estimation
-- **Distinctive Features**: Hats, glasses, beards, bags, accessories
-- **Position Tracking**: Location within frame, movement patterns
-- **Cross-Frame Matching**: Re-identification across multiple frames
-
-#### Vehicle Analysis
-- **Type Classification**: Sedan, SUV, truck, motorcycle, etc.
-- **Color Recognition**: Primary and secondary colors
-- **License Plate**: Detection and OCR when visible
-- **Condition Assessment**: Damage, modifications, unusual features
-
-#### Scene Understanding
-- **Location Classification**: Parking lot, entrance, warehouse, etc.
-- **Activity Recognition**: Walking, running, loitering, suspicious behavior
-- **Security Context**: After hours, restricted zones, emergency situations
-
-### Robust Error Handling
-
-The system includes multiple fallback strategies for challenging conditions:
-
-- **Poor Quality Images**: Automatic enhancement (sharpening, brightness, contrast)
-- **Blurry Frames**: Advanced filtering and noise reduction
-- **Low Light**: Brightness enhancement with detail preservation
-- **Corrupted Data**: Graceful degradation and default responses
-- **Network Issues**: Retry mechanisms and timeout handling
-
----
-
-## 🚨 Alert System
-
-### Alert Types
-
-1. **HIGH SEVERITY**
-   - Unauthorized access to restricted zones
-   - After hours intrusions
-   - Weapon or threat detection
-   - Emergency situations
-
-2. **MEDIUM SEVERITY**
-   - Loitering in sensitive areas
-   - Unusual vehicle activity
-   - Suspicious behavior patterns
-   - Security protocol violations
-
-3. **LOW SEVERITY**
-   - Minor policy violations
-   - Unusual but non-threatening activity
-   - System anomalies
-
-### Alert Validation
-
-Two-layer validation process:
-1. **Rule-based Engine**: Fast, deterministic security rules
-2. **LLM Validation**: GPT-4o context analysis and reasoning
-
----
-
-## 💬 AI Security Assistant
-
-### Capabilities
-- Natural language queries about security events
-- Context-aware responses with source citations
-- Person and vehicle search by description
-- Timeline analysis and incident reconstruction
-- Security protocol recommendations
-
-### Example Queries
-- "Show me all people wearing red shirts"
-- "What happened at the main gate after 6 PM?"
-- "Track the person in the blue jacket across all frames"
-- "Were there any unauthorized vehicles in the parking lot?"
-
----
-
-## 📊 Dashboard Features
-
-### Real-time Monitoring
-- Live system status and health indicators
-- Processing progress tracking
-- Alert statistics and trends
-- Person tracking visualization
-
-### Interactive Tabs
-1. **🎬 Frame Analysis**: Detailed frame-by-frame analysis
-2. **🚨 Alert Center**: Security alerts and recommendations
-3. **🔍 Semantic Search**: Natural language video search
-4. **📊 Session Summary**: Comprehensive security reports
-5. **💬 Security Agent**: AI-powered Q&A interface
-6. **📹 Video Upload**: Dynamic video processing
-
-### Advanced Features
-- Export reports (PDF, CSV, JSON)
-- Real-time notifications
-- Multi-session management
-- User preference settings
-
----
-
-## 🧪 Testing & Quality Assurance
-
-### Comprehensive Test Suite
-
-#### Harsh Testing Scenarios
-- **Poor Quality Images**: Blurry, dark, noisy, corrupted
-- **Unknown Video Formats**: Various codecs and containers
-- **Edge Cases**: False positives, authorized personnel, emergency situations
-- **Stress Testing**: High volume, large files, concurrent processing
-- **Error Recovery**: Network failures, API timeouts, corrupted data
-
-#### Performance Benchmarks
-- **Processing Speed**: < 1 second per frame
-- **Memory Usage**: < 1GB for typical workloads
-- **API Response**: < 2 seconds for most queries
-- **Concurrent Users**: Support for 20+ simultaneous users
-
-#### Running Tests
-```bash
-# Run harsh AI testing
-docker-compose exec drone-security-api python tests/harsh_ai_testing.py
-
-# Run unit tests
-docker-compose exec drone-security-api pytest
-
-# Performance testing
-docker-compose exec drone-security-api python tests/performance_tests.py
-```
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
+### Docker Compose (Local)
 
 ```bash
-# Required API Keys
-OPENAI_API_KEY=your_openai_api_key
-PINECONE_API_KEY=your_pinecone_api_key
-LANGCHAIN_API_KEY=your_langchain_api_key
-
-# System Configuration
-DEBUG=false
-LOG_LEVEL=INFO
-MAX_FILE_SIZE_MB=500
-CONCURRENT_PROCESSING=true
-
-# Performance Tuning
-FRAME_EXTRACTION_RATE=1
-API_TIMEOUT_SECONDS=30
-MEMORY_LIMIT_MB=1024
+docker-compose up -d
 ```
 
 ---
 
-## 📈 Performance & Scalability
+## Development
 
-### System Requirements
+### Running Tests
 
-#### Minimum Requirements
-- **CPU**: 4 cores, 2.0GHz
-- **Memory**: 8GB RAM
-- **Storage**: 50GB available space
-- **Network**: 10 Mbps upload speed
-
-#### Recommended Requirements
-- **CPU**: 8 cores, 3.0GHz
-- **Memory**: 16GB RAM
-- **Storage**: 200GB SSD
-- **Network**: 100 Mbps upload speed
-- **GPU**: NVIDIA GPU with CUDA support (optional, for enhanced performance)
-
----
-
-## 🔒 Security & Privacy
-
-### Data Protection
-- **Encryption**: All data encrypted at rest and in transit
-- **Access Control**: Role-based permissions and authentication
-- **Audit Trail**: Complete logging of all system activities
-- **Data Retention**: Configurable retention policies
-
----
-
-## 🌐 API Documentation
-
-### Core Endpoints
-
-#### Video Processing
-```http
-POST /upload-video
-Content-Type: multipart/form-data
-
-# Upload and process video
-curl -X POST "http://localhost:8000/upload-video" \
-  -F "file=@video.mp4"
-```
-
-#### Status Monitoring
-```http
-GET /processing-status/{session_id}
-GET /sessions
-GET /health
-```
-
-#### Data Access
-```http
-GET /frames
-GET /frames/{frame_id}
-GET /alerts
-GET /session/summary
-```
-
-#### AI Assistant
-```http
-POST /qa
-Content-Type: application/json
-
-{
-  "question": "What happened at the main gate?"
-}
-```
-
----
-
-## 🐳 Docker Deployment
-
-### Production Docker Compose
-```yaml
-version: '3.8'
-services:
-  drone-security-api:
-    image: drone-security-agent:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - PINECONE_API_KEY=${PINECONE_API_KEY}
-    volumes:
-      - ./data:/app/data
-      - ./outputs:/app/outputs
-    restart: unless-stopped
-
-  drone-security-dashboard:
-    image: drone-security-agent:latest
-    ports:
-      - "8501:8501"
-    environment:
-      - API_BASE_URL=http://drone-security-api:8000
-    depends_on:
-      - drone-security-api
-    restart: unless-stopped
-```
-
----
-
-## 📊 Monitoring & Observability
-
-### Metrics Collection
-- **System Performance**: CPU, memory, disk usage
-- **Processing Metrics**: Frames processed, alerts generated, error rates
-- **API Performance**: Response times, error rates, throughput
-- **AI Model Performance**: Confidence scores, fallback usage
-
-### Health Checks
 ```bash
-# System health
-curl http://localhost:8000/health
-
-# Detailed status
-curl http://localhost:8000/status
+pytest tests/ -v
 ```
 
----
+### Project Evaluation
 
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-#### Video Upload Fails
 ```bash
-# Check file size and format
-ls -la video.mp4
-file video.mp4
-
-# Check API logs
-docker-compose logs drone-security-api
+python evaluate_project.py
 ```
 
-#### Processing Slow
-```bash
-# Check system resources
-docker stats
+### Adding New Analysis Models
 
-# Check API rate limits
-curl http://localhost:8000/health
-```
+1. Create a new analyzer in `src/` implementing the analysis interface
+2. Register it in the pipeline in `src/api.py` → `process_video_pipeline()`
+3. Update the alert engine rules if needed
 
 ---
 
-## 🤝 Contributing
+## Live Deployment
 
-### Development Setup
-```bash
-# Clone repository
-git clone <repository-url>
-cd drone-security-agent-1
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run tests
-pytest
-
-# Start development server
-uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
-streamlit run demo/dashboard.py
-```
+- **Dashboard + API:** https://drone-security-dashboard-27774218566.us-central1.run.app/
+- **Health Check:** https://drone-security-dashboard-27774218566.us-central1.run.app/health
+- **API Docs:** https://drone-security-dashboard-27774218566.us-central1.run.app/docs
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🆘 Support
-
-### Documentation
-- [API Documentation](http://localhost:8000/docs)
-- [System Architecture](docs/architecture.md)
-- [User Guide](docs/user-guide.md)
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-## 🎯 Roadmap
-
-### Version 2.1 (Q3 2026)
-- [ ] Real-time camera integration
-- [ ] Mobile app for security officers
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-
-### Version 2.2 (Q4 2026)
-- [ ] Edge computing support
-- [ ] 5G network optimization
-- [ ] AI model fine-tuning
-- [ ] Advanced threat detection
-
----
-
-## 📈 Performance Benchmarks
-
-### Processing Speed
-- **Frame Analysis**: 0.8 seconds/frame
-- **Person Tracking**: 0.3 seconds/person
-- **Alert Generation**: 0.1 seconds/alert
-- **Video Upload**: 10 MB/second
-
-### Accuracy Metrics
-- **Person Detection**: 95% accuracy
-- **Vehicle Recognition**: 92% accuracy
-- **Alert Precision**: 88% precision
-- **False Positive Rate**: < 5%
-
-### System Limits
-- **Maximum Video Size**: 500MB
-- **Concurrent Sessions**: 50
-- **Frames per Video**: 10,000
-- **Persons Tracked**: 1,000 per session
-
----
-
-**Built with ❤️ by the Drone Security Team**
-
-*Transforming security monitoring with AI-powered intelligence*
+Built for the FlytBase AI Engineer Assignment — demonstrating autonomous AI-powered drone security surveillance with production-grade architecture, multi-model vision analysis, and real-time threat detection.

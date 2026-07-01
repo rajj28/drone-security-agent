@@ -218,6 +218,7 @@ def main() -> int:
 
         questions = [
             "What suspicious activity happened in this session?",
+            "How many people were visible?",
             "How many people were visible and were there any high-threat moments?",
             "Was there activity near a display case or counter?",
         ]

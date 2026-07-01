@@ -1,0 +1,81 @@
+# Files NOT uploaded to Google Cloud Build
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+.venv
+
+# Data (created at runtime)
+data/
+outputs/
+
+# Large video files (except sample)
+*.dav
+*.avi
+*.mov
+*.mkv
+
+# IDE
+.vscode/
+.idea/
+
+# Testing
+tests/
+.pytest_cache/
+test_*.py
+_smoke_test.py
+
+# Node source (only dist needed)
+frontend/node_modules/
+frontend/src/
+frontend/package*.json
+frontend/tsconfig*.json
+frontend/vite.config.ts
+frontend/.gitignore
+frontend/.oxlintrc.json
+frontend/README.md
+
+# Scripts not needed
+scripts/
+demo_*.py
+evaluate_project.py
+run_*.py
+build.sh
+start_api.sh
+
+# Docs
+ARCHITECTURE.md
+BLIP_OPTIMIZATION_GUIDE.md
+CLOUD_ANALYZER_SETUP.md
+DEPLOYMENT.md
+FEATURE_SPEC.md
+GCP_DEPLOYMENT.md
+PROJECT_ANALYSIS_AND_FIXES.md
+PROMPT_FOR_CURSOR_PIPELINE_TEST.md
+README.PRODUCTION.md
+CLAUDE_REVIEW_PROMPT.md
+
+# Other Dockerfiles
+Dockerfile.light
+Dockerfile.railway
+
+# Config not needed
+railway.toml
+render.yaml
+vercel.json
+cloudbuild.yaml
+
+# Misc
+.github/
+submission_package/
+monitoring/
+docs/
+dashboard/
+production_reasoning_summary.txt
+.env
+.env.*
+docker-compose*.yml

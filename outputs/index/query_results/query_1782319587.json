@@ -1,0 +1,48 @@
+{
+  "query": "Should I be concerned about today's monitoring?",
+  "namespace": "drone-security",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T22:16:27",
+  "results": [
+    {
+      "frame_id": "frame_007",
+      "similarity_score": 0.076,
+      "timestamp": "16:00:48",
+      "location": "Side Entrance",
+      "description": "A man with dark hair and a gray sweatshirt is standing behind the counter, reaching into a drawer or handling items on the counter. Three other people are standing across from him, two on the right side of the frame and one on the left, all appearing to be waiting or observing. The scene appears to be a retail store, possibly a phone store given the 'VIVO' and 'SMARTPHONE' signage.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_006",
+      "similarity_score": 0.0712,
+      "timestamp": "16:00:40",
+      "location": "Driveway",
+      "description": "Three men are standing near the counter of a retail store. One man, wearing a gray jacket, is standing closest to the camera, holding a phone in his right hand. Another man, wearing a black jacket, is standing to his right, looking down at the phone. A third man, wearing a green jacket, is standing behind them, looking down at something on the counter.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_004",
+      "similarity_score": 0.0595,
+      "timestamp": "16:00:24",
+      "location": "Back Entrance",
+      "description": "Three men are gathered around a counter in a retail store. The man in the center is holding a white smartphone and appears to be showing it to the other two men. The man on the right is wearing a black jacket and holding the phone with his left hand. The man on the left is wearing a green shirt and appears to be observing the phone. The counter has glass display cases on top and blue drawers underneath.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_010",
+      "similarity_score": 0.0486,
+      "timestamp": "16:01:12",
+      "location": "Garage",
+      "description": "A single individual is standing near the counter area of what appears to be a retail store, possibly a mobile phone store, given the presence of Vivo branding and various mobile phones on display.",
+      "threat_assessment": "unknown"
+    },
+    {
+      "frame_id": "frame_011",
+      "similarity_score": 0.0448,
+      "timestamp": "16:01:20",
+      "location": "Back Entrance",
+      "description": "The surveillance footage shows a single individual inside a retail store, specifically in the staff area. The person is standing near the counter, with their back to the camera.",
+      "threat_assessment": "unknown"
+    }
+  ]
+}

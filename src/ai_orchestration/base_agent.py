@@ -69,12 +69,52 @@ class BaseAgent(ABC):
         self.agent_name = agent_name
         self.agent_id = f"{agent_name}_{uuid.uuid4().hex[:8]}"
         
-        # Initialize LLM
-        self.llm = ChatOpenAI(
-            model="gpt-4",
-            temperature=0.1,
-            openai_api_key=openai_api_key or "sk-proj-..."
-        )
+        # Initialize LLM — orchestration agents use NVIDIA NIM or Groq.
+        # NVIDIA NIM (Nemotron-3-Ultra-550B) is preferred for agentic reasoning.
+        from src.config import settings
+        import os
+        
+        nvidia_api_key = getattr(settings, 'NVIDIA_API_KEY', '') or os.environ.get("NVIDIA_API_KEY", "")
+        nvidia_model = getattr(settings, 'NVIDIA_MODEL', '') or os.environ.get("NVIDIA_MODEL", "nvidia/nemotron-3-ultra-550b-a55b")
+        groq_api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
+        llm_provider = os.environ.get("AGENT_LLM_PROVIDER", getattr(settings, 'AGENT_LLM_PROVIDER', 'nvidia')).lower()
+        
+        if nvidia_api_key and llm_provider == "nvidia":
+            try:
+                self.llm = ChatOpenAI(
+                    model=nvidia_model,
+                    base_url="https://integrate.api.nvidia.com/v1",
+                    openai_api_key=nvidia_api_key,
+                    temperature=0.1,
+                    max_retries=2
+                )
+                logger.info(f"[{agent_name}] Initialized using NVIDIA NIM ({nvidia_model})")
+            except Exception as e:
+                logger.warning(f"[{agent_name}] NVIDIA NIM init failed: {e}, falling back to Groq")
+                if groq_api_key:
+                    self.llm = ChatOpenAI(
+                        model="llama-3.3-70b-versatile",
+                        base_url="https://api.groq.com/openai/v1",
+                        openai_api_key=groq_api_key,
+                        temperature=0.1
+                    )
+                    logger.info(f"[{agent_name}] Fallback to Groq (llama-3.3-70b-versatile)")
+        elif groq_api_key:
+            self.llm = ChatOpenAI(
+                model="llama-3.3-70b-versatile",
+                base_url="https://api.groq.com/openai/v1",
+                openai_api_key=groq_api_key,
+                temperature=0.1
+            )
+            logger.info(f"[{agent_name}] Initialized using Groq (llama-3.3-70b-versatile)")
+        else:
+            # Fallback to OpenAI only if nothing else available
+            self.llm = ChatOpenAI(
+                model="gpt-4",
+                temperature=0.1,
+                openai_api_key=openai_api_key or os.environ.get("OPENAI_API_KEY") or "sk-proj-..."
+            )
+            logger.info(f"[{agent_name}] Initialized using OpenAI (fallback)")
         
         # Initialize state
         self.state = AgentState(

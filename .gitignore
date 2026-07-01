@@ -6,12 +6,27 @@ __pycache__/
 .DS_Store
 data/frames/*
 data/extracted/*
+data/extracted1/
+data/sessions/
 # don't push local datasets/videos
 data/*.pdf
 *.jpg
 *.jpeg
 *.png
+*.mp4
+*.mp3
+*.avi
+*.mov
+*.mkv
 .pytest_cache/
 dist/
 build/
 evaluation_output.txt
+node_modules/
+frontend/dist/
+frontend/node_modules/
+
+# Large/sensitive files
+*.pdf
+sample-video.mp4
+production_reasoning_summary.txt

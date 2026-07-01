@@ -215,6 +215,8 @@ def run_hard_evaluation() -> Dict[str, Any]:
     valid_confidence = 0
     if isinstance(analysis_all, list):
         for row in analysis_all:
+            if row is None:
+                continue
             if all(k in row for k in ["frame_id", "vlm_description", "threat_assessment", "confidence"]):
                 analysis_schema_hits += 1
             conf = row.get("confidence")

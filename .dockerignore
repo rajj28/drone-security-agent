@@ -11,8 +11,6 @@ __pycache__
 *.so
 *.egg
 *.egg-info
-dist
-build
 
 # Virtual environments
 venv
@@ -31,54 +29,58 @@ ENV
 .coverage
 htmlcov
 .tox
+tests/
 
 # Data (will be created at runtime)
 data/extracted
-data/extracted2
-data/telemetry
-data/alerts
-data/analysis
+data/extracted1
 data/sessions
-
-# Large files
-*.mp4
-*.avi
-*.mov
-*.mkv
+data/eval_sessions
+data/videos
+data/evaluations
+data/frames
+data/ai_knowledge_base
 
 # Logs
 *.log
 logs/
 
-# Documentation (not needed in container)
-*.md
-!README.md
-
 # Local environment
 .env
 .env.local
+.env.production.example
 
 # Output directories (generated at runtime)
 outputs/
-data/eval_sessions/
-data/videos/
-data/evaluations/
-data/frames/
 
 # GCP deployment files
 cloudbuild.yaml
 deploy-gcp.sh
 deploy-gcp.ps1
 GCP_DEPLOYMENT.md
+
+# Railway/Render config
 railway.toml
-railway-dashboard.toml
-railway-api.toml
+railway-*.toml
+render.yaml
+vercel.json
 
-# Large video files in root
+# Large video files (except sample)
 *.dav
+*.avi
+*.mov
+*.mkv
 
-# Node modules (if any)
+# Node modules
 node_modules/
+frontend/node_modules/
+frontend/src/
+frontend/package*.json
+frontend/tsconfig*.json
+frontend/vite.config.ts
+frontend/.gitignore
+frontend/.oxlintrc.json
+frontend/README.md
 
 # Large model files
 *.pt
@@ -91,3 +93,38 @@ models/
 tmp/
 temp/
 *.tmp
+
+# Scripts not needed
+scripts/
+demo_*.py
+evaluate_project.py
+run_*.py
+test_*.py
+_smoke_test.py
+build.sh
+start_api.sh
+
+# Docs not needed in container
+ARCHITECTURE.md
+BLIP_OPTIMIZATION_GUIDE.md
+CLOUD_ANALYZER_SETUP.md
+DEPLOYMENT.md
+FEATURE_SPEC.md
+GCP_DEPLOYMENT.md
+PROJECT_ANALYSIS_AND_FIXES.md
+PROMPT_FOR_CURSOR_PIPELINE_TEST.md
+README.PRODUCTION.md
+CLAUDE_REVIEW_PROMPT.md
+
+# Other Dockerfiles
+Dockerfile.light
+Dockerfile.railway
+
+# Misc
+.github/
+.pytest_cache/
+submission_package/
+monitoring/
+docs/
+dashboard/
+production_reasoning_summary.txt

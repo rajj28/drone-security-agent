@@ -1,0 +1,285 @@
+{
+  "eval_type": "production_pipeline",
+  "started_at": "2026-06-24T14:39:07.549416+00:00",
+  "session_id": "theft_newsflare_008",
+  "video": "C:\\Users\\Acer\\drone-security-agent-1\\Sneaky Thieves Caught Stealing Phones On Camera - Newsflare (1080p, h264) (1).mp4",
+  "config": {
+    "gemini_prefer_flash": true,
+    "api_min_interval_sec": "15",
+    "max_frames": 12
+  },
+  "pipeline": {
+    "exit_code": 0,
+    "elapsed_sec": 173.0
+  },
+  "vlm": {
+    "pass": true,
+    "frames_ok": 12,
+    "frames_total": 12,
+    "per_frame": [
+      {
+        "frame_id": "frame_001",
+        "desc_chars": 127,
+        "keyword_hits": [
+          "phone",
+          "retail",
+          "store",
+          "counter",
+          "man"
+        ],
+        "people_count": 3,
+        "threat": "LOW",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_002",
+        "desc_chars": 281,
+        "keyword_hits": [
+          "phone",
+          "retail",
+          "store",
+          "counter",
+          "man"
+        ],
+        "people_count": 4,
+        "threat": "MEDIUM",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_003",
+        "desc_chars": 300,
+        "keyword_hits": [
+          "phone",
+          "retail",
+          "store",
+          "display",
+          "counter",
+          "man"
+        ],
+        "people_count": 4,
+        "threat": "HIGH",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_004",
+        "desc_chars": 238,
+        "keyword_hits": [
+          "phone",
+          "retail",
+          "store",
+          "counter",
+          "man"
+        ],
+        "people_count": 3,
+        "threat": "LOW",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_005",
+        "desc_chars": 216,
+        "keyword_hits": [
+          "retail",
+          "store",
+          "counter",
+          "man"
+        ],
+        "people_count": 5,
+        "threat": "CRITICAL",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_006",
+        "desc_chars": 366,
+        "keyword_hits": [
+          "retail",
+          "store",
+          "display",
+          "counter",
+          "man"
+        ],
+        "people_count": 3,
+        "threat": "CRITICAL",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_007",
+        "desc_chars": 326,
+        "keyword_hits": [
+          "retail",
+          "store",
+          "counter",
+          "man"
+        ],
+        "people_count": 3,
+        "threat": "MEDIUM",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_008",
+        "desc_chars": 388,
+        "keyword_hits": [
+          "retail",
+          "store",
+          "counter"
+        ],
+        "people_count": 3,
+        "threat": "HIGH",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_009",
+        "desc_chars": 284,
+        "keyword_hits": [
+          "phone",
+          "retail",
+          "store",
+          "display",
+          "man"
+        ],
+        "people_count": 3,
+        "threat": "MEDIUM",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_010",
+        "desc_chars": 227,
+        "keyword_hits": [
+          "phone",
+          "mobile",
+          "retail",
+          "shop",
+          "store",
+          "display",
+          "counter",
+          "man"
+        ],
+        "people_count": 1,
+        "threat": "HIGH",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_011",
+        "desc_chars": 300,
+        "keyword_hits": [
+          "phone",
+          "mobile",
+          "retail",
+          "store",
+          "display",
+          "person"
+        ],
+        "people_count": 1,
+        "threat": "HIGH",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      },
+      {
+        "frame_id": "frame_012",
+        "desc_chars": 176,
+        "keyword_hits": [
+          "retail",
+          "store",
+          "man"
+        ],
+        "people_count": 1,
+        "threat": "MEDIUM",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "parsing_failed": false,
+        "understanding_ok": true
+      }
+    ]
+  },
+  "agent": {
+    "pass": true,
+    "scored": [
+      {
+        "question": "What suspicious activity happened in this session?",
+        "keyword_hits": [
+          "phone",
+          "steal",
+          "retail",
+          "shop",
+          "person",
+          "suspicious"
+        ],
+        "answer_preview": "the suspicious activity in this session is a retail shop theft where a person or group of suspects was caught stealing a phone from the display counter.",
+        "ok": true
+      },
+      {
+        "question": "How many people were visible?",
+        "keyword_hits": [
+          "people"
+        ],
+        "answer_preview": "a total of 48 people were visible during monitoring in the retail store where the theft occurred.",
+        "ok": true
+      },
+      {
+        "question": "Was there activity near a display case or counter?",
+        "keyword_hits": [
+          "display",
+          "counter",
+          "phone",
+          "shop"
+        ],
+        "answer_preview": "yes, there was suspicious activity near the phone display counter inside the retail shop where the theft occurred.",
+        "ok": true
+      }
+    ]
+  },
+  "pinecone": {
+    "pass": true,
+    "queries": [
+      {
+        "query": "person stealing phone",
+        "top_score": 0.4216,
+        "top_frame": "frame_011",
+        "pass": true
+      },
+      {
+        "query": "suspicious activity in retail store",
+        "top_score": 0.4443,
+        "top_frame": "frame_006",
+        "pass": true
+      }
+    ]
+  },
+  "context": {
+    "pass": true,
+    "health": {
+      "session_context.json": true,
+      "context_summaries.json": true,
+      "rich_context.json": true,
+      "summary_count": 20,
+      "frames_analyzed": 20
+    }
+  },
+  "rate_limits": {
+    "hits_this_eval_import": 0,
+    "mitigation": "GEMINI_PREFER_FLASH=true, API_MIN_INTERVAL_SEC>=12, fewer Pro retries"
+  },
+  "production_ready": true,
+  "checks_passed": 5,
+  "checks_total": 5,
+  "finished_at": "2026-06-24T14:42:05.805401+00:00"
+}

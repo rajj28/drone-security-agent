@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_003",
+  "frame_id": "frame_003",
+  "timestamp": "16:00:16",
+  "location": "Garage",
+  "alert_triggered": true,
+  "severity": "HIGH",
+  "alert_type": "crowd_detected",
+  "message": "Alert for frame_003 at Garage 16:00:16",
+  "objects_involved": [
+    "person",
+    "phone",
+    "glass display case"
+  ],
+  "rule_triggered": "crowd_detected",
+  "llm_validated": true,
+  "llm_reasoning": "The presence of four men, with three behind the counter and one in front, is suspicious and suggests unauthorized access to the staff area.",
+  "recommended_action": "Security should investigate the identities and intentions of the individuals, especially those behind the counter.",
+  "acknowledged": false,
+  "auto_escalate": true,
+  "structured_reasoning": {
+    "severity": "HIGH",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The presence of four men, with three behind the counter and one in front, is suspicious and suggests unauthorized access to the staff area.",
+    "recommended_action": "Security should investigate the identities and intentions of the individuals, especially those behind the counter.",
+    "confidence": 0.7,
+    "context_signal": "Recent context summaries and memory indicate a pattern of suspicious behavior, with a previous MEDIUM severity crowd_detected alert at Perimeter North."
+  }
+}

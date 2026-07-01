@@ -1,6 +1,7 @@
 [
   {
     "frame_id": "frame_001",
+    "session_id": "local_dev",
     "timestamp": "16:00:00",
     "unix_time": 1675267200.0,
     "drone": {
@@ -23,13 +24,14 @@
   },
   {
     "frame_id": "frame_002",
+    "session_id": "local_dev",
     "timestamp": "16:00:01",
     "unix_time": 1675267201.0,
     "drone": {
       "latitude": 18.5204,
       "longitude": 73.8567,
       "altitude_m": 15.0,
-      "battery_pct": 66.7,
+      "battery_pct": 85.7,
       "heading_degrees": 90,
       "speed_ms": 0.0,
       "status": "patrolling",
@@ -45,13 +47,14 @@
   },
   {
     "frame_id": "frame_003",
-    "timestamp": "16:01:52",
-    "unix_time": 1675267312.8,
+    "session_id": "local_dev",
+    "timestamp": "16:00:02",
+    "unix_time": 1675267202.0,
     "drone": {
       "latitude": 18.5204,
       "longitude": 73.8567,
       "altitude_m": 15.0,
-      "battery_pct": 33.3,
+      "battery_pct": 71.4,
       "heading_degrees": 90,
       "speed_ms": 0.0,
       "status": "patrolling",
@@ -63,6 +66,208 @@
     "temperature_c": 24.5,
     "visibility": "good",
     "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_004",
+    "session_id": "local_dev",
+    "timestamp": "16:00:03",
+    "unix_time": 1675267203.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 57.1,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Back Entrance",
+    "zone": "restricted",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": true,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_005",
+    "session_id": "local_dev",
+    "timestamp": "16:01:50",
+    "unix_time": 1675267310.8,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 42.9,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Restricted Zone",
+    "zone": "restricted",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": true,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_006",
+    "session_id": "local_dev",
+    "timestamp": "16:01:52",
+    "unix_time": 1675267312.8,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 28.6,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Driveway",
+    "zone": "public",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_007",
+    "session_id": "local_dev",
+    "timestamp": "16:01:53",
+    "unix_time": 1675267313.6,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 14.3,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Side Entrance",
+    "zone": "public",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_008",
+    "timestamp": "16:00:07",
+    "unix_time": 1675267207.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 86.5,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Main Gate",
+    "zone": "public",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_009",
+    "timestamp": "16:00:08",
+    "unix_time": 1675267208.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 84.6,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Perimeter North",
+    "zone": "public",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_010",
+    "timestamp": "16:00:09",
+    "unix_time": 1675267209.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 82.7,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Garage",
+    "zone": "public",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": false,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_011",
+    "timestamp": "16:00:10",
+    "unix_time": 1675267210.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 80.8,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Back Entrance",
+    "zone": "restricted",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": true,
+    "is_after_hours": false
+  },
+  {
+    "frame_id": "frame_012",
+    "timestamp": "16:00:11",
+    "unix_time": 1675267211.0,
+    "drone": {
+      "latitude": 18.5204,
+      "longitude": 73.8567,
+      "altitude_m": 15.0,
+      "battery_pct": 78.8,
+      "heading_degrees": 90,
+      "speed_ms": 0.0,
+      "status": "patrolling",
+      "signal_strength": "strong"
+    },
+    "location": "Restricted Zone",
+    "zone": "restricted",
+    "weather": "clear",
+    "temperature_c": 24.5,
+    "visibility": "good",
+    "is_restricted_zone": true,
     "is_after_hours": false
   }
 ]

@@ -1,0 +1,7 @@
+{
+  "query": "What suspicious activity happened in this session?",
+  "namespace": "theft_newsflare_008",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T20:11:01",
+  "results": []
+}

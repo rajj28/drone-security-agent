@@ -9,6 +9,7 @@ api.py — FastAPI backend for Drone Security Analyst Agent.
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 import json
@@ -108,11 +109,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    """Root endpoint with API information"""
-    return {"message": "Drone Security Analyst API", "status": "running"}
-
 @app.get("/api")
 def api_info():
     """API information endpoint"""
@@ -183,6 +179,216 @@ def health():
         "mongodb_connected": mongodb_storage.is_connected(),
         "persistence": "mongodb" if mongodb_storage.is_connected() else "memory-only"
     }
+
+
+@app.get("/debug")
+def debug_status():
+    """Debug endpoint — checks all API keys, quotas, and system components."""
+    checks = []
+    
+    # 1. Groq API Key
+    groq_key = settings.GROQ_API_KEY
+    groq_status = "not_configured"
+    groq_detail = ""
+    if groq_key:
+        try:
+            from groq import Groq
+            client = Groq(api_key=groq_key)
+            # Light test — just check auth with minimal tokens
+            r = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": "hi"}],
+                max_tokens=5
+            )
+            groq_status = "ok"
+            groq_detail = "Authenticated and responding"
+        except Exception as e:
+            err = str(e)
+            if "429" in err or "rate_limit" in err:
+                groq_status = "quota_exhausted"
+                groq_detail = "Daily token limit reached. Resets in ~24h."
+            elif "401" in err or "invalid" in err.lower():
+                groq_status = "invalid_key"
+                groq_detail = "API key is invalid or expired"
+            else:
+                groq_status = "error"
+                groq_detail = err[:150]
+    checks.append({"name": "Groq API (Vision)", "status": groq_status, "detail": groq_detail, "provider": "groq"})
+    
+    # 2. NVIDIA NIM
+    nvidia_key = getattr(settings, 'NVIDIA_API_KEY', '')
+    nvidia_status = "not_configured"
+    nvidia_detail = ""
+    if nvidia_key:
+        try:
+            from openai import OpenAI
+            nvidia_model = getattr(settings, 'NVIDIA_MODEL', 'meta/llama-3.3-70b-instruct')
+            client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=nvidia_key)
+            r = client.chat.completions.create(
+                model=nvidia_model,
+                messages=[{"role": "user", "content": "hi"}],
+                max_tokens=5
+            )
+            nvidia_status = "ok"
+            nvidia_detail = f"Model: {nvidia_model}"
+        except Exception as e:
+            err = str(e)
+            if "503" in err or "DEGRADED" in err:
+                nvidia_status = "degraded"
+                nvidia_detail = "Model temporarily unavailable on NVIDIA servers"
+            elif "400" in err:
+                nvidia_status = "degraded"
+                nvidia_detail = "Model in degraded state — try again later"
+            elif "401" in err:
+                nvidia_status = "invalid_key"
+                nvidia_detail = "API key is invalid"
+            else:
+                nvidia_status = "error"
+                nvidia_detail = err[:150]
+    checks.append({"name": "NVIDIA NIM (Orchestration)", "status": nvidia_status, "detail": nvidia_detail, "provider": "nvidia"})
+    
+    # 3. Gemini
+    gemini_key = settings.GEMINI_API_KEY
+    gemini_status = "not_configured"
+    gemini_detail = ""
+    if gemini_key:
+        gemini_status = "configured"
+        gemini_detail = f"Model: {settings.GEMINI_MODEL}, Keys: {1 + (1 if settings.GEMINI_API_KEY_2 else 0)}"
+    checks.append({"name": "Gemini (Fallback)", "status": gemini_status, "detail": gemini_detail, "provider": "gemini"})
+    
+    # 4. Pinecone
+    pinecone_status = "not_configured"
+    pinecone_detail = ""
+    if settings.PINECONE_API_KEY:
+        try:
+            from pinecone import Pinecone
+            pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+            idx = pc.describe_index(settings.PINECONE_INDEX_NAME)
+            pinecone_status = "ok"
+            pinecone_detail = f"Index: {settings.PINECONE_INDEX_NAME}, Dimension: {settings.PINECONE_DIMENSION}"
+        except Exception as e:
+            pinecone_status = "error"
+            pinecone_detail = str(e)[:150]
+    checks.append({"name": "Pinecone (Vector Search)", "status": pinecone_status, "detail": pinecone_detail, "provider": "pinecone"})
+    
+    # 5. MongoDB
+    mongo_status = "ok" if mongodb_storage.is_connected() else "disconnected"
+    checks.append({"name": "MongoDB (Sessions)", "status": mongo_status, "detail": "Connected" if mongo_status == "ok" else "Not connected", "provider": "mongodb"})
+    
+    # 6. FFmpeg
+    checks.append({"name": "FFmpeg (Video Processing)", "status": "ok" if FFMPEG_AVAILABLE else "missing", "detail": "Installed" if FFMPEG_AVAILABLE else "Not found in PATH", "provider": "system"})
+    
+    # Overall status
+    critical_issues = [c for c in checks if c["status"] in ["error", "invalid_key", "missing"]]
+    warnings = [c for c in checks if c["status"] in ["quota_exhausted", "degraded", "disconnected"]]
+    
+    overall = "healthy"
+    if critical_issues:
+        overall = "critical"
+    elif warnings:
+        overall = "degraded"
+    
+    return {
+        "overall": overall,
+        "timestamp": datetime.now().isoformat(),
+        "checks": checks,
+        "config": {
+            "vision_provider": os.environ.get("VISION_PROVIDER", settings.VISION_PROVIDER if hasattr(settings, 'VISION_PROVIDER') else "unknown"),
+            "agent_llm_provider": os.environ.get("AGENT_LLM_PROVIDER", getattr(settings, 'AGENT_LLM_PROVIDER', 'unknown')),
+            "max_frames": settings.MAX_FRAMES,
+            "max_vision_workers": int(os.environ.get("MAX_VISION_WORKERS", "2")),
+        },
+        "tips": {
+            "quota_exhausted": "Groq free tier: 500K tokens/day. Wait 24h or use a different email account.",
+            "degraded": "NVIDIA NIM free models go down occasionally. System falls back to Groq automatically.",
+            "vision_slow": "Reduce MAX_FRAMES in .env or use the slider (5-20 frames).",
+        }
+    }
+
+
+@app.post("/debug/clear-sessions")
+def debug_clear_sessions():
+    """Clear all sessions from MongoDB and disk."""
+    import shutil
+    # Clear MongoDB
+    deleted = 0
+    if mongodb_storage.is_connected():
+        try:
+            deleted = mongodb_storage.sessions_collection.delete_many({}).deleted_count
+        except Exception:
+            pass
+    # Clear disk
+    sessions_dir = Path("data/sessions")
+    if sessions_dir.exists():
+        for d in sessions_dir.iterdir():
+            if d.is_dir():
+                shutil.rmtree(d, ignore_errors=True)
+    # Clear memory
+    processing_status.clear()
+    return {"message": f"Cleared {deleted} sessions from MongoDB and all session data from disk."}
+
+
+@app.post("/upload-sample-video")
+async def upload_sample_video(
+    background_tasks: BackgroundTasks,
+    extraction_strategy: str = "hybrid",
+    max_frames: int = 15
+):
+    """Upload the bundled sample video for demo/tour purposes."""
+    import shutil
+    
+    sample_path = Path("sample-video.mp4")
+    if not sample_path.exists():
+        # Try the original filename
+        sample_path = Path("Sneaky Thieves Caught Stealing Phones On Camera - Newsflare (1080p, h264) (1).mp4")
+    if not sample_path.exists():
+        raise HTTPException(404, "Sample video not found on server")
+    
+    session_id = str(uuid.uuid4())
+    session_dir = Path("data") / "sessions" / session_id
+    session_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Copy sample video to session directory
+    video_dest = session_dir / sample_path.name
+    shutil.copy2(str(sample_path), str(video_dest))
+    
+    extracted_dir = session_dir / "extracted"
+    extracted_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Save initial session status
+    status_data = {
+        "session_id": session_id,
+        "filename": sample_path.name,
+        "status": "processing",
+        "current_step": "initializing",
+        "progress": 0,
+        "upload_time": datetime.now().isoformat(),
+        "extraction_strategy": extraction_strategy,
+        "max_frames": max_frames,
+        "extracted_frames": [],
+        "frame_count": 0,
+        "session_dir": str(extracted_dir),
+    }
+    save_session_status(session_id, status_data)
+    
+    logger.info(f"Sample video session created: {session_id}")
+    
+    # Start pipeline in background
+    background_tasks.add_task(
+        process_video_pipeline,
+        session_id=session_id,
+        video_path=str(video_dest),
+        session_dir=str(extracted_dir),
+        extraction_strategy=extraction_strategy,
+        max_frames=max_frames,
+    )
+    
+    return {
+        "session_id": session_id,
+        "filename": sample_path.name,
+        "status": "processing",
+    }
+
 
 @app.post("/upload-video")
 async def upload_video(
@@ -313,7 +519,7 @@ async def upload_video(
             "filename": file.filename,
             "extraction_strategy": extraction_strategy,
             "max_frames": max_frames,
-            "estimated_time": "5-10 minutes"
+            "estimated_time": "30-90 seconds"
         }
         
     except Exception as e:
@@ -369,15 +575,126 @@ async def keep_alive_heartbeat(session_id: str, interval: int = 60):
         save_session_status(session_id, status_update)
 
 
+# Pipeline stages that historically ran as separate Python subprocesses.
+# Running them in-process avoids 5x interpreter cold-starts + re-imports + disk IPC,
+# which is the single biggest production-level speedup for the pipeline.
+_PIPELINE_STAGES = ("telemetry", "vision", "alerts", "tracking", "summary")
+
+# Pipeline stages mutate shared global settings (via apply_session_layout), so concurrent
+# runs would race and read/write each other's session directories. This lock serializes
+# whole-pipeline execution to keep each run isolated.
+import threading
+_pipeline_lock = threading.Lock()
+
+
+def _run_stage_in_process(stage: str, session_id: str) -> None:
+    """Run a single pipeline stage in the current process.
+
+    Points the shared settings at the session's directory layout, then calls the
+    stage function directly instead of spawning `python -m src.<module>`.
+    Raises on failure so the caller can fall back to the subprocess path.
+    """
+    from src.session_bootstrap import apply_session_layout
+
+    # Make settings.* resolve to data/sessions/{session_id}/... for this stage.
+    apply_session_layout(session_id)
+
+    if stage == "telemetry":
+        from src.telemetry_generator import generate_telemetry
+        meta_path = settings.OUTPUTS_DIR / "extraction_log.json"
+        with open(meta_path, "r", encoding="utf-8") as f:
+            frame_meta = json.load(f)["frames"]
+        generate_telemetry(frame_meta)
+    elif stage == "vision":
+        from src.vision_analyzer import analyze_all_frames
+        analyze_all_frames()
+    elif stage == "alerts":
+        from src.alert_engine import process_alerts
+        process_alerts()
+    elif stage == "tracking":
+        from src.person_tracker import process_all_frames
+        process_all_frames()
+    elif stage == "summary":
+        from src.summarizer import generate_session_summary
+        generate_session_summary()
+    else:
+        raise ValueError(f"Unknown pipeline stage: {stage}")
+
+
+def _run_stage(session_id: str, stage: str, subprocess_args: list, *, env=None, timeout: int = 300) -> None:
+    """Run a pipeline stage in-process by default, falling back to a subprocess.
+
+    Set PIPELINE_MODE=subprocess to force the legacy subprocess behavior.
+    If the in-process call fails for any reason, the subprocess path is used so
+    the pipeline degrades gracefully instead of failing outright.
+    """
+    import subprocess
+
+    mode = os.environ.get("PIPELINE_MODE", getattr(settings, "PIPELINE_MODE", "in_process")).lower()
+
+    if mode != "subprocess":
+        try:
+            stage_start = time.time()
+            _run_stage_in_process(stage, session_id)
+            logger.info(f"[PIPELINE] In-process '{stage}' completed in {int((time.time() - stage_start) * 1000)}ms")
+            return
+        except Exception as exc:
+            logger.warning(f"[PIPELINE] In-process '{stage}' failed ({exc}); falling back to subprocess")
+
+    # Legacy subprocess fallback
+    sub_env = dict(env) if env else os.environ.copy()
+    sub_env.setdefault("PYTHONIOENCODING", "utf-8")
+    sub_env.setdefault("PYTHONUTF8", "1")
+    result = subprocess.run(
+        subprocess_args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        env=sub_env,
+        timeout=timeout,
+    )
+    if result.returncode != 0:
+        raise Exception(f"{stage} stage failed: {result.stderr}")
+
+
 async def process_video_pipeline(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
     """
-    Background task to process uploaded video through the complete pipeline with intelligent frame extraction.
-    Includes keep-alive heartbeat to prevent service sleep during long operations.
+    Async wrapper: runs the heavy, blocking pipeline in a worker thread so the API
+    event loop stays responsive (status polls, heartbeat) while processing runs.
     """
+    import asyncio
+
+    # Keep-alive heartbeat runs on the event loop while the pipeline runs in a thread.
+    heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
+    logger.info(f"[{session_id}] Started keep-alive heartbeat for long processing")
+    try:
+        await asyncio.to_thread(
+            _run_pipeline_sync, session_id, video_path, session_dir, extraction_strategy, max_frames
+        )
+    finally:
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass
+
+
+def _run_pipeline_sync(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
+    """
+    Runs the pipeline body under a global lock. Pipeline stages mutate shared global
+    settings (apply_session_layout), so concurrent runs must be serialized to avoid one
+    session reading/writing another session's directories.
+    """
+    with _pipeline_lock:
+        _run_pipeline_body(session_id, video_path, session_dir, extraction_strategy, max_frames)
+
+
+def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
+    """Synchronous pipeline body (runs in a worker thread). Executes all stages in-process."""
     try:
         import sys
         import subprocess
-        import asyncio
         
         # Update status
         status_update = get_session_status(session_id) or {}
@@ -385,10 +702,6 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         status_update["current_step"] = "extracting_frames"
         status_update["start_time"] = time.time()
         save_session_status(session_id, status_update)
-        
-        # Start keep-alive heartbeat to prevent Render sleep (every 60 seconds)
-        heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
-        logger.info(f"[{session_id}] Started keep-alive heartbeat for long processing")
         
         # Step 1: Check ffmpeg availability
         if not FFMPEG_AVAILABLE:
@@ -407,6 +720,11 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         # Update video path in settings for the extractor
         from src.config import settings
         original_video_file = settings.VIDEO_FILE
+        # Snapshot session-scoped dirs so global settings can be restored after the
+        # in-process stages mutate them via apply_session_layout().
+        original_session_dir = settings.SESSION_DIR
+        original_analysis_dir = settings.ANALYSIS_DIR
+        original_alerts_dir = settings.ALERTS_DIR
         settings.VIDEO_FILE = Path(video_path)
         original_extracted_dir = settings.EXTRACTED_DIR
         original_outputs_dir = settings.OUTPUTS_DIR
@@ -440,6 +758,31 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             )
             
             logger.info(f"Successfully extracted {len(frames)} frames using {extraction_strategy} strategy")
+            
+            # Verify extraction_log.json was created
+            extraction_log_path = settings.OUTPUTS_DIR / "extraction_log.json"
+            if not extraction_log_path.exists():
+                # Create it from the returned frame data
+                logger.warning(f"[EXTRACTION] extraction_log.json not found at {extraction_log_path}, creating it")
+                frame_list = []
+                for idx, f in enumerate(frames):
+                    if isinstance(f, dict):
+                        frame_list.append({
+                            "filename": f.get("filename", ""),
+                            "frame_id": Path(f.get("filename", "")).stem,
+                            "timestamp_seconds": f.get("timestamp_seconds", idx * (settings.VIDEO_DURATION_SECONDS / max(len(frames), 1)))
+                        })
+                log_data = {
+                    "total_frames": len(frame_list),
+                    "total_frames_extracted": len(frame_list),
+                    "video_duration_seconds": settings.VIDEO_DURATION_SECONDS,
+                    "fps": settings.VIDEO_FPS,
+                    "resolution": "1920x1080",
+                    "codec": "hevc",
+                    "frames": frame_list
+                }
+                extraction_log_path.write_text(json.dumps(log_data, indent=2), encoding="utf-8")
+                logger.info(f"[EXTRACTION] Created extraction_log.json with {len(frame_list)} frames")
             
             # Extract file paths from frame dicts (if dicts) or use as-is (if strings)
             frame_paths = []
@@ -492,13 +835,14 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         except Exception as e:
             # Fallback to basic frame extractor if intelligent one fails
             logger.warning(f"Intelligent extraction failed, falling back to basic extraction: {e}")
-            extraction_output_dir = session_dir + "/extracted"
+            extraction_output_dir = session_dir
             logger.info(f"[EXTRACTION] Running frame_extractor with output: {extraction_output_dir}")
             result = subprocess.run([
                 sys.executable, "-m", "src.frame_extractor",
                 "--input", video_path,
                 "--output", extraction_output_dir
-            ], capture_output=True, text=True)
+            ], capture_output=True, text=True,
+               env={**os.environ, "SESSION_ID": session_id, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"})
             
             logger.info(f"[EXTRACTION] Return code: {result.returncode}")
             logger.info(f"[EXTRACTION] stdout: {result.stdout[:500] if result.stdout else 'empty'}")
@@ -508,14 +852,36 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
                 raise Exception(f"Frame extraction failed: {result.stderr}")
             
             # Get frames from fallback extraction (only frame_*.jpg, not temp files)
-            fallback_frames = sorted([str(f) for f in (Path(session_dir) / "extracted").glob("frame_*.jpg")])
-            logger.info(f"[FALLBACK] Found {len(fallback_frames)} frames in {session_dir}/extracted")
+            fallback_frames = sorted(list(Path(session_dir).glob("frame_*.jpg")))
+            logger.info(f"[FALLBACK] Found {len(fallback_frames)} frames in {session_dir}")
+            
+            # Write extraction_log.json to session outputs directory
+            session_root = Path(session_dir).parent
+            session_outputs = session_root / "outputs"
+            session_outputs.mkdir(parents=True, exist_ok=True)
+            extraction_log = {
+                "total_frames": len(fallback_frames),
+                "total_frames_extracted": len(fallback_frames),
+                "video_duration_seconds": settings.VIDEO_DURATION_SECONDS,
+                "fps": settings.VIDEO_FPS,
+                "resolution": "1920x1080",
+                "codec": "hevc",
+                "frames": [
+                    {"filename": f.name, "frame_id": f.stem, "timestamp_seconds": i * (settings.VIDEO_DURATION_SECONDS / max(len(fallback_frames), 1))}
+                    for i, f in enumerate(fallback_frames)
+                ]
+            }
+            log_path = session_outputs / "extraction_log.json"
+            log_path.write_text(json.dumps(extraction_log, indent=2), encoding="utf-8")
+            logger.info(f"[FALLBACK] Wrote extraction_log.json to {log_path}")
+            
+            frame_paths = [str(f) for f in fallback_frames]
             status_update = get_session_status(session_id) or {}
-            status_update["extracted_frames"] = fallback_frames
-            status_update["frame_count"] = len(fallback_frames)
+            status_update["extracted_frames"] = frame_paths
+            status_update["frame_count"] = len(frame_paths)
             status_update["session_dir"] = str(session_dir)
             save_session_status(session_id, status_update)
-            logger.info(f"[FALLBACK] Stored {len(fallback_frames)} frames in processing_status")
+            logger.info(f"[FALLBACK] Stored {len(frame_paths)} frames in processing_status")
         
         finally:
             # Restore original settings
@@ -555,13 +921,9 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         env = os.environ.copy()
         env["SESSION_ID"] = session_id
         
-        result = subprocess.run([
+        _run_stage(session_id, "telemetry", [
             sys.executable, "-m", "src.telemetry_generator"
-        ], capture_output=True, text=True, env=env, timeout=300)  # 5 minute timeout
-        
-        if result.returncode != 0:
-            logger.error(f"Telemetry generation stderr: {result.stderr}")
-            raise Exception(f"Telemetry generation failed: {result.stderr}")
+        ], env=env, timeout=300)
         
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("telemetry_generation")
@@ -595,20 +957,28 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         logger.info(f"[PIPELINE] Running vision analyzer with SESSION_ID={session_id}")
         
-        result = subprocess.run([
+        _run_stage(session_id, "vision", [
             sys.executable, "-m", "src.vision_analyzer"
-        ], capture_output=True, text=True, env=env, timeout=600)  # 10 minute timeout
-        
-        logger.info(f"[PIPELINE] Vision analyzer stdout: {result.stdout[:500]}")
-        if result.stderr:
-            logger.warning(f"[PIPELINE] Vision analyzer stderr: {result.stderr[:500]}")
-        
-        if result.returncode != 0:
-            raise Exception(f"Vision analysis failed: {result.stderr}")
+        ], env=env, timeout=600)
         
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("vision_analysis")
         status_update["progress"] = 60
+        
+        # Step 3b: Index frames in Pinecone for semantic search
+        status_update["current_step"] = "indexing_frames"
+        save_session_status(session_id, status_update)
+        logger.info(f"[PIPELINE] Indexing frames in Pinecone for session {session_id}")
+        try:
+            from src.pinecone_indexer import index_frames
+            os.environ["SESSION_ID"] = session_id
+            settings.SESSION_ID = session_id
+            from src.session_bootstrap import apply_session_layout
+            apply_session_layout(session_id)
+            index_frames()
+            logger.info(f"[PIPELINE] Pinecone indexing completed for session {session_id}")
+        except Exception as exc:
+            logger.warning(f"[PIPELINE] Pinecone indexing failed (non-fatal): {exc}")
         
         # Step 4: Alert generation
         status_update["current_step"] = "generating_alerts"
@@ -619,12 +989,9 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         alerts_dir.mkdir(parents=True, exist_ok=True)
         settings.ALERTS_DIR = alerts_dir
         
-        result = subprocess.run([
+        _run_stage(session_id, "alerts", [
             sys.executable, "-m", "src.alert_engine"
-        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
-        
-        if result.returncode != 0:
-            raise Exception(f"Alert generation failed: {result.stderr}")
+        ], timeout=300)
         
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("alert_generation")
@@ -640,9 +1007,13 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         session_subdir.mkdir(parents=True, exist_ok=True)
         settings.SESSION_DIR = session_subdir
         
-        result = subprocess.run([
-            sys.executable, "src/person_tracker.py"
-        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
+        # Person tracking is non-fatal — log and continue if it fails.
+        try:
+            _run_stage(session_id, "tracking", [
+                sys.executable, "src/person_tracker.py"
+            ], timeout=300)
+        except Exception as exc:
+            logger.warning(f"[PIPELINE] Person tracking failed (non-fatal): {exc}")
         
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("person_tracking")
@@ -653,17 +1024,20 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         save_session_status(session_id, status_update)
         logger.info(f"Generating session summary for session {session_id}")
         
-        result = subprocess.run([
+        _run_stage(session_id, "summary", [
             sys.executable, "-m", "src.summarizer"
-        ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
-        
-        if result.returncode != 0:
-            raise Exception(f"Session summary failed: {result.stderr}")
+        ], timeout=300)
         
         # Restore original settings
         settings.EXTRACTED_DIR = original_extracted_dir
         settings.TELEMETRY_DIR = original_telemetry_dir
         settings.OUTPUTS_DIR = original_outputs_dir
+        settings.SESSION_DIR = original_session_dir
+        settings.ANALYSIS_DIR = original_analysis_dir
+        settings.ALERTS_DIR = original_alerts_dir
+        # Reset SESSION_ID so it doesn't leak into the next upload/request
+        settings.SESSION_ID = ""
+        os.environ.pop("SESSION_ID", None)
         
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("session_summary")
@@ -675,27 +1049,27 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
         
         logger.info(f"Processing completed for session {session_id}")
         
-        # Cancel keep-alive heartbeat
-        heartbeat_task.cancel()
-        try:
-            await heartbeat_task
-        except asyncio.CancelledError:
-            pass
-        
     except Exception as e:
-        logger.error(f"Processing failed for session {session_id}: {str(e)}")
+        error_msg = str(e)
+        # Detect common issues and provide user-friendly messages
+        if "429" in error_msg or "rate_limit" in error_msg or "tokens per day" in error_msg:
+            user_error = "API quota exhausted (Groq daily limit). Please wait 10-15 minutes or check Debug panel for status."
+        elif "503" in error_msg or "DEGRADED" in error_msg:
+            user_error = "AI model temporarily unavailable (server-side issue). Please retry in a few minutes."
+        elif "401" in error_msg or "invalid" in error_msg.lower():
+            user_error = "API key invalid or expired. Check your .env configuration."
+        elif "timeout" in error_msg.lower():
+            user_error = "Processing timed out. Try with fewer frames (reduce slider to 5-10)."
+        else:
+            user_error = error_msg[:200]
+        
+        logger.error(f"Processing failed for session {session_id}: {error_msg}")
         status_update = get_session_status(session_id) or {}
         status_update["status"] = "failed"
-        status_update["error"] = str(e)
+        status_update["error"] = user_error
+        status_update["error_detail"] = error_msg[:500]
         status_update["current_step"] = "failed"
         save_session_status(session_id, status_update)
-        
-        # Cancel keep-alive heartbeat on failure
-        heartbeat_task.cancel()
-        try:
-            await heartbeat_task
-        except asyncio.CancelledError:
-            pass
 
 @app.get("/frames")
 def list_frames():
@@ -735,6 +1109,46 @@ def get_frame_alert(frame_id: str):
         raise HTTPException(404, "Alert not found")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+@app.get("/sessions/{session_id}/frames/{frame_id}/analysis")
+def get_session_frame_analysis(session_id: str, frame_id: str):
+    """Get frame analysis for a specific session"""
+    session_id = Path(session_id).name
+    frame_id = Path(frame_id).name
+    path = Path("data") / "sessions" / session_id / "analysis" / f"{frame_id}_analysis.json"
+    if not path.exists():
+        path = settings.ANALYSIS_DIR / f"{frame_id}_analysis.json"
+    if not path.exists():
+        raise HTTPException(404, "Frame analysis not found")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.get("/sessions/{session_id}/frames/{frame_id}/telemetry")
+def get_session_frame_telemetry(session_id: str, frame_id: str):
+    """Get frame telemetry for a specific session"""
+    session_id = Path(session_id).name
+    frame_id = Path(frame_id).name
+    path = Path("data") / "sessions" / session_id / "telemetry" / f"{frame_id}_telemetry.json"
+    if not path.exists():
+        path = settings.TELEMETRY_DIR / f"{frame_id}_telemetry.json"
+    if not path.exists():
+        raise HTTPException(404, "Frame telemetry not found")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.get("/sessions/{session_id}/frames/{frame_id}/alert")
+def get_session_frame_alert(session_id: str, frame_id: str):
+    """Get frame alert for a specific session"""
+    session_id = Path(session_id).name
+    frame_id = Path(frame_id).name
+    path = Path("data") / "sessions" / session_id / "alerts" / f"{frame_id}_alert.json"
+    if not path.exists():
+        path = settings.ALERTS_DIR / f"{frame_id}_alert.json"
+    if not path.exists():
+        raise HTTPException(404, "Frame alert not found")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
 
 @app.get("/sessions/{session_id}/frames")
 def get_session_frames(session_id: str):
@@ -804,8 +1218,11 @@ def get_session_frames(session_id: str):
 def get_session_alerts(session_id: str):
     """Get alerts for a specific session - FILTERED to only show MEDIUM, HIGH, CRITICAL"""
     session_dir = Path("data") / "sessions" / session_id
-    alerts_file = session_dir / "alerts.json"
     
+    # Check multiple possible alert file locations
+    alerts_file = session_dir / "alerts" / "all_alerts.json"
+    if not alerts_file.exists():
+        alerts_file = session_dir / "alerts.json"
     if not alerts_file.exists():
         return {
             "session_date": datetime.now().strftime("%Y-%m-%d"),
@@ -850,35 +1267,87 @@ def get_session_summary(session_id: str):
     session_dir = Path("data") / "sessions" / session_id
     summary_file = session_dir / "session_summary.json"
     
-    if not summary_file.exists():
-        return {
-            "session_summary": {
-                "session_date": datetime.now().strftime("%Y-%m-%d"),
-                "total_frames_analyzed": 0,
-                "total_objects_detected": 0,
-                "total_alerts": 0,
-                "analysis_duration": "0 minutes",
-                "key_events": []
-            }
-        }
+    # Try to load existing summary
+    summary_data = None
+    if summary_file.exists():
+        with open(summary_file, "r", encoding="utf-8") as f:
+            summary_data = json.load(f)
     
-    with open(summary_file, "r", encoding="utf-8") as f:
-        return json.load(f)
+    # Always enrich with key_events from analysis data
+    analysis_file = session_dir / "analysis" / "all_analysis.json"
+    alerts_file = session_dir / "alerts" / "all_alerts.json"
+    
+    key_events = []
+    total_frames = 0
+    total_alerts = 0
+    
+    if analysis_file.exists():
+        with open(analysis_file, "r", encoding="utf-8") as f:
+            analyses = json.load(f)
+            total_frames = len([a for a in analyses if a is not None])
+            # Extract significant events from analysis
+            for a in analyses:
+                if a is None:
+                    continue
+                threat = str(a.get("threat_assessment", "")).upper()
+                if threat in ["HIGH", "CRITICAL", "MEDIUM"]:
+                    key_events.append({
+                        "timestamp": a.get("timestamp", ""),
+                        "frame": a.get("frame_id", ""),
+                        "description": (a.get("vlm_description") or a.get("activity") or "Suspicious activity detected")[:150],
+                        "severity": threat
+                    })
+    
+    if alerts_file.exists():
+        with open(alerts_file, "r", encoding="utf-8") as f:
+            alerts_data = json.load(f)
+            alerts_list = alerts_data.get("alerts", [])
+            total_alerts = len([a for a in alerts_list if a.get("severity", "").upper() in ["MEDIUM", "HIGH", "CRITICAL"]])
+    
+    # Build response
+    result = {
+        "session_date": datetime.now().strftime("%Y-%m-%d"),
+        "total_frames_analyzed": total_frames,
+        "total_alerts": total_alerts,
+        "analysis_duration": f"{max(1, total_frames * 4 // 60)} mins",
+        "key_events": key_events[:10],  # Top 10 events
+    }
+    
+    # Merge with existing summary if available
+    if summary_data:
+        if isinstance(summary_data, dict):
+            ss = summary_data.get("session_summary", summary_data)
+            result["session_date"] = ss.get("date", result["session_date"])
+            result["narrative"] = ss.get("session_highlights", summary_data.get("narrative", ""))
+    
+    return result
 
 @app.post("/search")
 def semantic_search(payload: Dict[str, Any]):
     query = payload.get("query")
     top_k = payload.get("top_k", 5)
+    session_id = payload.get("session_id")
     if not query:
         raise HTTPException(400, "Missing query")
+    # Set session context for namespace resolution
+    if session_id:
+        os.environ["SESSION_ID"] = session_id
+        settings.SESSION_ID = session_id
     return search_frames(query, top_k)
 
 
 @app.post("/qa")
 def ask_qa(payload: Dict[str, Any]):
     question = payload.get("question")
+    session_id = payload.get("session_id")
     if not question:
         raise HTTPException(400, "Missing question")
+    # Set session context so QA agent reads correct analysis data
+    if session_id:
+        os.environ["SESSION_ID"] = session_id
+        settings.SESSION_ID = session_id
+        from src.session_bootstrap import apply_session_layout
+        apply_session_layout(session_id)
     agent = SecurityQAAgent()
     return agent.answer(question)
 
@@ -998,3 +1467,13 @@ def get_session_frame_image(session_id: str, frame_name: str):
     
     logger.error(f"[FRAME IMAGE] Frame not found: {frame_name}")
     raise HTTPException(404, f"Frame {frame_name} not found")
+
+# Mount React static frontend if built, else fall back to legacy dashboard
+frontend_dist = Path("frontend/dist")
+if frontend_dist.exists():
+    app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
+else:
+    dashboard_dir = Path("dashboard")
+    if dashboard_dir.exists():
+        app.mount("/legacy", StaticFiles(directory="dashboard", html=True), name="legacy-dashboard")
+

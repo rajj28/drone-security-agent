@@ -10,22 +10,55 @@ import base64
 import json
 import os
 import re
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import urllib.error
 import urllib.request
 
-from src.api_retry import call_with_retry, is_quota_exhausted_error
+from src.api_retry import call_with_retry, configure_min_interval, is_quota_exhausted_error
 from src.config import settings
 
 GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 
+def _load_api_keys() -> List[str]:
+    """Collect all configured Gemini API keys (primary + extras), de-duplicated, in order."""
+    candidates = [
+        settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", ""),
+        getattr(settings, "GEMINI_API_KEY_2", "") or os.environ.get("GEMINI_API_KEY_2", ""),
+        getattr(settings, "GEMINI_API_KEY_3", "") or os.environ.get("GEMINI_API_KEY_3", ""),
+    ]
+    keys: List[str] = []
+    for raw in candidates:
+        key = (raw or "").strip()
+        if key and key not in keys:
+            keys.append(key)
+    return keys
+
+
+_API_KEYS: List[str] = _load_api_keys()
+_key_lock = threading.Lock()
+_key_idx = 0
+
+# Scale the global call spacing by the number of keys so adding keys raises throughput,
+# while each key still respects the per-key interval (API_MIN_INTERVAL_SEC).
+try:
+    configure_min_interval(float(settings.API_MIN_INTERVAL_SEC), max(1, len(_API_KEYS)))
+    if len(_API_KEYS) > 1:
+        print(f"[GEMINI] Load-sharing across {len(_API_KEYS)} API keys (round-robin)")
+except Exception:
+    pass
+
+
 def _api_key() -> str:
-    """Get API key from settings or ADC."""
-    key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
-    if key:
+    """Return the next API key (round-robin across all configured keys), or an ADC token."""
+    global _key_idx
+    if _API_KEYS:
+        with _key_lock:
+            key = _API_KEYS[_key_idx % len(_API_KEYS)]
+            _key_idx += 1
         return key
     # Try Application Default Credentials (ADC) for orgs that block API keys
     try:
@@ -57,9 +90,12 @@ def _parse_retry_after(body: str) -> float | None:
     return None
 
 
-def _post(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
+def _post_once(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
     creds = _api_key()
-    # ADC tokens use Authorization header; API keys use URL param
+    # ADC tokens use a Bearer Authorization header.
+    # API keys (both legacy "AIza" standard keys and new "AQ." auth keys) are sent via
+    # the x-goog-api-key header. The legacy ?key= query param does NOT work for AQ. keys
+    # (returns 401), so we always use the header form.
     if creds.startswith("ADC:"):
         token = creds[4:]  # Strip marker
         url = f"{GEMINI_API_BASE}/{path}"
@@ -68,8 +104,11 @@ def _post(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
             "Authorization": f"Bearer {token}",
         }
     else:
-        url = f"{GEMINI_API_BASE}/{path}?key={creds}"
-        headers = {"Content-Type": "application/json"}
+        url = f"{GEMINI_API_BASE}/{path}"
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": creds,
+        }
     
     data = json.dumps(body).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers=headers)
@@ -80,6 +119,31 @@ def _post(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
         raw = exc.read().decode("utf-8", errors="replace")
         retry_after = _parse_retry_after(raw)
         raise GeminiApiError(exc.code, f"[{exc.code}] {raw[:500]}", retry_after) from exc
+
+
+def _post(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
+    """Send a request with immediate key failover.
+
+    On a rate-limit/server-busy error (429/503/500), instantly retry with the NEXT key
+    (round-robin, no backoff) until every configured key has been tried once. Only if all
+    keys fail in the same cycle does the error propagate, letting call_with_retry apply
+    its rate-limit backoff before the next cycle.
+    """
+    attempts = max(1, len(_API_KEYS))
+    last_exc: Optional[BaseException] = None
+    for i in range(attempts):
+        try:
+            return _post_once(path, body)
+        except GeminiApiError as exc:
+            last_exc = exc
+            failover_worthy = exc.status in (429, 503, 500)
+            if failover_worthy and i < attempts - 1 and len(_API_KEYS) > 1:
+                print(f"[GEMINI] Key rate-limited ({exc.status}); failing over to next key ({i + 2}/{attempts})")
+                continue
+            raise
+    if last_exc:
+        raise last_exc
+    raise RuntimeError("Gemini request failed with no response")
 
 
 def _extract_text(response: Dict[str, Any]) -> str:
@@ -135,6 +199,62 @@ def generate_text(
     temperature: float = 0.2,
 ) -> str:
     """Text generation with configurable model order and rate-limit aware retries."""
+    llm_provider = os.environ.get("AGENT_LLM_PROVIDER", "gemini").lower()
+    if llm_provider == "nvidia":
+        try:
+            from openai import OpenAI
+            api_key = getattr(settings, 'NVIDIA_API_KEY', '') or os.environ.get("NVIDIA_API_KEY", "")
+            nvidia_model = getattr(settings, 'NVIDIA_MODEL', '') or os.environ.get("NVIDIA_MODEL", "nvidia/nemotron-3-ultra-550b-a55b")
+            if not api_key:
+                raise ValueError("NVIDIA_API_KEY not set")
+            
+            client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=api_key)
+            
+            messages = []
+            if system_instruction:
+                messages.append({"role": "system", "content": system_instruction})
+            messages.append({"role": "user", "content": prompt})
+            
+            chat_completion = client.chat.completions.create(
+                model=nvidia_model,
+                messages=messages,
+                max_tokens=max_output_tokens,
+                temperature=temperature,
+            )
+            return chat_completion.choices[0].message.content
+        except Exception as exc:
+            print(f"[NVIDIA] Text generation failed: {exc}, falling back to Groq")
+            # Fall through to Groq as backup
+
+    if llm_provider == "groq" or llm_provider == "nvidia":
+        try:
+            from groq import Groq
+            api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
+            if not api_key:
+                raise ValueError("GROQ_API_KEY not set")
+            
+            client = Groq(api_key=api_key)
+            
+            # Map standard gemini/gpt/empty models to llama-3.3-70b-versatile
+            groq_model = model or settings.GEMINI_MODEL
+            if not groq_model or "gemini" in groq_model.lower() or "gpt" in groq_model.lower():
+                groq_model = "llama-3.3-70b-versatile"
+                
+            messages = []
+            if system_instruction:
+                messages.append({"role": "system", "content": system_instruction})
+            messages.append({"role": "user", "content": prompt})
+            
+            chat_completion = client.chat.completions.create(
+                model=groq_model,
+                messages=messages,
+                max_tokens=max_output_tokens,
+                temperature=temperature,
+            )
+            return chat_completion.choices[0].message.content
+        except Exception as exc:
+            print(f"[GROQ] Text generation failed: {exc}")
+
     models = _model_chain(model)
     last_error: Optional[Exception] = None
 
@@ -178,6 +298,58 @@ def generate_vision(
     temperature: float = 0.2,
 ) -> Dict[str, Any]:
     """Vision + text generation."""
+    vision_provider = getattr(settings, "VISION_PROVIDER", os.environ.get("VISION_PROVIDER", "gemini")).lower()
+    if vision_provider == "groq":
+        try:
+            from groq import Groq
+            api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
+            if not api_key:
+                raise ValueError("GROQ_API_KEY not set")
+            
+            if isinstance(image, Path):
+                raw = image.read_bytes()
+            elif isinstance(image, bytes):
+                raw = image
+            else:
+                raw = Path(image).read_bytes()
+            
+            b64 = base64.b64encode(raw).decode("ascii")
+            
+            client = Groq(api_key=api_key)
+            groq_model = os.environ.get("GROQ_VISION_MODEL") or getattr(settings, "GROQ_VISION_MODEL", "meta-llama/llama-4-scout-17b-16e-instruct")
+
+            def _call():
+                return client.chat.completions.create(
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt},
+                                {
+                                    "type": "image_url",
+                                    "image_url": {
+                                        "url": f"data:{mime_type};base64,{b64}",
+                                    },
+                                },
+                            ],
+                        }
+                    ],
+                    model=groq_model,
+                    max_tokens=max_output_tokens,
+                    temperature=temperature,
+                )
+
+            # Retry on 429/rate limits with backoff + minimal spacing between calls.
+            chat_completion = call_with_retry(_call, label=f"groq-vision-{groq_model}", max_retries=3)
+            text = chat_completion.choices[0].message.content
+            return {
+                "success": True,
+                "text": text,
+                "model_used": groq_model,
+            }
+        except Exception as exc:
+            return {"success": False, "error": str(exc), "text": "", "model_used": "groq-vision"}
+
     if isinstance(image, Path):
         raw = image.read_bytes()
     elif isinstance(image, bytes):

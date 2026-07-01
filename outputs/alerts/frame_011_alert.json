@@ -1,0 +1,30 @@
+{
+  "alert_id": "ALT_20260624_011",
+  "frame_id": "frame_011",
+  "timestamp": "16:01:20",
+  "location": "Back Entrance",
+  "alert_triggered": true,
+  "severity": "HIGH",
+  "alert_type": "restricted_zone_person",
+  "message": "Alert for frame_011 at Back Entrance 16:01:20",
+  "objects_involved": [
+    "person",
+    "display_case",
+    "mobile_phones"
+  ],
+  "rule_triggered": "restricted_zone_person",
+  "llm_validated": true,
+  "llm_reasoning": "The person's behavior of reaching into the display case in a retail environment is suspicious and potentially indicative of theft, aligning with the 'restricted_zone_person' rule trigger.",
+  "recommended_action": "Security personnel should immediately investigate and approach the individual to assess the situation and prevent potential theft.",
+  "acknowledged": false,
+  "auto_escalate": true,
+  "structured_reasoning": {
+    "severity": "HIGH",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "The person's behavior of reaching into the display case in a retail environment is suspicious and potentially indicative of theft, aligning with the 'restricted_zone_person' rule trigger.",
+    "recommended_action": "Security personnel should immediately investigate and approach the individual to assess the situation and prevent potential theft.",
+    "confidence": 0.8,
+    "context_signal": "Recent context summaries show a pattern of high-severity events and alerts related to potential theft scenarios, which supports the validation of this high-severity alert."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "alert_id": "ALT_20260624_005",
+  "frame_id": "frame_005",
+  "timestamp": "16:00:32",
+  "location": "Restricted Zone",
+  "alert_triggered": true,
+  "severity": "HIGH",
+  "alert_type": "restricted_zone_person",
+  "message": "Alert for frame_005 at Restricted Zone 16:00:32",
+  "objects_involved": [
+    "person",
+    "cell phone"
+  ],
+  "rule_triggered": "restricted_zone_person",
+  "llm_validated": true,
+  "llm_reasoning": "Multiple individuals are gathered around the counter area in a restricted zone, with two men reaching into the counter, indicating suspicious behavior and potential theft attempt.",
+  "recommended_action": "Security personnel should immediately investigate and intervene to prevent potential theft.",
+  "acknowledged": false,
+  "auto_escalate": true,
+  "structured_reasoning": {
+    "severity": "HIGH",
+    "alert_triggered": true,
+    "llm_validated": true,
+    "llm_reasoning": "Multiple individuals are gathered around the counter area in a restricted zone, with two men reaching into the counter, indicating suspicious behavior and potential theft attempt.",
+    "recommended_action": "Security personnel should immediately investigate and intervene to prevent potential theft.",
+    "confidence": 0.95,
+    "context_signal": "Recent context summaries show a pattern of crowd detection and restricted zone person alerts, with the current frame's behavior being more suspicious than previous frames."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "query": "Which location had the most activity?",
+  "namespace": "theft_newsflare_008",
+  "integrated_inference": true,
+  "timestamp": "2026-06-24T02:40:42",
+  "results": []
+}

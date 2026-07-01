@@ -138,6 +138,10 @@ class PersonTracker:
         person_ids = []
         
         for person_feature in analysis.get('person_features', []):
+            # person_features may be a list of plain strings (descriptions) instead of
+            # structured dicts. Those carry no trackable attributes, so skip them.
+            if not isinstance(person_feature, dict):
+                continue
             try:
                 # Extract person attributes
                 person_desc = {

@@ -29,31 +29,10 @@ class MongoDBStorage:
                 logger.warning("MONGODB_URI not set, using local MongoDB")
                 mongo_uri = "mongodb://localhost:27017/"
             
-            # Connection options for Cloud Run / container environments
-            # Note: retryWrites and w='majority' removed due to pymongo transaction compatibility issues
-            connection_options = {
-                'serverSelectionTimeoutMS': 10000,
-                'connectTimeoutMS': 10000,
-                'socketTimeoutMS': 30000
-            }
-            
-            # Handle SSL/TLS for different URI types
-            if mongo_uri.startswith('mongodb+srv://'):
-                # SRV connection string - SSL usually enabled by default
-                logger.info("Using MongoDB SRV connection string")
-                # For Atlas SRV connections, sometimes we need to allow invalid certs
-                # due to container CA certificate issues
-                connection_options['tlsAllowInvalidCertificates'] = True
-                self.client = MongoClient(mongo_uri, **connection_options)
-            elif 'ssl=true' in mongo_uri.lower() or 'tls=true' in mongo_uri.lower():
-                # Non-SRV with SSL enabled
-                logger.info("Using MongoDB non-SRV connection with SSL")
-                connection_options['tlsAllowInvalidCertificates'] = True
-                self.client = MongoClient(mongo_uri, **connection_options)
-            else:
-                # Local or non-SSL connection
-                logger.info("Using MongoDB connection without SSL")
-                self.client = MongoClient(mongo_uri, **connection_options)
+            # Simple connection - let pymongo handle options from URI
+            logger.info("Connecting to MongoDB...")
+            # Just use the URI directly - pymongo will parse all options from it
+            self.client = MongoClient(mongo_uri)
             
             # Test connection
             self.client.admin.command('ping')
@@ -62,11 +41,11 @@ class MongoDBStorage:
             self.fs = GridFS(self.db)
             self.sessions_collection = self.db.sessions
             
-            # Create indexes
-            self.sessions_collection.create_index("session_id", unique=True)
-            self.sessions_collection.create_index("created_at", ASCENDING)
+            # Indexes skipped - may cause transaction issues on Atlas
+            # self.sessions_collection.create_index("session_id", unique=True)
+            # self.sessions_collection.create_index("created_at", ASCENDING)
             
-            logger.info("✅ MongoDB connected successfully")
+            logger.info("✅ MongoDB connected successfully (no indexes)")
             return True
             
         except Exception as e:
