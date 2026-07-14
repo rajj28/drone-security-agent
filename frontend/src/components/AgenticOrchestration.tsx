@@ -66,7 +66,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           <div style={{ textAlign: 'center', fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>▼</div>
 
           {/* Processing Pipeline */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <div className="resp-grid-3" style={{ gap: '0.75rem', marginBottom: '1.5rem' }}>
             <div style={{ padding: '0.75rem', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f59e0b' }}>Telemetry</div>
               <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>GPS, Altitude, Speed</div>
@@ -89,7 +89,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
             <div style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.9rem', color: '#a78bfa', marginBottom: '0.75rem' }}>
               AI ORCHESTRATOR — NVIDIA Nemotron-3-Ultra-550B
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+            <div className="resp-grid-3" style={{ gap: '0.75rem' }}>
               <div style={{ padding: '0.6rem', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', textAlign: 'center' }}>
                 <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#818cf8' }}>Analysis Agent</div>
                 <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Pattern + Risk + Temporal</div>
@@ -118,7 +118,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           <div style={{ textAlign: 'center', fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>▼</div>
 
           {/* Output Layer */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.5rem' }}>
+          <div className="resp-grid-4" style={{ gap: '0.5rem' }}>
             <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', textAlign: 'center' }}>
               <div style={{ fontSize: '0.7rem', fontWeight: 600 }}>Dashboard</div>
             </div>
@@ -136,7 +136,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
       </div>
 
       {/* Agent Capabilities */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+      <div className="resp-grid-3" style={{ gap: '1rem', marginTop: '1rem' }}>
         <div className="premium-card" style={{ overflow: 'visible' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <Bot size={16} style={{ color: '#818cf8' }} />

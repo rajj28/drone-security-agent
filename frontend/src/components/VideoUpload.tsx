@@ -272,7 +272,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ apiBase, onUploadSucce
         />
 
         {/* Split: Sample Video + Upload Zone */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+        <div className="resp-grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
           {/* Left: Sample Video */}
           <div style={{ padding: '1.25rem', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '10px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Don't have a video?</h4>

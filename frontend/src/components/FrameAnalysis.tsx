@@ -228,7 +228,7 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
               </div>
 
               {/* Telemetry and Vision Analysis Details */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="resp-grid-2" style={{ gap: '1.5rem' }}>
                 {/* Telemetry Data Card */}
                 <div className="premium-card" style={{ height: 'fit-content' }}>
                   <h4 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

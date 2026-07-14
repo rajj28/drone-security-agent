@@ -56,7 +56,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)', color: 'var(--text-main)' }}>
       
       {/* Top Header */}
-      <div style={{ padding: '1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <div className="landing-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <Shield size={28} style={{ color: 'var(--primary)' }} />
           <div>
@@ -64,23 +64,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>FlytBase AI Engineer Assignment Submission</p>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="landing-badges" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span className="tech-badge">Groq</span>
           <span className="tech-badge">NVIDIA NIM</span>
           <span className="tech-badge">Pinecone</span>
           <span className="tech-badge">LangChain</span>
           <span className="tech-badge">React</span>
-          <button className="btn btn-primary" onClick={onEnterDashboard} style={{ marginLeft: '1rem' }}>
+          <button className="btn btn-primary" onClick={onEnterDashboard}>
             <Layers size={16} /> Enter Dashboard →
           </button>
         </div>
       </div>
 
       {/* Side by Side */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', flexGrow: 1, overflow: 'hidden' }}>
-        
+      <div className="landing-grid">
+
         {/* Left: PDF */}
-        <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column' }}>
+        <div className="landing-pdf-pane" style={{ borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem' }}>
             Assignment Document (Original PDF)
           </div>

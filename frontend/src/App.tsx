@@ -8,7 +8,9 @@ import {
   BarChart2, 
   Bot,
   Layers,
-  Radio
+  Radio,
+  Menu,
+  X
 } from 'lucide-react';
 import { VideoUpload } from './components/VideoUpload';
 import { LiveCapture } from './components/LiveCapture';
@@ -32,6 +34,7 @@ function App() {
   const [apiConnected, setApiConnected] = useState<boolean | null>(null);
   const [showLanding, setShowLanding] = useState<boolean>(true);
   const [showTour, setShowTour] = useState<boolean>(false);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   
   // Session states
   const [sessions, setSessions] = useState<any[]>([]);
@@ -164,11 +167,17 @@ function App() {
       <LandingPage onEnterDashboard={() => setShowLanding(false)} />
     ) : (
     <div className="dashboard-container">
+      {/* Mobile backdrop — tap outside the sidebar to close it */}
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
+
       {/* 1. Sidebar Navigation */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="logo-container">
           <Shield size={24} style={{ color: 'var(--primary)' }} />
           <h2 className="logo-text">DRONE SECURITY</h2>
+          <button className="sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
+            <X size={20} />
+          </button>
         </div>
 
         <div className="sidebar-section-title">System Status</div>
@@ -201,7 +210,7 @@ function App() {
         </div>
 
         <div className="sidebar-section-title">Navigation</div>
-        <nav style={{ flexGrow: 1 }}>
+        <nav style={{ flexGrow: 1 }} onClick={() => setSidebarOpen(false)}>
           <ul className="nav-menu">
             <li 
               className={`nav-item ${activeTab === 'upload' ? 'active' : ''}`}
@@ -303,6 +312,9 @@ function App() {
       <main className="main-content">
         <header className="top-header">
           <div className="header-title-container">
+            <button className="menu-toggle" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+              <Menu size={20} />
+            </button>
             <h1>
               <Layers size={18} style={{ color: 'var(--primary)' }} />
               Security Intelligence Dashboard
@@ -310,14 +322,14 @@ function App() {
           </div>
 
           {/* Session Selector + Tour Button */}
-          <div className="session-selector-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="session-selector-container">
             <button 
               onClick={() => setShowTour(true)} 
               style={{ padding: '0.35rem 0.75rem', background: 'linear-gradient(135deg, #7c3aed, #a78bfa)', border: 'none', borderRadius: '6px', color: 'white', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
             >
               Guided Tour
             </button>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Video Session:</span>
+            <span className="session-label" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Video Session:</span>
             <select 
               className="custom-select"
               value={selectedSessionId || ''} 
