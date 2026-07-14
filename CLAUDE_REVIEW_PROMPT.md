@@ -55,11 +55,11 @@ I'm building a Drone Security Analyst Agent for a university assignment. The sys
    - Option D: Roboflow pre-trained shoplifting models (free tier)
 
 5. **Assignment Requirements Check** - Does my approach meet these:
-   - ✅ Real-time video analysis with telemetry
-   - ✅ Object/event detection and logging
-   - ✅ Real-time security/safety alerts
-   - ✅ Frame-by-frame indexing and search (Pinecone)
-   - ❓ Cross-domain: Does "drone telemetry + vision AI" count as cross-domain?
+   - Real-time video analysis with telemetry
+   - Object/event detection and logging
+   - Real-time security/safety alerts
+   - Frame-by-frame indexing and search (Pinecone)
+   - Cross-domain: Does "drone telemetry + vision AI" count as cross-domain?
 
 ## Expected Outputs (Assignment Examples)
 
@@ -85,11 +85,11 @@ I'm building a Drone Security Analyst Agent for a university assignment. The sys
 - Budget: Prefer $0, can spend $10-20 on APIs if needed
 
 ## What I've Tried
-1. ✅ Cloud CLIP + BLIP + GPT-4o pipeline working
-2. ✅ Security signal extraction from person_features text
-3. ✅ Alert generation with reasoning
-4. ❌ Inconsistent detection of "reaching" as suspicious vs benign
-5. ❌ Frame indexing works but semantic search needs improvement
+1. Cloud CLIP + BLIP + GPT-4o pipeline working
+2. Security signal extraction from person_features text
+3. Alert generation with reasoning
+4. Inconsistent detection of "reaching" as suspicious vs benign
+5. Frame indexing works but semantic search needs improvement
 
 ## Request
 Please review my approach and suggest:

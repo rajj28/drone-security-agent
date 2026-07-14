@@ -36,13 +36,21 @@ export const SemanticSearch: React.FC<SemanticSearchProps> = ({ apiBase, activeS
       });
 
       if (!res.ok) {
-        throw new Error('Search request failed. Make sure Pinecone index is active.');
+        throw new Error('Search request failed. Make sure the API server is running and Pinecone index is active.');
       }
 
       const data = await res.json();
+      // Check if the backend returned a graceful error in the response body
+      if (data.error) {
+        setError(`Search returned with issue: ${data.error}`);
+      }
       setResults(data.results || []);
     } catch (err: any) {
-      setError(err.message || 'Error occurred during semantic search.');
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setError('Cannot reach the API server. Please ensure the backend is running on port 8000 (run: uvicorn src.api:app --host 0.0.0.0 --port 8000).');
+      } else {
+        setError(err.message || 'Error occurred during semantic search.');
+      }
       setResults([]);
     } finally {
       setLoading(false);
@@ -67,7 +75,7 @@ export const SemanticSearch: React.FC<SemanticSearchProps> = ({ apiBase, activeS
     <div className="view-body">
       <div className="premium-card">
         <h3 className="card-title" style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-          🔍 Natural Language Visual Vector Search
+          Semantic Frame Search
         </h3>
         
         <form onSubmit={handleSearch} className="search-bar-row">
@@ -142,7 +150,7 @@ export const SemanticSearch: React.FC<SemanticSearchProps> = ({ apiBase, activeS
                           marginTop: '0.25rem' 
                         }}
                       >
-                        ⚠️ Threat: {hit.threat_assessment}
+                        Threat: {hit.threat_assessment}
                       </span>
                     )}
 

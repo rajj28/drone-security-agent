@@ -14,7 +14,7 @@ const tourSteps = [
     title: 'Video Upload',
     scrollTo: '.premium-card',
     action: 'upload', // Special action: auto-upload sample video
-    speech: "Welcome to the Drone Security Analyst Agent. Let me show you the full system in action. I'm going to upload our sample theft video right now — real CCTV footage of phone thieves caught in a retail store. Watch the progress bar — our AI pipeline extracts key frames using hybrid motion detection, then analyzes each one. This takes about 2 minutes on free tier, so I'll put on some tunes while we wait.",
+    speech: "Welcome to the Drone Security Analyst Agent. Let me show you the full system in action. I'm going to upload our sample theft video right now — real CCTV footage of phone thieves caught in a retail store. Watch the progress bar — our AI pipeline extracts key frames using hybrid motion detection, then analyzes each one. This takes about 2 minutes, and the tour continues automatically when it finishes.",
     highlight: "Auto-uploading sample video. Pipeline: Extract → Telemetry → VLM → Index → Alerts → Summary",
   },
   {
@@ -101,7 +101,6 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
   const [pipelineProgress, setPipelineProgress] = useState(0);
   const [pipelineSessionId, setPipelineSessionId] = useState<string | null>(null);
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const pollRef = useRef<any>(null);
 
   const step = tourSteps[currentStep];
@@ -184,30 +183,12 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
         const data = await uploadRes.json();
         setPipelineSessionId(data.session_id);
         onSessionCreated(data.session_id);
-        // Start music after a delay so narration starts first
-        setTimeout(() => startMusic(), 3000);
         startPolling(data.session_id);
       } else {
         console.error("Sample upload failed:", await uploadRes.text());
       }
     } catch (err) {
       console.error("Auto-upload failed:", err);
-    }
-  };
-
-  const startMusic = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/sunflower.mp3');
-      audioRef.current.loop = true;
-      audioRef.current.volume = 0.25;
-    }
-    audioRef.current.play().catch(() => {});
-  };
-
-  const stopMusic = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
     }
   };
 
@@ -226,12 +207,10 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
             clearInterval(pollRef.current);
             setWaitingForPipeline(false);
             setPipelineProgress(100);
-            stopMusic();
             setTimeout(() => setCurrentStep(2), 1000);
           } else if (data.status === 'failed') {
             clearInterval(pollRef.current);
             setWaitingForPipeline(false);
-            stopMusic();
             speak("Pipeline had an issue, but let me show you what we have so far.");
             setTimeout(() => setCurrentStep(2), 2000);
           }
@@ -245,7 +224,6 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
     window.speechSynthesis.getVoices();
     return () => {
       window.speechSynthesis.cancel();
-      stopMusic();
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, []);
@@ -303,7 +281,6 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
       setCurrentStep(prev => prev + 1);
     } else {
       setAutoMode(false);
-      stopMusic();
       setTourFinished(true);
     }
   };
@@ -318,7 +295,6 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
   const handleClose = () => {
     window.speechSynthesis.cancel();
     setAutoMode(false);
-    stopMusic();
     if (pollRef.current) clearInterval(pollRef.current);
     onClose();
   };
@@ -346,10 +322,10 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
 
       {/* Current Step */}
       <h4 style={{ fontSize: '0.78rem', fontWeight: 700, color: 'white', marginBottom: '0.2rem' }}>
-        {waitingForPipeline ? '⏳ Processing...' : step.title}
+        {waitingForPipeline ? 'Processing...' : step.title}
       </h4>
       <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', lineHeight: '1.4', marginBottom: waitingForPipeline ? '0.4rem' : '0.5rem' }}>
-        {waitingForPipeline ? '🎵 Music playing. Auto-continues when done.' : step.highlight}
+        {waitingForPipeline ? 'The pipeline is running. The tour continues automatically when it finishes.' : step.highlight}
       </p>
       
       {/* Pipeline Progress Bar */}
@@ -371,7 +347,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
           <button onClick={handleClose} style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white', fontSize: '0.6rem', fontWeight: 600, cursor: 'pointer' }}>
             <X size={10} /> Close
           </button>
-          <span style={{ fontSize: '0.6rem', color: '#10b981', marginLeft: 'auto' }}>✅ Tour Complete</span>
+          <span style={{ fontSize: '0.6rem', color: '#10b981', marginLeft: 'auto' }}>Tour Complete</span>
         </div>
       ) : (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
@@ -386,7 +362,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ onNavigate, onClose, api
         )}
         
         <button onClick={() => { setAutoMode(true); speak(tourSteps[currentStep].speech); autoUploadSampleVideo(); }} style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', padding: '0.25rem 0.5rem', background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '4px', color: '#10b981', fontSize: '0.6rem', fontWeight: 600, cursor: 'pointer' }}>
-          <Volume2 size={10} /> {autoMode ? '🟢' : 'Auto'}
+          <Volume2 size={10} /> {autoMode ? 'Auto On' : 'Auto'}
         </button>
 
         <button onClick={handleNext} style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white', fontSize: '0.6rem', fontWeight: 600, cursor: 'pointer' }}>

@@ -145,7 +145,7 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({ apiBase, activeSession
 
                   {alt.recommended_action && (
                     <p className="alert-recommendation">
-                      <span>💡 <strong>Escalation Plan:</strong> {alt.recommended_action}</span>
+                      <span><strong>Recommended Action:</strong> {alt.recommended_action}</span>
                     </p>
                   )}
                 </div>

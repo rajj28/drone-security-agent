@@ -92,7 +92,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({ apiBase, activeS
             {/* Overview Stats */}
             <div className="grid-cols-4" style={{ width: '100%' }}>
               <div className="premium-card">
-                <span className="card-title">📅 Date Processed</span>
+                <span className="card-title">Date Processed</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
                   <Calendar size={18} style={{ color: 'var(--primary)' }} />
                   <span className="card-value" style={{ fontSize: '1.25rem' }}>
@@ -102,7 +102,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({ apiBase, activeS
               </div>
 
               <div className="premium-card">
-                <span className="card-title">🎬 Frames Analyzed</span>
+                <span className="card-title">Frames Analyzed</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
                   <BarChart2 size={18} style={{ color: 'var(--primary)' }} />
                   <span className="card-value" style={{ fontSize: '1.25rem' }}>
@@ -112,7 +112,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({ apiBase, activeS
               </div>
 
               <div className="premium-card">
-                <span className="card-title">🚨 Alerts Logged</span>
+                <span className="card-title">Alerts Logged</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
                   <AlertTriangle size={18} style={{ color: 'var(--color-critical)' }} />
                   <span className="card-value" style={{ fontSize: '1.25rem', color: summaryData.total_alerts > 0 ? 'var(--color-critical)' : 'var(--color-clear)' }}>
@@ -122,7 +122,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({ apiBase, activeS
               </div>
 
               <div className="premium-card">
-                <span className="card-title">⏱️ Analysis Time</span>
+                <span className="card-title">Analysis Time</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
                   <Clock size={18} style={{ color: 'var(--primary)' }} />
                   <span className="card-value" style={{ fontSize: '1.25rem' }}>
@@ -184,7 +184,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({ apiBase, activeS
             </div>
 
             <div className="premium-card">
-              <h4 className="card-title" style={{ marginBottom: '0.75rem' }}>🎯 Threat Ratio</h4>
+              <h4 className="card-title" style={{ marginBottom: '0.75rem' }}>Threat Ratio</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
                   <span>Monitored Activity</span>

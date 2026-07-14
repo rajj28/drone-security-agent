@@ -1,30 +1,40 @@
 {
   "frame_id": "frame_005",
-  "timestamp": "16:00:04",
+  "timestamp": "16:01:10",
   "location": "Restricted Zone",
-  "raw_response": "I'm unable to analyze the content of the image provided.",
-  "_parsing_failed": true,
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "scene_type": "unknown",
-  "object_details": [],
-  "person_features": [],
-  "vehicle_details": [],
-  "security_signals": [],
-  "alert_reasoning": "Review frame manually",
-  "alert_priority_signals": [],
-  "objects_detected": [],
+  "threat_level": "MEDIUM",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "A single person with short dark hair wearing a gray sweater and blue pants is standing near a counter with glass display cases. The person's right hand is reaching into the display case.",
+  "scene_type": "retail",
+  "people_count": 1,
+  "objects_detected": [
+    "person",
+    "display_case",
+    "phones"
+  ],
+  "person_features": [
+    "Person 1: standing near counter, right hand reaching into display case, facing away from camera, no visible uniform or badge"
+  ],
   "vehicles_detected": [],
-  "suspicious_elements": [],
-  "people_count": 0,
-  "vlm_description": "Scene analysis unavailable.",
-  "activity": "Unknown activity",
-  "recommended_action": "Review frame manually",
+  "activity": "person reaching into display case",
+  "security_signals": [
+    "reaching_towards_merchandise",
+    "handling_multiple_items",
+    "person_1: counter, right hand reaching into display case,"
+  ],
+  "suspicious_elements": [
+    "person_reaching_into_display_case",
+    "reaching"
+  ],
+  "reasoning": "The person is reaching into a display case in a retail environment. This action could indicate a potential theft attempt. The threat level is MEDIUM because the person is handling merchandise in a way that is not clearly supervised or normal.",
+  "recommended_action": "Security personnel should monitor the individual's actions closely and verify if they are authorized to access the merchandise.",
+  "confidence": 0.7,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Security threat detected: person_1: counter, right hand reaching into display case,. Review frame immediately for suspicious activity.",
+  "alert_priority_signals": [],
+  "threat_assessment": "MEDIUM",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 1507
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 3734
 }

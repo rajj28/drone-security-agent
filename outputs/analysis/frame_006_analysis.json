@@ -1,30 +1,37 @@
 {
   "frame_id": "frame_006",
-  "timestamp": "16:00:05",
+  "timestamp": "16:01:32",
   "location": "Driveway",
-  "raw_response": "I'm unable to analyze the content of the image provided. If you have any questions or need assistance with something else, feel free to ask!",
-  "_parsing_failed": true,
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "scene_type": "unknown",
-  "object_details": [],
-  "person_features": [],
-  "vehicle_details": [],
-  "security_signals": [],
-  "alert_reasoning": "Review frame manually",
-  "alert_priority_signals": [],
-  "objects_detected": [],
+  "threat_level": "MEDIUM",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "A single man with dark hair wearing a light grey sweater and dark pants is standing in a retail store, positioned near the counter area. He appears to be looking down at his phone or something in his hand. The store has various phone displays and Vivo-branded products. There are no other people visible in the frame.",
+  "scene_type": "retail",
+  "people_count": 1,
+  "objects_detected": [
+    "person",
+    "phone"
+  ],
+  "person_features": [
+    "Person 1: standing near counter area, looking down at phone or object in hand, dark hair, light grey sweater, dark pants"
+  ],
   "vehicles_detected": [],
-  "suspicious_elements": [],
-  "people_count": 0,
-  "vlm_description": "Scene analysis unavailable.",
-  "activity": "Unknown activity",
-  "recommended_action": "Review frame manually",
+  "activity": "The person is standing still, focused on something in his hand.",
+  "security_signals": [
+    "lingering_without_purpose",
+    "checking_for_observers"
+  ],
+  "suspicious_elements": [
+    "person_lingering_near_counter"
+  ],
+  "reasoning": "The person is standing alone in a retail store near the counter area, focused on something in his hand. This could indicate suspicious behavior as he is not interacting with staff and seems to be lingering without a clear purpose. However, it's not clear if he's an employee or customer, so it's set to MEDIUM.",
+  "recommended_action": "Security should monitor the individual's actions to determine if he is an employee or if his behavior is suspicious.",
+  "confidence": 0.7,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Security should monitor the individual's actions to determine if he is an employee or if his behavior is suspicious.",
+  "alert_priority_signals": [],
+  "threat_assessment": "MEDIUM",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 1682
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 24743
 }

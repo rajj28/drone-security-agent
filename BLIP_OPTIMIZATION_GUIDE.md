@@ -82,10 +82,10 @@ python -m src.vision_analyzer
 
 | Analyzer | Speed | Accuracy | Features | Best For |
 |----------|-------|----------|-----------|----------|
-| **Standard GPT-4o** | ⚡⚡⚡⚡⚡ | ⭐⭐⭐⭐ | Basic vision analysis | Real-time processing |
-| **CLIP + GPT-4o** | ⚡⚡⚡⚡ | ⭐⭐⭐⭐⭐ | Visual similarity + threat patterns | Balanced performance |
-| **BLIP + GPT-4o** | ⚡⚡⚡ | ⭐⭐⭐⭐⭐ | Captioning + VQA + detailed descriptions | Detailed scene understanding |
-| **Ultimate (CLIP+BLIP+GPT-4o)** | ⚡⚡ | ⭐⭐⭐⭐⭐⭐ | Multi-model fusion + maximum accuracy | Critical security scenarios |
+| **Standard GPT-4o** | | | Basic vision analysis | Real-time processing |
+| **CLIP + GPT-4o** | | | Visual similarity + threat patterns | Balanced performance |
+| **BLIP + GPT-4o** | | | Captioning + VQA + detailed descriptions | Detailed scene understanding |
+| **Ultimate (CLIP+BLIP+GPT-4o)** | | | Multi-model fusion + maximum accuracy | Critical security scenarios |
 
 ---
 
@@ -251,10 +251,10 @@ Potential improvements for future iterations:
 ## Summary
 
 Your drone security agent system now supports:
-- ✅ **BLIP** for advanced image captioning and VQA
-- ✅ **Multi-model fusion** for maximum accuracy
-- ✅ **Configurable analyzers** for different use cases
-- ✅ **Performance optimizations** for faster processing
-- ✅ **Backward compatibility** with existing code
+- **BLIP** for advanced image captioning and VQA
+- **Multi-model fusion** for maximum accuracy
+- **Configurable analyzers** for different use cases
+- **Performance optimizations** for faster processing
+- **Backward compatibility** with existing code
 
 Choose the analyzer that best fits your needs and enjoy the enhanced security analysis capabilities!

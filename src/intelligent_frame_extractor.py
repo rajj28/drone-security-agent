@@ -55,10 +55,11 @@ class IntelligentFrameExtractor:
         self.min_frame_interval = 0.5  # Minimum seconds between frames
         self.max_frames_per_minute = 30  # Maximum frames to extract per minute
         
-        # Quality filtering thresholds
-        self.min_brightness_threshold = 20  # Skip very dark frames (0-255)
-        self.max_brightness_threshold = 250  # Skip overexposed frames
-        self.min_variance_threshold = 50  # Skip low-contrast/static/menu frames
+        # Quality filtering thresholds — tuned for real-world surveillance footage
+        # (night vision, wide-angle, low-light, outdoor cameras)
+        self.min_brightness_threshold = 10  # Accept darker frames (night/low-light cameras)
+        self.max_brightness_threshold = 252  # Accept slightly brighter outdoor frames
+        self.min_variance_threshold = 25  # Accept lower-contrast wide-angle surveillance
     
     def _is_frame_quality_acceptable(self, frame: np.ndarray) -> Tuple[bool, str]:
         """
@@ -92,13 +93,13 @@ class IntelligentFrameExtractor:
         # Calculate percentage of pixels near the mean (solid color detection)
         diff_from_mean = np.abs(gray.astype(float) - mean_brightness)
         solid_color_ratio = np.mean(diff_from_mean < 10)  # Pixels within 10 of mean
-        if solid_color_ratio > 0.95:  # 95% of frame is same color
+        if solid_color_ratio > 0.97:  # 97% of frame is same color (was 95% — relaxed for low-contrast surveillance)
             return False, f"solid_color({solid_color_ratio*100:.1f}%)"
         
         # Check 4: Edge detection (menu/title cards have few edges)
         edges = cv2.Canny(gray, 50, 150)
         edge_ratio = np.sum(edges > 0) / edges.size
-        if edge_ratio < 0.001:  # Less than 0.1% edges
+        if edge_ratio < 0.0005:  # Less than 0.05% edges (relaxed from 0.1% for far-away surveillance shots)
             return False, f"no_edges({edge_ratio*100:.3f}%)"
         
         return True, "quality_ok"
@@ -108,7 +109,7 @@ class IntelligentFrameExtractor:
         video_path: Path,
         output_dir: Path,
         strategy: ExtractionStrategy = ExtractionStrategy.HYBRID,
-        max_total_frames: int = 100,
+        max_total_frames: int = 30,
         target_fps: float = 2.0
     ) -> List[FrameInfo]:
         """
@@ -216,13 +217,21 @@ class IntelligentFrameExtractor:
         num_frames = int(duration / interval)
         
         frames = []
-        for i in range(min(num_frames, 100)):  # Cap at 100 frames
-            timestamp = i * interval
-            frame = self._extract_frame_at_timestamp(
-                video_path, output_dir, timestamp, i + 1, "uniform"
-            )
-            if frame:
-                frames.append(frame)
+        cap = cv2.VideoCapture(str(video_path))
+        if not cap.isOpened():
+            logger.error(f"Could not open video for uniform extraction: {video_path}")
+            return frames
+            
+        try:
+            for i in range(min(num_frames, 100)):  # Cap at 100 frames
+                timestamp = i * interval
+                frame = self._extract_frame_at_timestamp(
+                    video_path, output_dir, timestamp, i + 1, "uniform", cap=cap
+                )
+                if frame:
+                    frames.append(frame)
+        finally:
+            cap.release()
         
         return frames
     
@@ -250,52 +259,65 @@ class IntelligentFrameExtractor:
         motion_events = []
         frame_number = 0
         
-        logger.info(f"Analyzing {frame_count} frames for motion...")
+        # DYNAMIC OPTIMIZATION: Scale sampling step based on video length
+        # For a 10s clip: sample every 10th frame. For a 1-hour video: sample every 60th.
+        sampling_step = max(10, min(100, int(duration / 60)))
+        logger.info(f"Analyzing {frame_count} frames for motion (sampling every {sampling_step}th frame)...")
         
-        # Only analyze first 80% of video — ads/outros at the end cause false positives
-        analysis_cutoff = int(frame_count * 0.8)
+        # Only analyze first 95% of video — capture late-video activity too
+        analysis_cutoff = int(frame_count * 0.95)
         
-        while True:
+        consecutive_failures = 0
+        while frame_number <= analysis_cutoff:
             ret, frame = cap.read()
-            if not ret:
+            if not ret or frame is None:
+                consecutive_failures += 1
+                if consecutive_failures >= 5:
+                    logger.info("Reached end of video stream or multiple consecutive failures. Stopping motion scan.")
+                    break
+                frame_number += 1
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+                continue
+            consecutive_failures = 0
+ 
+            # Resize for faster processing
+            small = cv2.resize(frame, (320, 240))
+            gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+            gray = cv2.GaussianBlur(gray, (21, 21), 0)
+ 
+            if prev_gray is not None:
+                # Frame differencing — measures actual pixel changes across entire frame
+                frame_diff = cv2.absdiff(prev_gray, gray)
+                _, thresh = cv2.threshold(frame_diff, 25, 255, cv2.THRESH_BINARY)
+                # Motion score = percentage of pixels that changed significantly
+                motion_magnitude = float(np.sum(thresh > 0)) / thresh.size * 100
+                timestamp = frame_number / fps
+ 
+                if motion_magnitude > 1.2:  # At least 1.2% of frame changed (lowered from 2% for subtler motion)
+                    motion_events.append({
+                        "timestamp": timestamp,
+                        "motion_score": motion_magnitude,
+                        "frame_number": frame_number
+                    })
+ 
+            prev_gray = gray
+ 
+            # Sequentially skip next (sampling_step - 1) frames forward
+            skipped = True
+            for _ in range(sampling_step - 1):
+                if not cap.grab():
+                    skipped = False
+                    break
+            
+            if not skipped:
                 break
-            
-            # Stop analyzing after 80% of video
-            if frame_number > analysis_cutoff:
-                break
-            
-            # Sample every 10th frame for efficiency
-            if frame_number % 10 == 0:
-                # Resize for faster processing
-                small = cv2.resize(frame, (320, 240))
-                gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
-                gray = cv2.GaussianBlur(gray, (21, 21), 0)
                 
-                if prev_gray is not None:
-                    # Frame differencing — measures actual pixel changes across entire frame
-                    frame_diff = cv2.absdiff(prev_gray, gray)
-                    _, thresh = cv2.threshold(frame_diff, 25, 255, cv2.THRESH_BINARY)
-                    # Motion score = percentage of pixels that changed significantly
-                    motion_magnitude = float(np.sum(thresh > 0)) / thresh.size * 100
-                    timestamp = frame_number / fps
-                    
-                    if motion_magnitude > 2.0:  # At least 2% of frame changed
-                        motion_events.append({
-                            "timestamp": timestamp,
-                            "motion_score": motion_magnitude,
-                            "frame_number": frame_number
-                        })
-                
-                prev_gray = gray
-            
-            frame_number += 1
+            frame_number += sampling_step
             
             # Progress update
-            if frame_number % 1000 == 0:
-                progress = (frame_number / frame_count) * 100
+            if frame_number % 1000 == 0 or (frame_number % (sampling_step * 20) == 0):
+                progress = min(100.0, (frame_number / frame_count) * 100)
                 logger.info(f"Motion analysis progress: {progress:.1f}%")
-        
-        cap.release()
         
         # Sort motion events by score and select top events
         motion_events.sort(key=lambda x: x["motion_score"], reverse=True)
@@ -303,15 +325,18 @@ class IntelligentFrameExtractor:
         
         # Extract frames at motion events
         frames = []
-        for i, event in enumerate(selected_events):
-            frame = self._extract_frame_at_timestamp(
-                video_path, output_dir, event["timestamp"], i + 1, 
-                f"motion_score_{event['motion_score']:.2f}"
-            )
-            if frame:
-                frame.motion_score = event["motion_score"]
-                frame.importance_score = event["motion_score"]
-                frames.append(frame)
+        try:
+            for i, event in enumerate(selected_events):
+                frame = self._extract_frame_at_timestamp(
+                    video_path, output_dir, event["timestamp"], i + 1, 
+                    f"motion_score_{event['motion_score']:.2f}", cap=cap
+                )
+                if frame:
+                    frame.motion_score = event["motion_score"]
+                    frame.importance_score = event["motion_score"]
+                    frames.append(frame)
+        finally:
+            cap.release()
         
         logger.info(f"Found {len(motion_events)} motion events, extracted top {len(frames)}")
         return frames
@@ -324,6 +349,11 @@ class IntelligentFrameExtractor:
         max_frames: int
     ) -> List[FrameInfo]:
         """Extract frames at scene changes."""
+        duration = video_info.get("duration", 0)
+        if duration > 120:
+            logger.info(f"Video duration ({duration}s) exceeds 120s. Skipping scene change detection to save CPU.")
+            return []
+            
         logger.info("Analyzing video for scene changes...")
         
         # Use ffmpeg to detect scene changes
@@ -342,15 +372,23 @@ class IntelligentFrameExtractor:
             
             # Extract frames at scene changes
             frames = []
-            for i, change in enumerate(selected_changes):
-                frame = self._extract_frame_at_timestamp(
-                    video_path, output_dir, change["timestamp"], i + 1,
-                    f"scene_change_{change['score']:.2f}"
-                )
-                if frame:
-                    frame.scene_change_score = change["score"]
-                    frame.importance_score = change["score"]
-                    frames.append(frame)
+            cap = cv2.VideoCapture(str(video_path))
+            if not cap.isOpened():
+                logger.error(f"Could not open video for scene change extraction: {video_path}")
+                return frames
+                
+            try:
+                for i, change in enumerate(selected_changes):
+                    frame = self._extract_frame_at_timestamp(
+                        video_path, output_dir, change["timestamp"], i + 1,
+                        f"scene_change_{change['score']:.2f}", cap=cap
+                    )
+                    if frame:
+                        frame.scene_change_score = change["score"]
+                        frame.importance_score = change["score"]
+                        frames.append(frame)
+            finally:
+                cap.release()
             
             logger.info(f"Found {len(scene_changes)} scene changes, extracted {len(frames)}")
             return frames
@@ -368,14 +406,13 @@ class IntelligentFrameExtractor:
         max_frames: int, 
         target_fps: float
     ) -> List[FrameInfo]:
-        """Hybrid extraction combining uniform, motion, and scene change detection."""
+        """Hybrid extraction combining uniform and motion detection (bypassing slow scene changes)."""
         logger.info("Using hybrid extraction strategy...")
         
         # Allocate frame budget — prioritize motion frames for security footage
-        # 60% motion (most likely to capture action), 25% uniform (baseline), 15% scene change
-        motion_budget = int(max_frames * 0.6)
-        uniform_budget = int(max_frames * 0.25)
-        scene_budget = max_frames - motion_budget - uniform_budget
+        # 75% motion (highest security priority), 25% uniform (baseline check)
+        motion_budget = int(max_frames * 0.75)
+        uniform_budget = max_frames - motion_budget
         
         frames = []
         
@@ -390,12 +427,6 @@ class IntelligentFrameExtractor:
             video_path, output_dir, video_info, target_fps * 0.5
         )
         frames.extend(uniform_frames[:uniform_budget])
-        
-        # 3. Extract scene change frames
-        scene_frames = self._extract_scene_change_frames(
-            video_path, output_dir, video_info, scene_budget
-        )
-        frames.extend(scene_frames)
         
         # Remove duplicates (frames too close in time)
         frames = self._deduplicate_frames(frames, min_interval=self.min_frame_interval)
@@ -416,71 +447,73 @@ class IntelligentFrameExtractor:
         output_dir: Path, 
         timestamp: float, 
         frame_number: int,
-        reason: str
+        reason: str,
+        cap: Optional[cv2.VideoCapture] = None
     ) -> Optional[FrameInfo]:
-        """Extract a single frame at a specific timestamp."""
-        # Use unique temp filename to avoid overwriting during hybrid extraction
+        """Extract a single frame at a specific timestamp using OpenCV in-memory seeking."""
         import uuid
         temp_name = f"temp_{uuid.uuid4().hex[:8]}.jpg"
         output_path = output_dir / temp_name
-        # Final name will be assigned after deduplication (stored in frame_info temporarily)
-        final_frame_name = f"frame_{frame_number:03d}.jpg"
-        
-        # Format timestamp for ffmpeg
-        hours = int(timestamp // 3600)
-        minutes = int((timestamp % 3600) // 60)
-        seconds = timestamp % 60
-        ts_formatted = f"{hours:02}:{minutes:02}:{seconds:06.3f}"
-        
-        ffmpeg_cmd = [
-            "ffmpeg", "-y",
-            "-ss", ts_formatted,
-            "-i", str(video_path),
-            "-frames:v", "1",
-            "-q:v", "2",  # High quality
-            str(output_path)
-        ]
         
         try:
             start_time = time.time()
-            subprocess.run(ffmpeg_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            elapsed_ms = (time.time() - start_time) * 1000
             
-            # Validate the extracted frame
-            if output_path.exists():
-                with Image.open(output_path) as img:
-                    img.verify()
-                
-                # QUALITY CHECK: Filter out text/menu/bad frames before saving
-                frame_cv = cv2.imread(str(output_path))
-                is_acceptable, quality_reason = self._is_frame_quality_acceptable(frame_cv)
-                if not is_acceptable:
-                    logger.warning(f"Frame {frame_number} at {timestamp:.2f}s rejected: {quality_reason}")
-                    output_path.unlink()  # Delete bad frame
+            # Use OpenCV to open video or reuse passed one
+            shared_cap = True
+            if cap is None:
+                shared_cap = False
+                cap = cv2.VideoCapture(str(video_path))
+                if not cap.isOpened():
+                    logger.error(f"OpenCV could not open video file: {video_path}")
                     return None
                 
+            cap.set(cv2.CAP_PROP_POS_MSEC, timestamp * 1000.0)
+            ret, frame_cv = cap.read()
+            
+            if not shared_cap:
+                cap.release()
+            
+            if not ret or frame_cv is None:
+                logger.warning(f"OpenCV failed to read frame at {timestamp:.2f}s")
+                return None
+                
+            # QUALITY CHECK: Filter out text/menu/bad frames before saving
+            is_acceptable, quality_reason = self._is_frame_quality_acceptable(frame_cv)
+            if not is_acceptable:
+                logger.warning(f"Frame {frame_number} at {timestamp:.2f}s rejected: {quality_reason}")
+                return None
+            
+            # Save frame directly using OpenCV (no shell process spawning!)
+            cv2.imwrite(str(output_path), frame_cv, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+            
+            elapsed_ms = (time.time() - start_time) * 1000
+            
+            if output_path.exists():
                 file_size_kb = output_path.stat().st_size / 1024
                 
                 frame_info = FrameInfo(
                     frame_number=frame_number,
                     timestamp=timestamp,
-                    filename=temp_name,  # Use temp_name as the filename initially so it matches physical file on disk
+                    filename=temp_name,
                     file_size_kb=file_size_kb,
                     extraction_time_ms=elapsed_ms,
                     extraction_reason=reason,
                     importance_score=self._calculate_importance_score(reason)
                 )
-                # Store temp filename for renaming after deduplication
                 frame_info.temp_filename = temp_name
                 
-                logger.debug(f"Extracted frame at {ts_formatted} ({reason})")
+                logger.debug(f"Extracted frame at {timestamp:.2f}s ({reason}) in {elapsed_ms:.1f}ms")
                 return frame_info
             else:
-                logger.warning(f"Frame not extracted at {ts_formatted}")
                 return None
                 
         except Exception as e:
-            logger.error(f"Failed to extract frame at {ts_formatted}: {e}")
+            logger.error(f"Failed to extract frame at {timestamp:.2f}s: {e}")
+            if output_path.exists():
+                try:
+                    output_path.unlink()
+                except:
+                    pass
             return None
     
     def _deduplicate_frames(self, frames: List[FrameInfo], min_interval: float) -> List[FrameInfo]:
@@ -585,7 +618,7 @@ def extract_frames_intelligently(
     video_path: Path = settings.VIDEO_FILE,
     output_dir: Path = settings.EXTRACTED_DIR,
     strategy: str = "hybrid",
-    max_frames: int = 100
+    max_frames: int = 30
 ) -> List[Dict]:
     """Main function for intelligent frame extraction."""
     try:

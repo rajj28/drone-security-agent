@@ -44,7 +44,7 @@ class TestVideoProcessing:
         assert "frame_id" in telemetry
         assert "timestamp" in telemetry
         assert "location" in telemetry
-        print("✅ Telemetry structure valid")
+        print("Telemetry structure valid")
     
     def test_frame_analysis_output(self):
         """Verify frame analysis produces required output fields"""
@@ -69,7 +69,7 @@ class TestVideoProcessing:
         for field in required_fields:
             assert field in test_analysis, f"Missing required field: {field}"
         
-        print("✅ Frame analysis output valid")
+        print("Frame analysis output valid")
 
 
 class TestObjectEventLogging:
@@ -91,7 +91,7 @@ class TestObjectEventLogging:
         assert "blue Ford F150" in expected_log
         assert "garage" in expected_log
         assert "12:00" in expected_log
-        print(f"✅ Log format: {expected_log}")
+        print(f"Log format: {expected_log}")
     
     def test_vehicle_tracking(self):
         """Test vehicle tracking across frames"""
@@ -106,7 +106,7 @@ class TestObjectEventLogging:
         garage_visits = [s for s in sightings if s["location"] == "garage"]
         assert len(garage_visits) == 2, f"Expected 2 garage visits, got {len(garage_visits)}"
         
-        print(f"✅ Vehicle tracked: {len(sightings)} sightings, {len(garage_visits)} at garage")
+        print(f"Vehicle tracked: {len(sightings)} sightings, {len(garage_visits)} at garage")
 
 
 class TestSecurityAlerts:
@@ -127,7 +127,7 @@ class TestSecurityAlerts:
         assert "loitering" in alert["alert_type"].lower() or "person" in alert["alert_type"].lower()
         assert "00:01" in alert["timestamp"]  # After hours
         
-        print(f"✅ Alert generated: {alert['alert_type']} at {alert['timestamp']}")
+        print(f"Alert generated: {alert['alert_type']} at {alert['timestamp']}")
     
     def test_after_hours_detection(self):
         """Test after-hours activity detection"""
@@ -141,7 +141,7 @@ class TestSecurityAlerts:
             alert_triggered = False
         
         assert alert_triggered, "After-hours activity should trigger alert"
-        print("✅ After-hours alert working")
+        print("After-hours alert working")
     
     def test_unauthorized_access_alert(self):
         """Test unauthorized access detection"""
@@ -155,7 +155,7 @@ class TestSecurityAlerts:
         
         assert alert["severity"] == "HIGH"
         assert "unauthorized" in alert["alert_type"].lower()
-        print(f"✅ Unauthorized access alert: {alert['severity']} severity")
+        print(f"Unauthorized access alert: {alert['severity']} severity")
 
 
 class TestFrameIndexing:
@@ -177,7 +177,7 @@ class TestFrameIndexing:
         assert "objects" in frame_metadata
         assert "description" in frame_metadata
         
-        print("✅ Frame metadata structure valid for indexing")
+        print("Frame metadata structure valid for indexing")
     
     def test_search_by_object(self):
         """Test searching frames by object type"""
@@ -192,7 +192,7 @@ class TestFrameIndexing:
         truck_frames = [f for f in frames if "truck" in f["objects"]]
         
         assert len(truck_frames) == 2, f"Expected 2 truck frames, got {len(truck_frames)}"
-        print(f"✅ Search by object: Found {len(truck_frames)} truck events")
+        print(f"Search by object: Found {len(truck_frames)} truck events")
     
     def test_search_by_time(self):
         """Test searching frames by time range"""
@@ -206,7 +206,7 @@ class TestFrameIndexing:
         midnight_frames = [f for f in frames if f["timestamp"].startswith("00:")]
         
         assert len(midnight_frames) == 1
-        print(f"✅ Search by time: Found {len(midnight_frames)} midnight events")
+        print(f"Search by time: Found {len(midnight_frames)} midnight events")
 
 
 class TestCrossDomainFunctionality:
@@ -232,7 +232,7 @@ class TestCrossDomainFunctionality:
         assert video_detection["location"] == telemetry["drone_location"]
         assert video_detection["timestamp"] == telemetry["timestamp"]
         
-        print("✅ Video-telemetry correlation working")
+        print("Video-telemetry correlation working")
     
     def test_multi_location_tracking(self):
         """Test tracking across multiple locations"""
@@ -244,7 +244,7 @@ class TestCrossDomainFunctionality:
             location_counts[loc] = location_counts.get(loc, 0) + 1
         
         assert location_counts["main_gate"] == 2, "Should have 2 main_gate visits"
-        print(f"✅ Multi-location tracking: {location_counts}")
+        print(f"Multi-location tracking: {location_counts}")
 
 
 class TestExpectedOutputs:
@@ -265,7 +265,7 @@ class TestExpectedOutputs:
         assert "Blue Ford F150" in log_entry
         assert "garage" in log_entry
         assert "12:00" in log_entry
-        print(f"✅ Expected log format: {log_entry}")
+        print(f"Expected log format: {log_entry}")
     
     def test_expected_alert_format(self):
         """Test: 'Person loitering at main gate, 00:01.'"""
@@ -279,7 +279,7 @@ class TestExpectedOutputs:
         assert "Person loitering" in alert_text
         assert "main gate" in alert_text
         assert "00:01" in alert_text
-        print(f"✅ Expected alert format: {alert_text}")
+        print(f"Expected alert format: {alert_text}")
     
     def test_expected_query_result(self):
         """Test: Query 'show all truck events' returns frame list"""
@@ -295,7 +295,7 @@ class TestExpectedOutputs:
         
         assert len(search_results["results"]) > 0
         assert all("frame_" in r["frame_id"] for r in search_results["results"])
-        print(f"✅ Expected query result: {len(search_results['results'])} truck events found")
+        print(f"Expected query result: {len(search_results['results'])} truck events found")
 
 
 def run_all_tests():
@@ -317,7 +317,7 @@ def run_all_tests():
     failed = 0
     
     for test_class in test_classes:
-        print(f"\n📋 {test_class.__doc__}")
+        print(f"\n{test_class.__doc__}")
         print("-" * 50)
         
         test_instance = test_class()
@@ -329,10 +329,10 @@ def run_all_tests():
                 method()
                 passed += 1
             except AssertionError as e:
-                print(f"   ❌ {method_name}: {e}")
+                print(f"   {method_name}: {e}")
                 failed += 1
             except Exception as e:
-                print(f"   ⚠️  {method_name}: Error - {e}")
+                print(f"    {method_name}: Error - {e}")
                 failed += 1
     
     print("\n" + "="*70)
@@ -340,9 +340,9 @@ def run_all_tests():
     print("="*70)
     
     if failed == 0:
-        print("\n✅ ALL ASSIGNMENT REQUIREMENTS MET!")
+        print("\nALL ASSIGNMENT REQUIREMENTS MET!")
     else:
-        print(f"\n⚠️  {failed} tests failed - review required")
+        print(f"\n {failed} tests failed - review required")
     
     return failed == 0
 

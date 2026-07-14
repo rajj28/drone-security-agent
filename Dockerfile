@@ -7,15 +7,13 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y curl ffmpeg && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
+# Pin Pinecone 9.x for integrated inference search/upsert_records API
 COPY requirements.light.txt .
 RUN pip install --no-cache-dir -r requirements.light.txt
 
 # Copy app and built frontend
 COPY src/ ./src/
 COPY frontend/dist/ ./frontend/dist/
-
-# Copy sample video for auto-tour (renamed to avoid Docker path issues)
-COPY sample-video.mp4 ./
 
 # Cloud Run requires port 8080
 ENV PORT=8080

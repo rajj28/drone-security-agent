@@ -162,7 +162,7 @@ streamlit run demo/dashboard.py
 
 ## Evaluation Criteria
 
-### ✅ PASS Criteria:
+### PASS Criteria:
 1. Frame extraction works with quality filtering
 2. Vision analysis produces threat assessments
 3. People counting is accurate (within ±1 of actual)
@@ -170,7 +170,7 @@ streamlit run demo/dashboard.py
 5. Text/menu frames are rejected during extraction
 6. No IndexError or import errors
 
-### ❌ FAIL Criteria:
+### FAIL Criteria:
 1. pymongo import error (must be fixed)
 2. People count is 1 when there are 5+ people
 3. Threat level is CLEAR for theft scenarios

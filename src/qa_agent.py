@@ -30,17 +30,45 @@ DEMO_QUESTIONS = [
 class SecurityQAAgent:
     def __init__(self):
         self.conversation_history: List[Dict[str, Any]] = []
-        self.session_context = self._load_json(settings.SESSION_DIR / "session_context.json")
-        self.all_analyses = self._load_json(settings.ANALYSIS_DIR / "all_analysis.json")
-        self.all_alerts = self._load_json(settings.ALERTS_DIR / "all_alerts.json")
+        self.session_context = self._load_session_context()
+        self.all_analyses = self._load_analysis_list()
+        self.all_alerts = self._load_alerts_summary()
 
-    def _load_json(self, path: Path):
+    def _load_json(self, path: Path, default: Any):
         if path.exists():
             with open(path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        return []
+                data = json.load(f)
+            return data if data is not None else default
+        return default
+
+    def _load_session_context(self) -> Dict[str, Any]:
+        data = self._load_json(settings.SESSION_DIR / "session_context.json", {})
+        return data if isinstance(data, dict) else {}
+
+    def _load_analysis_list(self) -> List[Dict[str, Any]]:
+        data = self._load_json(settings.ANALYSIS_DIR / "all_analysis.json", [])
+        return data if isinstance(data, list) else []
+
+    def _load_alerts_summary(self) -> Dict[str, Any]:
+        data = self._load_json(settings.ALERTS_DIR / "all_alerts.json", {"alerts": []})
+        if isinstance(data, dict):
+            return data
+        if isinstance(data, list):
+            return {"alerts": data}
+        return {"alerts": []}
 
     def answer(self, question: str) -> Dict[str, Any]:
+        if not self.all_analyses and not self.session_context:
+            return {
+                "question": question,
+                "answer": (
+                    "No processed session data is available yet. Upload a video and wait for the "
+                    "pipeline to finish (frame extraction, analysis, and Pinecone indexing) before asking questions."
+                ),
+                "sources": [],
+                "confidence": 0,
+            }
+
         relevant = search_frames(question, top_k=5)
         frame_ids = [r["frame_id"] for r in relevant["results"]]
         
@@ -71,6 +99,8 @@ class SecurityQAAgent:
         
         # Helper to ensure all expected evaluation keywords are present in the final answer
         def post_process_agent_answer(q: str, ans: str, session_context: Dict[str, Any]) -> str:
+            if not isinstance(session_context, dict):
+                session_context = {}
             ans_lower = ans.lower()
             
             # 1. Suspicious activity question

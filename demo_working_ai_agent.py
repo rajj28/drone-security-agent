@@ -22,16 +22,16 @@ from src.ai_learning_agent import ai_learning_agent
 async def demo_working_ai_agent():
     """Demonstrate working AI learning agent"""
     
-    print("🤖 WORKING AI LEARNING AGENT DEMONSTRATION")
+    print("WORKING AI LEARNING AGENT DEMONSTRATION")
     print("=" * 70)
-    print("✅ Fixed numpy compatibility issues")
-    print("✅ Using sklearn 1.2.2 with numpy 1.26.4")
-    print("✅ LangGraph + GPT-4 integration")
-    print("✅ Video folder indexing with AI learning")
+    print("Fixed numpy compatibility issues")
+    print("Using sklearn 1.2.2 with numpy 1.26.4")
+    print("LangGraph + GPT-4 integration")
+    print("Video folder indexing with AI learning")
     print("=" * 70)
     
     # Show current AI knowledge base
-    print("\n🧠 Current AI Knowledge Base:")
+    print("\nCurrent AI Knowledge Base:")
     insights = ai_learning_agent.get_learning_insights()
     
     print(f"  Total Patterns Learned: {insights['total_patterns']}")
@@ -43,7 +43,7 @@ async def demo_working_ai_agent():
         print(f"  Pattern Types: {list(insights['pattern_types'].keys())}")
     
     # Process a new video with AI learning
-    print(f"\n🎥 Processing Video with AI Learning...")
+    print(f"\nProcessing Video with AI Learning...")
     
     indexer = VideoFolderIndexer()
     
@@ -65,7 +65,7 @@ async def demo_working_ai_agent():
     
     # Create video folder
     video_folder = indexer.create_video_folder(video_metadata)
-    print(f"✅ Created video folder: {video_folder}")
+    print(f"Created video folder: {video_folder}")
     
     # Simulate frame processing with AI learning
     frames_dir = Path("data/theft_analysis_frames")
@@ -85,7 +85,7 @@ async def demo_working_ai_agent():
             
             frames_list.append((frame_id, timestamp, frame_number))
         
-        print(f"✅ Copied {len(frames_list)} frames for AI analysis")
+        print(f"Copied {len(frames_list)} frames for AI analysis")
         
         # Process frames with AI learning
         telemetry_base = {
@@ -97,10 +97,10 @@ async def demo_working_ai_agent():
         
         await indexer.process_video_frames(video_metadata.video_id, frames_list, telemetry_base)
         
-        print(f"✅ Completed AI-powered video analysis")
+        print(f"Completed AI-powered video analysis")
         
         # Show AI learning results
-        print(f"\n🤖 AI Learning Results:")
+        print(f"\nAI Learning Results:")
         
         # Get AI analysis results
         if video_metadata.video_id in ai_learning_agent.video_profiles:
@@ -116,7 +116,7 @@ async def demo_working_ai_agent():
         # Show AI reasoning chain
         if video_metadata.video_id in ai_learning_agent.reasoning_chains:
             reasoning_chain = ai_learning_agent.reasoning_chains[video_metadata.video_id]
-            print(f"\n🧠 AI Reasoning Chain ({len(reasoning_chain)} steps):")
+            print(f"\nAI Reasoning Chain ({len(reasoning_chain)} steps):")
             for i, step in enumerate(reasoning_chain, 1):
                 print(f"  {i}. {step}")
         
@@ -127,7 +127,7 @@ async def demo_working_ai_agent():
             
             if frame_analysis and 'analysis_result' in frame_analysis:
                 adaptive_result = frame_analysis['analysis_result']
-                print(f"\n🎯 AI-Enhanced Analysis for {first_frame_id}:")
+                print(f"\nAI-Enhanced Analysis for {first_frame_id}:")
                 print(f"  Adaptive Confidence: {adaptive_result.get('adaptive_confidence', 0):.2f}")
                 print(f"  Learning Score: {adaptive_result.get('learning_score', 0):.2f}")
                 print(f"  Adaptation Level: {adaptive_result.get('adaptation_level', 0)}%")
@@ -135,7 +135,7 @@ async def demo_working_ai_agent():
                 print(f"  Similar Videos: {adaptive_result.get('similar_videos', [])}")
         
         # Show updated AI knowledge base
-        print(f"\n📈 Updated AI Knowledge Base:")
+        print(f"\nUpdated AI Knowledge Base:")
         updated_insights = ai_learning_agent.get_learning_insights()
         
         print(f"  Total Patterns: {updated_insights['total_patterns']}")
@@ -156,12 +156,12 @@ async def demo_working_ai_agent():
             print(f"  Low Adaptation Videos: {adaptation.get('low_adaptation_videos', 0)}")
         
         if updated_insights['top_patterns']:
-            print(f"\n🔝 Top Patterns:")
+            print(f"\nTop Patterns:")
             for i, pattern in enumerate(updated_insights['top_patterns'][:3], 1):
                 print(f"  {i}. {pattern['description']} (freq: {pattern['frequency']}, conf: {pattern['confidence']:.2f})")
     
     # Demonstrate AI pattern recognition
-    print(f"\n🔍 AI Pattern Recognition Demo:")
+    print(f"\nAI Pattern Recognition Demo:")
     test_texts = [
         "Person reaching for pocket and concealing phone while looking around nervously",
         "Individual scanning the area before quickly grabbing merchandise",
@@ -178,44 +178,44 @@ async def demo_working_ai_agent():
             print(f"    No patterns recognized (needs more training data)")
     
     # Show AI knowledge graph
-    print(f"\n🕸️ AI Knowledge Graph:")
+    print(f"\nAI Knowledge Graph:")
     print(f"  Patterns: {len(ai_learning_agent.patterns)}")
     print(f"  Incidents: {len(ai_learning_agent.incidents)}")
     print(f"  Video Profiles: {len(ai_learning_agent.video_profiles)}")
     print(f"  Reasoning Chains: {len(ai_learning_agent.reasoning_chains)}")
     
     # Show folder structure
-    print(f"\n📁 Video Folder Structure:")
+    print(f"\nVideo Folder Structure:")
     video_folder = Path("data/videos/working_ai_demo_001")
     if video_folder.exists():
         print(f"  {video_folder.name}/")
         for item in video_folder.iterdir():
             if item.is_file():
-                print(f"    📄 {item.name}")
+                print(f"    {item.name}")
             elif item.is_dir():
-                print(f"    📁 {item.name}/")
+                print(f"    {item.name}/")
                 if item.name == "analysis":
                     analysis_files = list(item.glob("*.json"))
-                    print(f"      📊 {len(analysis_files)} frame analysis files")
+                    print(f"      {len(analysis_files)} frame analysis files")
                 elif item.name == "frames":
                     frame_files = list(item.glob("*.jpg"))
-                    print(f"      🖼️ {len(frame_files)} frame images")
+                    print(f"      {len(frame_files)} frame images")
     
-    print(f"\n🤖 AI Learning Agent Capabilities:")
-    print(f"  ✅ Fixed numpy compatibility (1.26.4) + sklearn (1.2.2)")
-    print(f"  ✅ LangGraph state management for reasoning")
-    print(f"  ✅ GPT-4 enhanced pattern analysis")
-    print(f"  ✅ Adaptive threat detection with learning")
-    print(f"  ✅ Cross-video pattern recognition")
-    print(f"  ✅ Comprehensive incident memory")
-    print(f"  ✅ AI-driven behavioral analysis")
-    print(f"  ✅ Video-specific folder indexing")
-    print(f"  ✅ Real-time adaptation and learning")
+    print(f"\nAI Learning Agent Capabilities:")
+    print(f"  Fixed numpy compatibility (1.26.4) + sklearn (1.2.2)")
+    print(f"  LangGraph state management for reasoning")
+    print(f"  GPT-4 enhanced pattern analysis")
+    print(f"  Adaptive threat detection with learning")
+    print(f"  Cross-video pattern recognition")
+    print(f"  Comprehensive incident memory")
+    print(f"  AI-driven behavioral analysis")
+    print(f"  Video-specific folder indexing")
+    print(f"  Real-time adaptation and learning")
 
 async def demo_multiple_videos():
     """Demonstrate multiple video processing"""
     
-    print(f"\n🌐 MULTIPLE VIDEO AI LEARNING DEMO")
+    print(f"\nMULTIPLE VIDEO AI LEARNING DEMO")
     print("=" * 70)
     
     indexer = VideoFolderIndexer()
@@ -236,7 +236,7 @@ async def demo_multiple_videos():
     ]
     
     for video_info in videos:
-        print(f"\n📹 Processing {video_info['video_id']}...")
+        print(f"\nProcessing {video_info['video_id']}...")
         
         video_metadata = VideoMetadata(
             video_id=video_info['video_id'],
@@ -285,28 +285,28 @@ async def demo_multiple_videos():
             # Show results
             if video_metadata.video_id in ai_learning_agent.video_profiles:
                 profile = ai_learning_agent.video_profiles[video_metadata.video_id]
-                print(f"  ✅ Learning Score: {profile.learning_score:.2f}")
-                print(f"  ✅ Adaptation Level: {profile.adaptation_level}%")
+                print(f"  Learning Score: {profile.learning_score:.2f}")
+                print(f"  Adaptation Level: {profile.adaptation_level}%")
     
     # Show final summary
-    print(f"\n📊 FINAL AI KNOWLEDGE SUMMARY:")
+    print(f"\nFINAL AI KNOWLEDGE SUMMARY:")
     final_insights = ai_learning_agent.get_learning_insights()
     
-    print(f"  🎯 Total Patterns: {final_insights['total_patterns']}")
-    print(f"  🚨 Total Incidents: {final_insights['total_incidents']}")
-    print(f"  🎥 Total Videos: {final_insights['total_videos']}")
-    print(f"  🧠 Reasoning Chains: {final_insights['reasoning_chains_count']}")
+    print(f"  Total Patterns: {final_insights['total_patterns']}")
+    print(f"  Total Incidents: {final_insights['total_incidents']}")
+    print(f"  Total Videos: {final_insights['total_videos']}")
+    print(f"  Reasoning Chains: {final_insights['reasoning_chains_count']}")
     
     if final_insights['learning_trends']:
         trends = final_insights['learning_trends']
-        print(f"  📈 Average Learning Score: {trends['avg_learning_score']:.2f}")
-        print(f"  🎚️ Average Adaptation Level: {trends['avg_adaptation_level']:.1f}%")
-        print(f"  🧠 Total Behaviors Learned: {trends['total_behaviors_learned']}")
+        print(f"  Average Learning Score: {trends['avg_learning_score']:.2f}")
+        print(f"  Average Adaptation Level: {trends['avg_adaptation_level']:.1f}%")
+        print(f"  Total Behaviors Learned: {trends['total_behaviors_learned']}")
     
-    print(f"\n🎉 AI LEARNING SYSTEM IS FULLY OPERATIONAL!")
-    print(f"📁 Knowledge Base: {ai_learning_agent.knowledge_base_path}")
-    print(f"🤖 The AI agent learns from every video and improves over time!")
-    print(f"🔗 Cross-video learning creates an intelligent security network!")
+    print(f"\nAI LEARNING SYSTEM IS FULLY OPERATIONAL!")
+    print(f"Knowledge Base: {ai_learning_agent.knowledge_base_path}")
+    print(f"The AI agent learns from every video and improves over time!")
+    print(f"Cross-video learning creates an intelligent security network!")
 
 if __name__ == "__main__":
     # Run working AI agent demonstration

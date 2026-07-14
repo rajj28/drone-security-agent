@@ -417,36 +417,96 @@ def generate_session_summary():
     all_analysis = _load_json_safe(settings.ANALYSIS_DIR / "all_analysis.json", [])
     all_alerts = _load_json_safe(settings.ALERTS_DIR / "all_alerts.json", {"alerts": []})
     session_context = _load_json_safe(settings.SESSION_DIR / "session_context.json", {})
-    prompt = SESSION_PROMPT + json.dumps({
-        "all_analysis": all_analysis,
-        "all_alerts": all_alerts,
-        "session_context": session_context
-    }, indent=2)
-    summary = _generate_summary_with_retries(
-        base_prompt=prompt,
-        all_analysis=all_analysis,
-        all_alerts=all_alerts,
-        session_context=session_context,
-        max_attempts=3,
-    )
+    
+    # 1. Build authoritative deterministic fallback stats instantly
+    fallback = _build_fallback_summary(all_analysis, all_alerts, session_context)
+    
+    # If offline, return fallback immediately
+    if _use_offline_summary():
+        fallback["one_line_summary"] = (
+            f"Monitoring session covered {len(fallback['session_summary']['locations_visited'])} locations "
+            f"with {fallback['session_summary']['total_alerts']} alerts."
+        )
+        summary_path = _summary_path()
+        with open(summary_path, "w", encoding="utf-8") as f:
+            json.dump(fallback, f, indent=2)
+        return fallback
 
-    # Feed the one-line summary the authoritative numbers, not the double-counted context.
-    _ss = summary.get("session_summary", {})
-    corrected_context = {
-        "frames_analyzed": _ss.get("total_frames_analyzed", 0),
-        "total_alerts": _ss.get("total_alerts", 0),
-        "high_alerts": _ss.get("high_alerts", 0),
-        "people_detected": _ss.get("people_count", 0),
-        "vehicles_detected": _ss.get("vehicles_count", 0),
-        "incidents": session_context.get("incidents", []),
-        "locations_visited": _ss.get("locations_visited", []),
+    # 2. Build a concise prompt using the computed stats rather than dumping the massive raw JSON list of frames!
+    stats = fallback["session_summary"]
+    sys_ops = fallback["system_operations"]
+    battery = fallback["battery_status"]
+    
+    # Summarize key events for the LLM safely (handling dict/string mixed elements)
+    incidents = session_context.get("incidents", [])
+    incidents_list = []
+    for inc in incidents:
+        if isinstance(inc, dict):
+            desc = inc.get("description") or inc.get("incident") or inc.get("message")
+            if desc:
+                incidents_list.append(str(desc))
+            else:
+                incidents_list.append(json.dumps(inc))
+        elif inc:
+            incidents_list.append(str(inc))
+    incidents_str = ", ".join(incidents_list) if incidents_list else "None detected"
+    
+    prompt = f"""
+You are a drone security analyst operations center AI.
+Generate a narrative text summary and highlights for today's session based on these statistics:
+
+- Date: {stats['date']}
+- Total Frames: {stats['total_frames_analyzed']}
+- Total Alerts: {stats['total_alerts']} (High: {stats['high_alerts']}, Medium: {stats['medium_alerts']}, Low: {stats['low_alerts']})
+- Max People Seen: {stats['people_count']}
+- Vehicles Seen: {stats['vehicles_count']}
+- Locations: {', '.join(stats['locations_visited']) if stats['locations_visited'] else 'unknown'}
+- Common Objects: {', '.join(stats['common_objects_detected'])}
+- Incidents: {incidents_str}
+- Battery issues in frames: {', '.join(battery['battery_issues_detected_in_frames']) if battery['battery_issues_detected_in_frames'] else 'None'}
+
+Provide your response in valid JSON matching this schema:
+{{
+  "session_highlights": "1-2 sentences summarizing the main highlights of the monitoring session.",
+  "common_recommendation": "A single actionable security recommendation based on the events.",
+  "narrative": "A detailed 2-3 sentence narrative describing the session timeline and safety status.",
+  "one_line_summary": "One concise sentence (max 30 words) summarizing the session."
+}}
+Return ONLY valid JSON. Do not include markdown codeblocks or extra text.
+"""
+
+    try:
+        raw = generate_text(prompt, max_output_tokens=800, temperature=0.2).strip()
+        parsed = _extract_json_payload(raw)
+        if parsed and isinstance(parsed, dict):
+            # Merges parsed LLM content with authoritative stats
+            fallback["session_summary"]["session_highlights"] = str(parsed.get("session_highlights") or fallback["session_summary"]["session_highlights"])
+            fallback["system_operations"]["common_recommendation"] = str(parsed.get("common_recommendation") or fallback["system_operations"]["common_recommendation"])
+            fallback["narrative"] = str(parsed.get("narrative") or fallback["narrative"])
+            fallback["one_line_summary"] = str(parsed.get("one_line_summary") or f"Session completed with {stats['total_alerts']} alerts.")
+        else:
+            raise ValueError("Invalid LLM response payload")
+    except Exception as e:
+        print(f"[SUMMARIZER] Fast summary call failed: {e}. Using deterministic text fallbacks.")
+        fallback["one_line_summary"] = (
+            f"Session processed {stats['total_frames_analyzed']} frames with {stats['total_alerts']} alerts "
+            f"across {len(stats['locations_visited'])} locations."
+        )
+    
+    # Backward-compatible convenience block
+    fallback["statistics"] = {
+        "total_alerts": fallback["session_summary"]["total_alerts"],
+        "frames_analyzed": fallback["session_summary"]["total_frames_analyzed"],
+        "high_alerts": fallback["session_summary"]["high_alerts"],
+        "medium_alerts": fallback["session_summary"]["medium_alerts"],
+        "low_alerts": fallback["session_summary"]["low_alerts"],
     }
-    summary["one_line_summary"] = generate_one_line_summary(corrected_context)
+    
     summary_path = _summary_path()
     with open(summary_path, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2)
+        json.dump(fallback, f, indent=2)
     print(f"Session summary saved to {summary_path}")
-    return summary
+    return fallback
 
 if __name__ == "__main__":
     generate_session_summary()

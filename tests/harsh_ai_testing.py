@@ -38,7 +38,7 @@ class HarshAITester:
         
     def run_all_tests(self) -> Dict[str, Any]:
         """Run all harsh tests and return comprehensive results."""
-        logger.info("🧪 Starting harsh AI testing suite...")
+        logger.info("Starting harsh AI testing suite...")
         
         test_methods = [
             self.test_poor_quality_images,
@@ -944,13 +944,13 @@ def run_harsh_tests():
         json.dump(results, f, indent=2)
     
     # Print summary
-    logger.info(f"\n🎯 Harsh Testing Summary:")
+    logger.info(f"\nHarsh Testing Summary:")
     logger.info(f"   Total test suites: {results['summary']['total_test_suites']}")
     logger.info(f"   Passed: {results['summary']['passed_test_suites']}")
     logger.info(f"   Failed: {results['summary']['failed_test_suites']}")
     logger.info(f"   Success rate: {results['summary']['overall_success_rate']:.1f}%")
     
-    logger.info(f"\n📋 Recommendations:")
+    logger.info(f"\nRecommendations:")
     for rec in results['recommendations']:
         logger.info(f"   • {rec}")
     

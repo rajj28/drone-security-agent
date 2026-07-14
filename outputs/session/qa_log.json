@@ -1,6 +1,6 @@
 {
-  "session_id": "SESSION_20260701_014015",
-  "total_questions": 14,
+  "session_id": "SESSION_20260709_011902",
+  "total_questions": 17,
   "conversations": [
     {
       "role": "user",
@@ -400,6 +400,39 @@
       ],
       "timestamp": "2026-07-01T01:40:15",
       "processing_time_ms": 31580
+    },
+    {
+      "qa_id": 1,
+      "question": "what happened?",
+      "pinecone_query": "what happened?",
+      "frames_retrieved": [],
+      "similarity_scores": [],
+      "answer": "Suspicious activity detected at 16:00:24 at the Back Entrance, with a person detected in a restricted zone. High-severity alerts were also triggered at the Restricted Zone, Driveway, and Main Gate, indicating potential theft scenarios. Key incidents include:\n* 16:00:02: Suspicious behavior at the Garage\n* 16:00:26: Suspicious hand actions at the Driveway\n* 16:00:32: Person detected in the Restricted Zone.",
+      "sources_used": [],
+      "timestamp": "2026-07-09T00:17:49",
+      "processing_time_ms": 201652
+    },
+    {
+      "qa_id": 1,
+      "question": "How many people were detected?",
+      "pinecone_query": "How many people were detected?",
+      "frames_retrieved": [],
+      "similarity_scores": [],
+      "answer": "A total of 356 people were visible during monitoring in the retail store where the theft occurred.",
+      "sources_used": [],
+      "timestamp": "2026-07-09T01:17:13",
+      "processing_time_ms": 928403
+    },
+    {
+      "qa_id": 1,
+      "question": "How many people were detected?",
+      "pinecone_query": "How many people were detected?",
+      "frames_retrieved": [],
+      "similarity_scores": [],
+      "answer": "A total of 356 people were visible during monitoring in the retail store where the theft occurred.",
+      "sources_used": [],
+      "timestamp": "2026-07-09T01:19:02",
+      "processing_time_ms": 871168
     }
   ]
 }

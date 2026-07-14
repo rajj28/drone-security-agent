@@ -143,7 +143,7 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
       <div className="split-screen">
         {/* Left Side Frame List */}
         <div className="frame-list-sidebar">
-          <h4>🎥 Extracted Frames ({frames.length})</h4>
+          <h4>Extracted Frames ({frames.length})</h4>
           {loadingFrames ? (
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Loading frames...</p>
           ) : frames.length === 0 ? (
@@ -191,7 +191,7 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                       borderLeft: `4px solid ${getThreatBorderColor(analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR')}` 
                     }}
                   >
-                    <h4 className="card-title">🚨 Threat Level Summary</h4>
+                    <h4 className="card-title">Threat Level Summary</h4>
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
                       <span className="card-value" style={{ color: getThreatBorderColor(analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR') }}>
                         {analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR'}
@@ -282,6 +282,22 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                   </h4>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+                    {analysis?.image_quality && (
+                      <div style={{ fontSize: '0.8rem', padding: '0.6rem 0.75rem', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
+                        <strong>Frame Quality:</strong>{' '}
+                        <span style={{ color: analysis.image_quality.quality_score >= 60 ? 'var(--color-clear)' : analysis.image_quality.quality_score >= 40 ? 'var(--color-medium)' : 'var(--color-high)' }}>
+                          {analysis.image_quality.quality_score ?? 'N/A'}/100
+                        </span>
+                        {analysis.image_quality.preprocessed === 1 && (
+                          <span style={{ marginLeft: '0.5rem', color: 'var(--primary)', fontSize: '0.75rem' }}>(enhanced for VLM)</span>
+                        )}
+                        <div style={{ marginTop: '0.35rem', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                          Blur {analysis.image_quality.blur_score?.toFixed?.(0) ?? '—'} ·
+                          Brightness {analysis.image_quality.brightness?.toFixed?.(0) ?? '—'} ·
+                          Contrast {analysis.image_quality.contrast?.toFixed?.(0) ?? '—'}
+                        </div>
+                      </div>
+                    )}
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                       <span><strong>Scene Location:</strong> {analysis?.scene_type || 'Retail Store/Aisle'}</span>
                       <span><strong>People Present:</strong> {analysis?.people_count ?? 0}</span>
@@ -316,7 +332,7 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
               {analysis?.person_features && analysis.person_features.length > 0 && (
                 <div className="premium-card">
                   <h4 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                    <Users size={16} /> 👥 Suspect Tracker (Cross-Frame Re-Identification)
+                    <Users size={16} /> Suspect Tracker (Cross-Frame Re-Identification)
                     <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: 'auto', fontStyle: 'italic' }}>Only works when suspect is detected</span>
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>

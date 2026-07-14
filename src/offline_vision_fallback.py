@@ -11,6 +11,8 @@ from typing import Any, Dict
 
 import cv2
 
+from src.frame_preprocessor import assess_image_quality
+
 
 def analyze_frame_offline(
     frame_id: str,
@@ -22,8 +24,10 @@ def analyze_frame_offline(
     activity = "scene visible"
     threat = "MEDIUM"
     description = f"Offline analysis for {frame_id} at {telemetry.get('location', 'unknown')}."
+    image_quality: Dict[str, Any] = {}
 
     try:
+        image_quality = assess_image_quality(image_path)
         img = cv2.imread(str(image_path))
         if img is not None:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -71,4 +75,6 @@ def analyze_frame_offline(
         "alert_reasoning": "Generated without cloud APIs (quota/rate limit). Re-run with billing for real VLM.",
         "model_used": "offline-opencv-heuristic",
         "processing_time_ms": 0,
+        "confidence": 0.85,
+        "image_quality": image_quality or None,
     }

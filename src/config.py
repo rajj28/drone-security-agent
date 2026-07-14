@@ -40,9 +40,12 @@ class Settings(BaseSettings):
     GEMINI_PREFER_FLASH: bool = Field(True, env="GEMINI_PREFER_FLASH")
     # When true, never call Pro (avoids burning quota on fallback after Flash 429)
     GEMINI_FLASH_ONLY: bool = Field(False, env="GEMINI_FLASH_ONLY")
-    API_MIN_INTERVAL_SEC: float = Field(12.0, env="API_MIN_INTERVAL_SEC")
+    API_MIN_INTERVAL_SEC: float = Field(4.0, env="API_MIN_INTERVAL_SEC")
     GEMINI_EMBEDDING_MODEL: str = Field("text-embedding-004", env="GEMINI_EMBEDDING_MODEL")
-    GEMINI_EMBEDDING_DIMENSION: int = Field(768, env="GEMINI_EMBEDDING_DIMENSION")
+    # Vertex AI configuration (to bill directly to GCP credit account)
+    USE_VERTEX_AI: bool = Field(False, env="USE_VERTEX_AI")
+    GCP_PROJECT_ID: str = Field("project-9e4a6e94-3f27-47fe-8f4", env="GCP_PROJECT_ID")
+    GCP_LOCATION: str = Field("us-central1", env="GCP_LOCATION")
 
     # Legacy OpenAI fields (optional — unused when Gemini is configured)
     OPENAI_API_KEY: str = Field("", env="OPENAI_API_KEY")
@@ -81,11 +84,12 @@ class Settings(BaseSettings):
     
     # Hugging Face (for Cloud Enhanced Analyzer)
     HF_API_TOKEN: str = Field("", env="HF_API_TOKEN")
-    USE_CLOUD_ANALYZER: bool = Field(True, env="USE_CLOUD_ANALYZER")
+    USE_CLOUD_ANALYZER: bool = Field(False, env="USE_CLOUD_ANALYZER")
+    ROBUST_PREPROCESS: bool = Field(True, env="ROBUST_PREPROCESS")
     # Skip Hugging Face CLIP/BLIP calls (read directly via os.environ in analyzers)
     SKIP_HF_APIS: bool = Field(False, env="SKIP_HF_APIS")
     # Number of frames analyzed concurrently in vision analysis
-    MAX_VISION_WORKERS: int = Field(5, env="MAX_VISION_WORKERS")
+    MAX_VISION_WORKERS: int = Field(8, env="MAX_VISION_WORKERS")
 
     # One video = one session (see session_bootstrap.py)
     SESSION_ID: str = Field("", env="SESSION_ID")
@@ -100,7 +104,7 @@ class Settings(BaseSettings):
     FRAMES_DIR: Path = Field(Path("data/frames"), env="FRAMES_DIR")
     EXTRACTED_DIR: Path = Field(Path("data/extracted"), env="EXTRACTED_DIR")
     OUTPUTS_DIR: Path = Field(Path("outputs"), env="OUTPUTS_DIR")
-    MAX_FRAMES: int = Field(20, env="MAX_FRAMES")
+    MAX_FRAMES: int = Field(30, env="MAX_FRAMES")
     VIDEO_FILE: Path = Field(Path("data/video.mp4"), env="VIDEO_FILE")
     VIDEO_DURATION_SECONDS: int = Field(3599, env="VIDEO_DURATION_SECONDS")
     VIDEO_FPS: int = Field(15, env="VIDEO_FPS")

@@ -22,7 +22,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Union
 from PIL import Image
 from src.config import settings
 from src.gemini_client import generate_vision
@@ -36,11 +36,11 @@ apply_session_layout()
 SESSION_CONTEXT_PATH = settings.SESSION_DIR / "session_context.json"
 CONTEXT_SUMMARIES_PATH = settings.SESSION_DIR / "context_summaries.json"
 
-# Configuration for analyzer selection
-USE_ULTIMATE_ANALYZER = os.getenv("USE_ULTIMATE_ANALYZER", "false").lower() == "true"
-USE_BLIP_ANALYZER = os.getenv("USE_BLIP_ANALYZER", "false").lower() == "true"
-USE_CLIP_ANALYZER = os.getenv("USE_CLIP_ANALYZER", "false").lower() == "true"
-USE_CLOUD_ANALYZER = os.getenv("USE_CLOUD_ANALYZER", "true").lower() == "true"  # Default to cloud CLIP+BLIP+GPT-4o
+# Configuration for analyzer selection (read from centralized settings)
+USE_ULTIMATE_ANALYZER = bool(getattr(settings, "USE_ULTIMATE_ANALYZER", False))
+USE_BLIP_ANALYZER = bool(getattr(settings, "USE_BLIP_ANALYZER", False))
+USE_CLIP_ANALYZER = bool(getattr(settings, "USE_CLIP_ANALYZER", False))
+USE_CLOUD_ANALYZER = bool(settings.USE_CLOUD_ANALYZER)
 
 print(f"Analyzer Configuration:")
 print(f"  Ultimate Analyzer (Local CLIP+BLIP+GPT-4o): {USE_ULTIMATE_ANALYZER}")
@@ -49,93 +49,137 @@ print(f"  BLIP Analyzer: {USE_BLIP_ANALYZER}")
 print(f"  CLIP Analyzer: {USE_CLIP_ANALYZER}")
 print(f"  Standard Gemini Vision: {not (USE_ULTIMATE_ANALYZER or USE_BLIP_ANALYZER or USE_CLIP_ANALYZER or USE_CLOUD_ANALYZER)}")
 
-# System and user prompts - Universal Security Threat Detection
+# System and user prompts - Super AI Drone Surveillance (Universal)
 SYSTEM_PROMPT = """
-You are an expert AI security analyst reviewing drone surveillance footage. Your expertise is SITUATION UNDERSTANDING — you excel at connecting what you see with where it's happening to identify real threats.
+You are an elite AI drone surveillance security analyst. You can analyze ANY environment — retail, industrial, residential, traffic, public spaces, campuses, construction sites, offices, warehouses, events, and more. Your expertise is SITUATION UNDERSTANDING: you first IDENTIFY the environment, then apply context-appropriate security rules.
 
-=== CORE PRINCIPLE: CONTEXT = EVERYTHING ===
-The SAME action can be innocent or CRITICAL depending on context:
-- "Person behind counter" during business hours = employee (CLEAR)
-- "Person behind counter" after hours = CRITICAL (unauthorized access)
-- "Person reaching" in retail aisle = shopping (CLEAR)
-- "Person reaching toward staff section/cash register" = CRITICAL (theft attempt)
+=== STEP 1: AUTO-DETECT ENVIRONMENT ===
+Before analyzing threats, determine the scene type from visual cues:
+- RETAIL/COMMERCIAL: Display cases, merchandise, counters, POS systems, shopping aisles
+- INDUSTRIAL/WAREHOUSE: Machinery, pallets, forklifts, loading docks, storage racks
+- RESIDENTIAL: Houses, apartments, driveways, yards, fences, mailboxes
+- PARKING/TRAFFIC: Vehicles, lanes, parking spots, traffic signs, roads
+- CAMPUS/OFFICE: Buildings, walkways, entrances, lobbies, corridors
+- CONSTRUCTION: Equipment, scaffolding, materials, barriers, hard hat areas
+- PUBLIC SPACE: Parks, plazas, sidewalks, bus stops, train stations
+- PERIMETER/GATE: Fences, walls, entry points, guard booths, barriers
+- OTHER: Determine from visual context — always specify what you see
 
-=== ANALYSIS PROCESS ===
-1. OBSERVE: What exactly is visible? Count people precisely. Note exact positions.
-2. CONTEXTUALIZE: Where? When? (restricted zone, after hours, staff-only, valuable items nearby?)
-3. CORRELATE: Does behavior match location? (shopper in retail vs intruder in staff area)
-4. THREAT ASSESS: Apply CONTEXT-AWARE rules below
+=== STEP 2: CORE ANALYSIS PROCESS ===
+1. OBSERVE: What exactly is visible? Count people precisely. Note exact positions, objects, vehicles.
+2. IDENTIFY ENVIRONMENT: What type of area is this? What are the key features?
+3. CONTEXTUALIZE: Is this a restricted zone? After hours? High-value area? Active work zone?
+4. CORRELATE: Does each person's behavior match what is EXPECTED in this environment?
+5. THREAT ASSESS: Apply the environment-specific threat rules below.
 
-=== THREAT LEVELS ===
-- CRITICAL: Immediate danger OR high-value breach
-  * Weapon visible, fire, physical assault
-  * Person in staff-only area without authorization
-  * Reaching/touching toward cash register, safe, or high-value storage
-  * Forced entry, fence climbing, door prying
-  * After-hours presence in restricted zones
-  
-- HIGH: Active security concern
-  * Trespassing in non-public areas
-  * Person lingering near valuables without purpose
-  * Vehicle following people or idling suspiciously
-  * Concealing items under clothing
-  * Multiple people near a counter/display with one handling merchandise
-  * Person grabbing/picking up phones or electronics from display
-  * Coordinated behavior (one distracts staff, another takes item)
-  * Quick hand movements near merchandise displays
-  
-- MEDIUM: Suspicious but unconfirmed
-  * Loitering without clear purpose >30 seconds
-  * Unattended bags in public areas
-  * Vehicle parked in no-parking zones
-  * Person acting nervous, checking surroundings frequently
-  * Multiple people gathered near phone/electronics displays
-  * Customer handling multiple high-value items simultaneously
-  
+=== UNIVERSAL THREAT LEVELS ===
+- CRITICAL: Immediate danger — ANY environment
+  * Weapon visible, fire, explosion, physical assault, medical emergency
+  * Forced entry, lock picking, window breaking, fence cutting
+  * After-hours intrusion into any secured area
+  * Active theft in progress (grabbing items and fleeing)
+  * Vehicle ramming barriers, aggressive driving toward people
+  * Person down / collapsed (potential injury)
+
+- HIGH: Active security concern requiring immediate attention
+  * Trespassing in non-public, restricted, or staff-only areas
+  * Person tampering with equipment, locks, security cameras, or infrastructure
+  * Concealing items under clothing or in bags (any environment)
+  * Coordinated suspicious behavior (lookout + actor pattern)
+  * Vehicle following people, circling area repeatedly, or blocking exits
+  * Person climbing fences, walls, or accessing rooftops
+  * Unauthorized person handling valuable items, equipment, or inventory
+  * Person fleeing / running from a scene while carrying objects
+  * Vandalism or property damage in progress
+
+- MEDIUM: Suspicious but unconfirmed — warrants monitoring
+  * Loitering without clear purpose for extended time
+  * Unattended bags, packages, or objects in public areas
+  * Vehicle parked in no-parking zones, fire lanes, or unusual spots
+  * Person acting nervous, repeatedly checking surroundings
+  * Person photographing security infrastructure (cameras, locks, access points)
+  * Unusual gathering or crowd forming without apparent reason
+  * Person trying door handles, checking windows, or testing access points
+  * Unfamiliar person in employee/staff areas during business hours
+
 - LOW: Minor concern
-  * Unfamiliar person in public area
-  * Minor rule violations
-  
-- CLEAR: Normal activity
-  * Single person browsing casually with staff present
-  * People walking through public spaces normally
-  * Employees clearly performing work duties
+  * Unfamiliar person in public area behaving normally
+  * Minor rule violations (jaywalking, parking slightly wrong)
+  * Person lingering briefly but with apparent purpose
 
-IMPORTANT: In retail/phone store environments, BIAS TOWARD HIGHER THREAT LEVELS.
-If you see multiple people near phone displays or counters with merchandise being handled,
-default to at least MEDIUM unless it is clearly a normal transaction with staff involvement.
+- CLEAR: Normal activity appropriate for the environment
+  * Workers performing expected duties in work areas
+  * Pedestrians walking through public spaces normally
+  * Vehicles moving through traffic or parked in designated spots
+  * Deliveries, maintenance, or service activities with proper access
+  * Normal social activity (people talking, eating, exercising)
 
-=== CONTEXT-AWARE BEHAVIORAL THREATS ===
-HIGH PRIORITY INDICATORS:
-- Person reaching/touching staff section, cash register, storage, or merchandise
-- Person behind counter or in staff-only areas without authorization
-- Person attempting to open locked doors, cabinets, or restricted containers
-- Two or more people coordinating suspicious behavior (distraction tactics)
-- Person carrying items in concealed manner (under clothing, in bags)
-- Person quickly looking around while handling items (checking for observers)
-- Person grabbing multiple items rapidly (sweeping behavior)
+=== ENVIRONMENT-SPECIFIC THREAT INDICATORS ===
 
-LOCATION-SPECIFIC THREATS:
-- Warehouse/Storage: Unauthorized entry = HIGH, reaching toward inventory = HIGH
-- Retail/Cashier: Behind counter without authorization = CRITICAL, touching register = CRITICAL
-- Perimeter/Gate: Fence climbing = HIGH, forced entry = CRITICAL
-- Parking: Vehicle idling near entrance = MEDIUM, vehicle following people = HIGH
+RETAIL / COMMERCIAL:
+- Person behind counter without uniform/badge = HIGH (unauthorized access)
+- Reaching into display cases, shelves, or registers = HIGH (potential theft)
+- Concealing merchandise under clothing = HIGH (shoplifting)
+- Multiple people clustered while one handles items (distraction tactic) = HIGH
+- Grabbing multiple items rapidly = HIGH (sweeping behavior)
+- Quick hand movements near merchandise + checking surroundings = MEDIUM+
 
-TIME-BASED THREATS:
-- After-hours presence in any area = automatically escalates to HIGH minimum
-- Late night activity near valuables = CRITICAL
-- Early morning before opening = HIGH if attempting entry
+INDUSTRIAL / WAREHOUSE:
+- Unauthorized entry into storage or machinery areas = HIGH
+- Person near hazardous materials without PPE = MEDIUM
+- Tampering with equipment or safety systems = CRITICAL
+- Loading/unloading without proper identification = MEDIUM
+- Person photographing proprietary equipment = MEDIUM
 
-BEHAVIORAL CORRELATION:
-- Reaching + Staff area + After hours = CRITICAL (theft attempt)
-- Lingering + Restricted zone + Looking around = HIGH (surveillance for breach)
-- Running + Carrying items + Away from building = HIGH (theft in progress)
-- Vehicle + Restricted zone + No personnel = HIGH (unauthorized access)
+RESIDENTIAL:
+- Person checking windows/doors of unoccupied homes = HIGH
+- Unfamiliar person in backyard or private property = HIGH
+- Vehicle idling near residences, especially at night = MEDIUM
+- Person carrying items FROM a residence without clear reason = HIGH
+- Package theft from porches/doorsteps = HIGH
+
+PARKING / TRAFFIC:
+- Vehicle circling the same area repeatedly = MEDIUM
+- Person checking car doors or looking into vehicles = HIGH
+- Vehicle blocking emergency lanes or exits = MEDIUM
+- Person loitering in parking structure without vehicle = MEDIUM
+- Aggressive driving or reckless vehicle behavior = HIGH
+
+CAMPUS / OFFICE:
+- After-hours access without credentials = HIGH
+- Tailgating through secure doors = MEDIUM
+- Person in server rooms or restricted floors = HIGH
+- Unattended item in high-traffic area = MEDIUM
+
+CONSTRUCTION SITES:
+- Unauthorized entry outside work hours = HIGH
+- Person near heavy equipment without authorization = MEDIUM
+- Theft of materials or tools = HIGH
+- Missing safety barriers or unsafe conditions = MEDIUM
+
+PUBLIC SPACES / EVENTS:
+- Unattended bags in crowded areas = MEDIUM
+- Person moving against crowd flow or acting erratically = MEDIUM
+- Altercation or aggressive behavior between people = HIGH
+- Person filming/photographing restricted infrastructure = LOW
+
+=== BEHAVIORAL CORRELATION (UNIVERSAL) ===
+Combine multiple signals for escalation:
+- Restricted area + After hours + ANY person = HIGH minimum
+- Concealment behavior + Near valuables + Checking surroundings = HIGH
+- Running + Carrying items + Away from building/area = HIGH (theft in progress)
+- Multiple suspicious people + Coordinated movement = HIGH (organized threat)
+- Tampering + Infrastructure + Alone = CRITICAL (sabotage risk)
+- Fence/wall climbing + Restricted area = CRITICAL (intrusion)
+
+=== CRITICAL RULE: DO NOT ASSUME ROLES ===
+NEVER assume someone is an "employee", "guard", "customer", "resident", or "worker" unless
+they wear a VISIBLE uniform, badge, or safety gear. Report OBSERVED ACTIONS, not assumed roles.
 
 Respond ONLY with valid JSON matching the exact format specified.
 """
 USER_PROMPT_TEMPLATE = """
-Analyze this surveillance frame for security threats using SITUATION UNDERSTANDING.
+Analyze this drone surveillance frame for security threats. First IDENTIFY the environment type, then apply context-appropriate security analysis.
 
 === CONTEXT ===
 - Location: {location}
@@ -145,59 +189,67 @@ Analyze this surveillance frame for security threats using SITUATION UNDERSTANDI
 - After Hours: {is_after_hours}
 
 === ANALYSIS INSTRUCTIONS ===
-1. COUNT ACCURATELY: Count every visible person in the frame (not just "a few" or "some")
-2. DESCRIBE ACTIONS: Note specific body positions, hand movements, gaze direction
-3. ASSESS LOCATION RISK: Consider if location is restricted, staff-only, or contains valuables
-4. CORRELATE BEHAVIOR: Match person's actions to their location context
-5. DETECT COVERT ACTIONS: Look for quick hand movements, concealment, nervous behavior
+1. IDENTIFY ENVIRONMENT: What type of area is this? (retail, industrial, residential, parking, campus, construction, public space, etc.)
+2. COUNT PRECISELY: Count every visible person in the frame (exact number, not approximations)
+3. DESCRIBE EACH PERSON: Position, body posture, hand activity, movement direction, what they are interacting with
+4. NOTE ALL VEHICLES: Type, color, position, movement, any plates visible
+5. IDENTIFY OBJECTS: Equipment, bags, merchandise, tools, weapons, packages — anything security-relevant
+6. ASSESS BEHAVIOR: Does each person's behavior match what is EXPECTED in this environment?
+7. DETECT ANOMALIES: Anything out of place — wrong time, wrong area, wrong behavior for the context
 
 === DO NOT ASSUME ROLES (CRITICAL) ===
-Do NOT assume a person is an "employee", "staff", or "customer" unless they wear a visible
-uniform/badge. Thieves often stand behind counters or reach into displays exactly like staff.
-Report ONLY the OBSERVED ACTION, not an assumed role. "Person behind the counter handling
-phones" is a FACT; "employee assisting a customer" is an ASSUMPTION — avoid it.
+Do NOT assume someone is an "employee", "guard", "customer", "resident", or "delivery person" unless
+they wear a VISIBLE uniform, badge, vest, or other identifying markers. Report ONLY observed facts.
+"Person behind counter handling items" is a FACT. "Employee serving customer" is an ASSUMPTION — avoid it.
 
-=== THEFT / SHOPLIFTING FOCUS ===
-This is a theft-detection system. For EACH person, state precisely what their hands are doing
-with merchandise/items. Treat these as suspicious and set threat_level to at least MEDIUM
-(HIGH if multiple indicators), and add to security_signals:
-- Reaching into / behind a display case, counter, shelf, or drawer
-- Picking up, holding, or taking merchandise (especially phones/electronics)
-- Putting an item into a pocket, bag, waistband, or under clothing (concealment)
-- Multiple people clustered at a counter/case while one takes items (distraction/teamwork)
-- Quickly looking around while handling items (checking for observers)
-If people are handling high-value goods in a way that is not clearly a normal supervised
-sale, flag it for operator review rather than dismissing it as normal.
+=== UNIVERSAL THREAT DETECTION ===
+For EACH person visible, analyze:
+- WHERE are they positioned relative to restricted/sensitive areas?
+- WHAT are their hands doing? (carrying, reaching, concealing, tampering, idle)
+- HOW are they moving? (purposeful, loitering, evasive, hurried, sneaking)
+- WHO are they interacting with and how? (cooperative, aggressive, avoiding contact)
+- Are they aware of surveillance? (looking at cameras, checking surroundings repeatedly)
+
+Flag as suspicious (MEDIUM or higher) if you observe:
+- Hands interacting with items/equipment/property they shouldn't be accessing
+- Concealment behavior (hiding items under clothing, in bags, behind objects)
+- Evasive movement patterns (avoiding cameras, staying in shadows, checking exits)
+- Coordinated behavior between multiple people (lookout + actor pattern)
+- Tampering with locks, security devices, infrastructure, or equipment
+- Presence in restricted areas without visible authorization
+- Carrying items away from where they belong
 
 === KEY QUESTIONS TO ANSWER ===
-- How many people are ACTUALLY visible? (Be precise: 1, 2, 3, etc.)
-- Where exactly is each person positioned? (near counter, by door, in aisle, behind counter)
-- What EXACTLY are each person's hands doing with items? (reaching into case, taking phone, pocketing, holding)
-- Is anyone taking/concealing merchandise or reaching into restricted areas?
-- Are they aware of being watched? (looking at camera, checking surroundings)
+- What type of environment/scene is this?
+- How many people are ACTUALLY visible? (precise count)
+- Where exactly is each person positioned and what are they doing?
+- What are each person's hands specifically doing?
+- Are there any vehicles, and what are they doing?
+- Is anything suspicious, unusual, or out of place for THIS type of environment?
+- Does anyone appear to be where they shouldn't be or doing something they shouldn't?
 
 Respond ONLY with valid JSON:
 {{
   "threat_level": "CRITICAL|HIGH|MEDIUM|LOW|CLEAR",
-  "threat_type": "loitering|trespassing|unauthorized_vehicle|suspicious_behavior|theft_behavior|confrontation|clear",
-  "vlm_description": "detailed scene description - be specific about positions, actions, objects",
-  "scene_type": "parking_lot|warehouse|retail|perimeter|gate|garage|interior|exterior|unknown",
+  "threat_type": "loitering|trespassing|unauthorized_vehicle|suspicious_behavior|theft_behavior|confrontation|vandalism|intrusion|tampering|safety_violation|clear",
+  "vlm_description": "detailed scene description - identify environment type, describe all people, vehicles, objects, and activities with specific positions and actions",
+  "scene_type": "parking_lot|warehouse|retail|perimeter|gate|garage|interior|exterior|residential|campus|construction|public_space|traffic|industrial|office|unknown",
   "people_count": 0,
-  "objects_detected": ["person", "vehicle", "bag", "phone"],
+  "objects_detected": ["person", "vehicle", "bag", "equipment"],
   "person_features": [
-    "Person 1: [location in frame + body position + hand activity + facial expression + what they are doing]",
+    "Person 1: [position in frame + body posture + hand activity + movement + what they are doing + any identifying features]",
     "Person 2: [same format]"
   ],
-  "vehicles_detected": ["white sedan", "blue truck"],
-  "activity": "what people are doing - be specific about their current action",
-  "security_signals": ["reaching_towards_staff_area", "lingering_without_purpose", "concealing_items", "checking_for_observers"],
-  "suspicious_elements": ["person_behind_counter", "hands_near_register", "item_in_concealed_location"],
-  "reasoning": "EXPLAIN THE SITUATION: Person is [action] at [location] which is [risk level] because [specific reason]. Example: 'Person reaching toward staff section in retail area is CRITICAL because this is an unauthorized access to restricted zone where valuables are kept'",
-  "recommended_action": "what security should do - be specific",
+  "vehicles_detected": ["white sedan", "delivery truck"],
+  "activity": "precise description of what people/vehicles are doing in this environment",
+  "security_signals": ["unauthorized_area_access", "concealment_behavior", "evasive_movement", "tampering", "loitering"],
+  "suspicious_elements": ["person_in_restricted_area", "unusual_behavior_for_environment", "unattended_object"],
+  "reasoning": "EXPLAIN: This appears to be a [environment type]. Person is [doing X] at [location] which is [threat level] because [specific contextual reason]. Connect what you see to WHY it matters in THIS environment.",
+  "recommended_action": "specific security response appropriate for this environment and threat level",
   "confidence": 0.85
 }}
 
-IMPORTANT: In your reasoning, EXPLAIN the correlation between what you see, where it is happening, and why it is a threat. Connect the dots!
+IMPORTANT: In your reasoning, first state what environment type you identified, then explain WHY the observed behavior is or isn't concerning in THAT specific context. Connect the dots between behavior, location, and threat level.
 """
 
 
@@ -395,8 +447,18 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
                                 security_signals.append(signal)
                             if suspicious not in suspicious_elements:
                                 suspicious_elements.append(suspicious)
-                            break
+                           # Scan activity and vlm_description for suspicious actions to ensure coverage
+    activity_lower = normalized.get("activity", "").lower()
+    description_lower = normalized.get("vlm_description", "").lower()
     
+    for suspicious in suspicious_actions + ["stealing", "theft", "shoplifting", "robbery"]:
+        if suspicious in activity_lower or suspicious in description_lower:
+            sig = f"scene: detected potential {suspicious} activity"
+            if sig not in security_signals:
+                security_signals.append(sig)
+            if suspicious not in suspicious_elements:
+                suspicious_elements.append(suspicious)
+
     # Merge extracted signals with existing ones
     if security_signals:
         existing_signals = normalized.get("security_signals", []) or []
@@ -435,6 +497,16 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
         else:
             threat_level = "CLEAR"
             threat_type = "clear"
+            
+    # Rule 0.5: If security signals are present, upgrade CLEAR or LOW threat levels to at least MEDIUM (or HIGH for theft behavior)
+    if security_signals and threat_level in ["CLEAR", "LOW", "UNKNOWN"]:
+        has_theft_action = any(any(theft in sig.lower() for theft in ["pocket", "conceal", "hide", "grab", "steal", "theft", "shoplift", "reach"]) for sig in security_signals)
+        if has_theft_action:
+            threat_level = "HIGH"
+            threat_type = "theft_behavior"
+        else:
+            threat_level = "MEDIUM"
+            threat_type = "suspicious_behavior"
     
     # Rule 1: Escalate to HIGH if after hours and any threat detected
     if is_after_hours and threat_level in ["MEDIUM", "LOW", "UNKNOWN"]:
@@ -465,9 +537,14 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
     normalized["threat_level"] = threat_level
     normalized["threat_type"] = threat_type
     normalized["threat_assessment"] = threat_level
-
-    # Ensure confidence is a float between 0 and 1
-    conf = normalized.get("confidence")
+ 
+     # Ensure confidence is a float between 0 and 1
+    raw_conf = normalized.get("confidence")
+    # Handle case where confidence is a nested dict (e.g. {"confidence": 0.9})
+    if isinstance(raw_conf, dict):
+        conf = raw_conf.get("confidence")
+    else:
+        conf = raw_conf
     if conf is None:
         normalized["confidence"] = 0.85
     else:
@@ -518,11 +595,6 @@ def extract_json_payload(content: str) -> Dict[str, Any]:
     if cleaned.startswith("```"):
         cleaned = cleaned.strip("`")
         cleaned = cleaned.replace("json\n", "", 1).strip()
-
-    try:
-        return json.loads(cleaned)
-    except Exception:
-        pass
 
     start = cleaned.find("{")
     end = cleaned.rfind("}")
@@ -926,7 +998,8 @@ def analyze_frame(
                     "location": telemetry["location"],
                     **analysis,
                     "model_used": "cloud-clip-blip-gemini",
-                    "processing_time_ms": result.get('processing_time_ms', 0)
+                    "processing_time_ms": result.get('processing_time_ms', 0),
+                    "image_quality": result.get("image_quality"),
                 }
                 
                 out_path = output_dir / f"{frame_id}_analysis.json"
@@ -1021,18 +1094,28 @@ def analyze_frame(
     # Standard Gemini Vision (default)
     print("Using Standard Gemini Vision...")
     from src.unified_context import get_vlm_prompt_context
+    from src.frame_preprocessor import preprocess_frame_image, quality_prompt_hints, preprocessing_enabled
 
     frame_history = get_vlm_prompt_context(frame_id, window=5)
     user_prompt = USER_PROMPT_TEMPLATE.replace("{telemetry}", json.dumps(telemetry, indent=2))
     user_prompt = (
         f"=== PRIOR SESSION CONTEXT ===\n{frame_history}\n\n=== CURRENT FRAME ===\n{user_prompt}"
     )
+    image_input: Union[Path, bytes] = image_path
+    image_quality: Dict[str, Any] = {}
+    if preprocessing_enabled():
+        image_bytes, image_quality = preprocess_frame_image(image_path)
+        image_input = image_bytes
+        user_prompt += quality_prompt_hints(image_quality)
+    else:
+        from src.frame_preprocessor import assess_image_quality
+        image_quality = assess_image_quality(image_path)
     full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
     start = time.time()
     try:
         from src.api_retry import is_quota_exhausted_error, mark_quota_exhausted
 
-        gemini = generate_vision(full_prompt, image_path, max_output_tokens=2048, temperature=0.2)
+        gemini = generate_vision(full_prompt, image_input, max_output_tokens=2048, temperature=0.2)
         if not gemini.get("success"):
             raise RuntimeError(gemini.get("error", "Gemini vision failed"))
         elapsed = int((time.time() - start) * 1000)
@@ -1052,7 +1135,8 @@ def analyze_frame(
             "location": telemetry["location"],
             **analysis,
             "model_used": model_label,
-            "processing_time_ms": elapsed
+            "processing_time_ms": elapsed,
+            "image_quality": image_quality or None,
         }
         out_path = output_dir / f"{frame_id}_analysis.json"
         with open(out_path, "w", encoding="utf-8") as f:
@@ -1119,6 +1203,11 @@ def analyze_all_frames():
     
     def _worker(task):
         fid, img_path, tel = task
+        from src.cancellation import is_cancelled
+        session_id = os.environ.get("SESSION_ID") or getattr(settings, "SESSION_ID", "")
+        if is_cancelled(session_id):
+            print(f"Skipping VLM analysis for {fid} - session {session_id} is cancelled")
+            return fid, tel, None
         try:
             print(f"Analyzing {fid} in parallel...")
             res = analyze_frame(fid, img_path, tel)
@@ -1138,8 +1227,15 @@ def analyze_all_frames():
     # Build complete dict mapping to reconstruct the original list structure with None placeholders
     result_map = {fid: (tel, res) for fid, tel, res in completed}
     
+    from src.cancellation import is_cancelled
+    session_id = os.environ.get("SESSION_ID") or getattr(settings, "SESSION_ID", "")
+    if is_cancelled(session_id):
+        raise RuntimeError("Pipeline execution cancelled by user request.")
+
     for i, frame in enumerate(frame_meta):
         frame_id = f"frame_{i+1:03}"
+        if is_cancelled(session_id):
+            raise RuntimeError("Pipeline execution cancelled by user request.")
         if frame_id not in result_map:
             # Re-insert skipped/rejected placeholders
             all_results.append(None)
@@ -1153,6 +1249,8 @@ def analyze_all_frames():
             unified.record_frame(frame_id, telemetry, result, alert_summary)
             
     # Save combined
+    if is_cancelled(session_id):
+        raise RuntimeError("Pipeline execution cancelled by user request.")
     combined_path = settings.ANALYSIS_DIR / "all_analysis.json"
     with open(combined_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)

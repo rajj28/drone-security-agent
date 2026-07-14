@@ -61,7 +61,7 @@ export const SecurityAgent: React.FC<SecurityAgentProps> = ({ apiBase, activeSes
       });
 
       if (!res.ok) {
-        throw new Error('Agent failed to respond.');
+        throw new Error('Agent failed to respond. The API server returned an error.');
       }
 
       const data = await res.json();
@@ -74,9 +74,15 @@ export const SecurityAgent: React.FC<SecurityAgentProps> = ({ apiBase, activeSes
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err: any) {
+      let errorText: string;
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        errorText = "Cannot reach the API server. Please ensure the backend is running on port 8000.\n\nRun: uvicorn src.api:app --host 0.0.0.0 --port 8000";
+      } else {
+        errorText = `I encountered an error: ${err.message || 'Unknown error'}. Please verify the API server is online and the video session has been fully processed.`;
+      }
       const errorMessage: Message = {
         role: 'assistant',
-        content: "Sorry, I encountered an error connecting to my neural network. Please verify that the API server is online and running."
+        content: errorText
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {

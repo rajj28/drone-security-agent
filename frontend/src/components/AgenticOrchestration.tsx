@@ -58,7 +58,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           {/* Top: Input Layer */}
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 1.5rem', background: 'linear-gradient(135deg, #1e40af, #3b82f6)', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem' }}>
-              📹 Video Upload → Frame Extraction (Hybrid Motion + Scene Detection)
+              Video Upload → Frame Extraction (Hybrid Motion + Scene Detection)
             </div>
           </div>
 
@@ -68,17 +68,14 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           {/* Processing Pipeline */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <div style={{ padding: '0.75rem', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '1.2rem', marginBottom: '0.3rem' }}>📡</div>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f59e0b' }}>Telemetry</div>
               <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>GPS, Altitude, Speed</div>
             </div>
             <div style={{ padding: '0.75rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '1.2rem', marginBottom: '0.3rem' }}>🧠</div>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#818cf8' }}>VLM Analysis</div>
               <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Groq llama-4-scout</div>
             </div>
             <div style={{ padding: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '1.2rem', marginBottom: '0.3rem' }}>🔍</div>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981' }}>Vector Index</div>
               <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Pinecone (llama-embed)</div>
             </div>
@@ -90,7 +87,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           {/* Orchestrator */}
           <div style={{ padding: '1rem', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15))', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '10px', marginBottom: '1.5rem' }}>
             <div style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.9rem', color: '#a78bfa', marginBottom: '0.75rem' }}>
-              ⚡ AI ORCHESTRATOR — NVIDIA Nemotron-3-Ultra-550B
+              AI ORCHESTRATOR — NVIDIA Nemotron-3-Ultra-550B
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
               <div style={{ padding: '0.6rem', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', textAlign: 'center' }}>
@@ -113,7 +110,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
 
           {/* Alert Engine */}
           <div style={{ padding: '0.75rem 1rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', textAlign: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#ef4444' }}>🚨 Alert Engine (Rule-Based + LLM-Validated)</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#ef4444' }}>Alert Engine (Rule-Based + LLM-Validated)</div>
             <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Behavioral Analysis → Shoplifting Detection → Severity Classification</div>
           </div>
 
@@ -123,20 +120,16 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           {/* Output Layer */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.5rem' }}>
             <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9rem' }}>📊</div>
-              <div style={{ fontSize: '0.6rem', fontWeight: 600, marginTop: '0.2rem' }}>Dashboard</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600 }}>Dashboard</div>
             </div>
             <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9rem' }}>🔔</div>
-              <div style={{ fontSize: '0.6rem', fontWeight: 600, marginTop: '0.2rem' }}>Alerts</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600 }}>Alerts</div>
             </div>
             <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9rem' }}>💬</div>
-              <div style={{ fontSize: '0.6rem', fontWeight: 600, marginTop: '0.2rem' }}>Agent Chat</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600 }}>Agent Chat</div>
             </div>
             <div style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.9rem' }}>🗄️</div>
-              <div style={{ fontSize: '0.6rem', fontWeight: 600, marginTop: '0.2rem' }}>MongoDB</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600 }}>MongoDB</div>
             </div>
           </div>
         </div>

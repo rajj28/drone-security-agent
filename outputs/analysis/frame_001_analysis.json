@@ -2,32 +2,39 @@
   "frame_id": "frame_001",
   "timestamp": "16:00:00",
   "location": "Main Gate",
-  "vlm_description": "The frame is mostly obscured by text and graphics, making it difficult to observe the scene.",
-  "scene_type": "unknown",
-  "people_count": 0,
-  "person_features": [],
+  "threat_level": "MEDIUM",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "Three men are visible in a retail store. One man is standing behind the counter, handling a phone. Another man is sitting on the other side of the counter, while the third man is standing next to him, leaning on the counter.",
+  "scene_type": "retail",
+  "people_count": 3,
   "objects_detected": [
-    "text overlay",
-    "graphics"
+    "person",
+    "phone",
+    "counter"
   ],
-  "activity": "No visible activity due to obstruction.",
-  "security_signals": [],
-  "suspicious_elements": [],
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "reasoning": "The frame is obstructed by text and graphics, preventing any detailed observation.",
-  "recommended_action": "Continue monitoring",
-  "confidence": 0.9,
+  "person_features": [
+    "Person 1: standing behind counter, handling a phone, facing right, appears to be browsing or selecting a phone",
+    "Person 2: sitting on the other side of the counter, hands on counter, facing left",
+    "Person 3: standing next to Person 2, leaning on counter, facing right"
+  ],
+  "vehicles_detected": [],
+  "activity": "Men browsing and handling phones at a retail counter",
+  "security_signals": [
+    "multiple_people_at_counter",
+    "person_handling_merchandise"
+  ],
+  "suspicious_elements": [
+    "person_behind_counter_without_authorization"
+  ],
+  "reasoning": "The man behind the counter handling a phone raises concern because it is unclear if he has authorization to be in that area or handle merchandise. However, his actions do not clearly indicate theft or immediate danger. The presence of multiple people near the counter with one handling merchandise warrants a MEDIUM threat level due to potential for distraction or theft.",
+  "recommended_action": "Monitor the situation for further suspicious activity, verify the authorization of the person behind the counter",
+  "confidence": 0.7,
   "object_details": [],
   "vehicle_details": [],
-  "alert_reasoning": "Continue monitoring",
+  "alert_reasoning": "Monitor the situation for further suspicious activity, verify the authorization of the person behind the counter",
   "alert_priority_signals": [],
-  "vehicles_detected": [],
+  "threat_assessment": "MEDIUM",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 3424
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 2939
 }

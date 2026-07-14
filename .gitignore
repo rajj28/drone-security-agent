@@ -36,3 +36,5 @@ production_reasoning_summary.txt
 !docs/images/*.jpg
 !docs/images/*.jpeg
 !docs/images/*.svg
+# GCP service-account key
+gcp-credentials.json

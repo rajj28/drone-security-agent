@@ -45,13 +45,24 @@ def init_pinecone():
     """Return a data-plane Index client. Never auto-creates the index."""
     pc = _get_client()
     if settings.PINECONE_HOST:
-        return pc.index(host=settings.PINECONE_HOST)
-    if not pc.indexes.exists(INDEX_NAME):
+        return pc.Index(host=settings.PINECONE_HOST)
+        
+    # Cross-version safe check for index existence
+    try:
+        active_indexes = [idx.name for idx in pc.list_indexes()]
+    except Exception:
+        try:
+            active_indexes = [idx["name"] for idx in pc.list_indexes()]
+        except Exception:
+            # Fallback: assume index exists if we cannot query list_indexes
+            active_indexes = [INDEX_NAME]
+            
+    if INDEX_NAME not in active_indexes:
         raise RuntimeError(
             f"Pinecone index '{INDEX_NAME}' not found. Create it in the Pinecone console "
             "(llama-text-embed-v2, 768 dimensions) or set PINECONE_INDEX_NAME."
         )
-    return pc.index(name=INDEX_NAME)
+    return pc.Index(INDEX_NAME)
 
 
 def _build_record(frame: Dict[str, Any]) -> Optional[Dict[str, Any]]:

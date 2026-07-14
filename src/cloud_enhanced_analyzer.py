@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 from src.config import settings
 from src.gemini_client import generate_vision
-from src.api_retry import quota_exhausted, is_quota_exhausted_error
+from src.api_retry import quota_exhausted, is_quota_exhausted_error, call_with_retry
 
 # Unified context (JSON + structured timeline + optional Mongo)
 try:
@@ -96,10 +96,21 @@ class CloudEnhancedAnalyzer:
             except Exception as e:
                 print(f"[WARNING] Failed to load unified context: {e}")
         
-        # Load and encode image
-        with open(image_path, "rb") as f:
-            image_bytes = f.read()
-            image_b64 = base64.b64encode(image_bytes).decode()
+        # Load and encode image (with optional robust preprocessing)
+        from src.frame_preprocessor import (
+            assess_image_quality,
+            preprocess_frame_image,
+            preprocessing_enabled,
+            quality_prompt_hints,
+        )
+
+        if preprocessing_enabled():
+            image_bytes, image_quality = preprocess_frame_image(image_path)
+        else:
+            image_quality = assess_image_quality(image_path)
+            image_bytes = image_path.read_bytes()
+        image_b64 = base64.b64encode(image_bytes).decode()
+        quality_hints = quality_prompt_hints(image_quality)
         
         results = {
             'image_path': str(image_path),
@@ -111,7 +122,8 @@ class CloudEnhancedAnalyzer:
             'analysis_method': 'Cloud CLIP + BLIP + Gemini',
             'model_used': 'CloudEnhancedAnalyzer',
             'processing_time_ms': 0,
-            'session_context': frame_history  # Store for reference
+            'session_context': frame_history,
+            'image_quality': image_quality,
         }
         
         if self.skip_hf or quota_exhausted():
@@ -142,14 +154,17 @@ class CloudEnhancedAnalyzer:
             results['clip_analysis'], 
             results['blip_analysis']
         )
+        if quality_hints:
+            enhanced_context += quality_hints
         results['enhanced_context'] = enhanced_context
+        results['image_quality'] = image_quality
         
         # Step 4: TWO-STAGE Gemini VLM analysis
         print("[AI] Stage 1: Initial Gemini analysis...")
         gpt4o_results_stage1 = None
         try:
             gpt4o_results_stage1 = self._analyze_with_gemini(
-                image_path, enhanced_context, telemetry, stage=1, frame_history=frame_history
+                image_bytes, enhanced_context, telemetry, stage=1, frame_history=frame_history
             )
             results['gpt4o_analysis_stage1'] = gpt4o_results_stage1
             
@@ -178,7 +193,7 @@ class CloudEnhancedAnalyzer:
                     + f"\n\n[SECURITY ALERT] Stage 1: {', '.join(suspicious_detected)}."
                 )
                 gpt4o_results = self._analyze_with_gemini(
-                    image_path,
+                    image_bytes,
                     enhanced_context_stage2,
                     telemetry,
                     stage=2,
@@ -469,7 +484,7 @@ class CloudEnhancedAnalyzer:
     
     def _analyze_with_gemini(
         self,
-        image_path: Path,
+        image: Any,
         enhanced_context: str,
         telemetry: Dict[str, Any],
         stage: int = 1,
@@ -534,8 +549,7 @@ BE PRECISE about positions and actions. Location context matters!"""
                 # STAGE 2: Security-focused analysis with situation understanding
                 prompt = f"""You are a SENIOR SECURITY ANALYST. Apply SITUATION UNDERSTANDING — the same action can be innocent or CRITICAL based on context.
 
-🚨 SECURITY ASSESSMENT REQUIRED 🚨
-
+SECURITY ASSESSMENT REQUIRED 
 === FRAME HISTORY (Previous Activity Context) ===
 {frame_history if frame_history else "No previous frames - establishing baseline."}
 
@@ -611,7 +625,7 @@ IMPORTANT: Consider WHERE and WHEN the action is happening. Context is everythin
 
             gemini = generate_vision(
                 prompt,
-                image_path,
+                image,
                 max_output_tokens=4096,
                 temperature=0.2,
             )

@@ -49,6 +49,8 @@ logs/
 .env
 .env.local
 .env.production.example
+gcp-credentials.json
+*credentials*.json
 
 # Output directories (generated at runtime)
 outputs/
@@ -70,6 +72,17 @@ vercel.json
 *.avi
 *.mov
 *.mkv
+Sneaky*.mp4
+*.mp3
+
+# Large images / docs at repo root (not needed in the image)
+*.svg
+*.jpg
+*.png
+*.pdf
+diagram-export*
+DIAGRAMGPT_PROMPT.md
+_strip_emojis.py
 
 # Node modules
 node_modules/

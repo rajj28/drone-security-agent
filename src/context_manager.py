@@ -97,17 +97,17 @@ class SessionContext:
         high_threat_count = sum(1 for f in recent_frames if f.threat_level in ['CRITICAL', 'HIGH'])
         
         if high_threat_count > 0:
-            summaries.append(f"⚠️ {high_threat_count} high-threat events in recent frames")
+            summaries.append(f"{high_threat_count} high-threat events in recent frames")
         
         if avg_people > 0:
-            summaries.append(f"👥 ~{int(avg_people)} people visible on average")
+            summaries.append(f"~{int(avg_people)} people visible on average")
         
         # Check for movement patterns
         if len(recent_frames) >= 2:
             if recent_frames[-1].people_count > recent_frames[0].people_count:
-                summaries.append("📈 More people appearing (possible entry/approach)")
+                summaries.append("More people appearing (possible entry/approach)")
             elif recent_frames[-1].people_count < recent_frames[0].people_count:
-                summaries.append("📉 People dispersing (possible exit)")
+                summaries.append("People dispersing (possible exit)")
         
         # Activity patterns
         all_signals = []
@@ -116,7 +116,7 @@ class SessionContext:
         
         if all_signals:
             unique_signals = list(set(all_signals))[:3]  # Top 3 unique signals
-            summaries.append(f"🎯 Behaviors: {', '.join(unique_signals)}")
+            summaries.append(f"Behaviors: {', '.join(unique_signals)}")
         
         return " | ".join(summaries) if summaries else "Normal monitoring in progress."
     
@@ -146,15 +146,15 @@ class SessionContext:
         recent_threats = [f for f in previous_frames if f.threat_level in ['CRITICAL', 'HIGH']]
         if recent_threats:
             threat_frames = [f.frame_id for f in recent_threats[-3:]]  # Last 3 threats
-            context_parts.append(f"⚠️ Previous threats detected in: {', '.join(threat_frames)}")
+            context_parts.append(f"Previous threats detected in: {', '.join(threat_frames)}")
         
         # People movement
         people_trend = [f.people_count for f in previous_frames]
         if people_trend:
             if people_trend[-1] > people_trend[0]:
-                context_parts.append(f"📈 People count increased from {people_trend[0]} to {people_trend[-1]}")
+                context_parts.append(f"People count increased from {people_trend[0]} to {people_trend[-1]}")
             elif people_trend[-1] < people_trend[0]:
-                context_parts.append(f"📉 People count decreased from {people_trend[0]} to {people_trend[-1]}")
+                context_parts.append(f"People count decreased from {people_trend[0]} to {people_trend[-1]}")
         
         # Accumulated suspicious behaviors
         all_signals = []
@@ -169,11 +169,11 @@ class SessionContext:
             # Show repeated behaviors
             repeated = [s for s, c in signal_counts.items() if c > 1]
             if repeated:
-                context_parts.append(f"🔄 Repeated behaviors: {', '.join(repeated[:3])}")
+                context_parts.append(f"Repeated behaviors: {', '.join(repeated[:3])}")
         
         # Overall situation
         latest = previous_frames[-1]
-        context_parts.append(f"📍 Previous frame ({latest.frame_id}): {latest.threat_level} - {latest.summary[:100]}")
+        context_parts.append(f"Previous frame ({latest.frame_id}): {latest.threat_level} - {latest.summary[:100]}")
         
         return "\n".join(context_parts)
 

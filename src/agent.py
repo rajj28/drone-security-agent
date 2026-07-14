@@ -740,29 +740,29 @@ Respond in JSON with keys:
 
 def run_demo() -> None:
     """Runs a small demo so the module produces visible output when executed."""
-    print("\n🤖 Running DroneSecurityAgent demo...")
+    print("\nRunning DroneSecurityAgent demo...")
     agent = DroneSecurityAgent()
-    print(f"📍 Session context: {json.dumps(agent.get_session_context(), indent=2)}")
+    print(f"Session context: {json.dumps(agent.get_session_context(), indent=2)}")
 
     try:
         search_results = agent.search_frames("person detected", top_k=3)
-        print(f"🔍 Search hits: {len(search_results)}")
+        print(f"Search hits: {len(search_results)}")
     except Exception as exc:
-        print(f"❌ Search demo failed: {exc}")
+        print(f"Search demo failed: {exc}")
 
     try:
         history = agent.query_event_history("person", "all")
-        print(f"🕓 Event history matches: {len(history)}")
+        print(f"Event history matches: {len(history)}")
     except Exception as exc:
-        print(f"❌ History demo failed: {exc}")
+        print(f"History demo failed: {exc}")
 
     try:
         answer = agent.answer_question("What is the most important incident today?")
-        print(f"🧠 Agent answer: {answer.get('answer', '')}")
+        print(f"Agent answer: {answer.get('answer', '')}")
     except Exception as exc:
-        print(f"❌ Question demo failed: {exc}")
+        print(f"Question demo failed: {exc}")
 
-    print("✅ Agent demo complete.")
+    print("Agent demo complete.")
 
 
 if __name__ == "__main__":

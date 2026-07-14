@@ -262,12 +262,14 @@ class AlertEngineAgent:
     """Stateful alert engine agent with memory and session context."""
 
     def __init__(self):
-        # Use Groq for alert reasoning (faster, avoids NVIDIA 503s)
+        # Respect AGENT_LLM_PROVIDER configuration
         import os
         from langchain_openai import ChatOpenAI
+        
+        provider = getattr(settings, "AGENT_LLM_PROVIDER", "gemini").lower()
         groq_api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
         
-        if groq_api_key:
+        if provider == "groq" and groq_api_key:
             self.llm = ChatOpenAI(
                 model="llama-3.3-70b-versatile",
                 base_url="https://api.groq.com/openai/v1",

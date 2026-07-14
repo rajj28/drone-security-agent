@@ -2,29 +2,40 @@
   "frame_id": "frame_002",
   "timestamp": "16:00:01",
   "location": "Perimeter North",
-  "vlm_description": "The image is overexposed, making it difficult to discern specific details. The scene appears to be outdoors with some greenery visible.",
-  "scene_type": "exterior",
-  "people_count": 0,
-  "person_features": [],
-  "objects_detected": [],
-  "activity": "No discernible activity due to overexposure.",
-  "security_signals": [],
-  "suspicious_elements": [],
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "reasoning": "Initial observation - no security assessment possible due to image quality.",
-  "recommended_action": "Adjust camera settings to reduce overexposure and continue monitoring.",
-  "confidence": 0.5,
+  "threat_level": "MEDIUM",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "Three people are visible in a retail store. One person is standing behind the counter, holding a phone. Two people are sitting on the other side of the counter, seemingly observing. The store appears to be a mobile phone shop with various phone displays.",
+  "scene_type": "retail",
+  "people_count": 3,
+  "objects_detected": [
+    "person",
+    "phone",
+    "counter"
+  ],
+  "person_features": [
+    "Person 1: standing behind the counter, holding a phone, facing the displays",
+    "Person 2: sitting on the other side of the counter, observing",
+    "Person 3: sitting next to Person 2, observing"
+  ],
+  "vehicles_detected": [],
+  "activity": "Person 1 is handling a phone behind the counter. Person 2 and Person 3 are sitting and observing.",
+  "security_signals": [
+    "person_behind_counter_without_authorization",
+    "lingering_without_purpose"
+  ],
+  "suspicious_elements": [
+    "person_behind_counter",
+    "multiple_people_near_counter"
+  ],
+  "reasoning": "The person behind the counter handling a phone is a potential security concern because it could indicate unauthorized access to merchandise or staff areas. The presence of two additional people observing could suggest a coordinated behavior. However, without clear evidence of theft or aggression, it is classified as MEDIUM.",
+  "recommended_action": "Monitor the situation closely, verify if the person behind the counter is an employee or not, and observe if they attempt to conceal or take any items.",
+  "confidence": 0.7,
   "object_details": [],
   "vehicle_details": [],
-  "alert_reasoning": "Adjust camera settings to reduce overexposure and continue monitoring.",
+  "alert_reasoning": "Monitor the situation closely, verify if the person behind the counter is an employee or not, and observe if they attempt to conceal or take any items.",
   "alert_priority_signals": [],
-  "vehicles_detected": [],
+  "threat_assessment": "MEDIUM",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 2625
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 4358
 }

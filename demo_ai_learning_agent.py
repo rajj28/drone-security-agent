@@ -22,13 +22,13 @@ from src.ai_learning_agent import ai_learning_agent
 async def demo_ai_learning_capabilities():
     """Demonstrate AI learning agent capabilities"""
     
-    print("🤖 ADVANCED AI LEARNING AGENT DEMONSTRATION")
+    print("ADVANCED AI LEARNING AGENT DEMONSTRATION")
     print("=" * 70)
     print("Powered by LangGraph + GPT-4 + sklearn")
     print("=" * 70)
     
     # Show current AI knowledge base
-    print("\n🧠 Current AI Knowledge Base:")
+    print("\nCurrent AI Knowledge Base:")
     insights = ai_learning_agent.get_learning_insights()
     
     print(f"  Total Patterns Learned: {insights['total_patterns']}")
@@ -44,7 +44,7 @@ async def demo_ai_learning_capabilities():
         print(f"  Top Pattern: {top_pattern['description']} (frequency: {top_pattern['frequency']})")
     
     # Process a new video with AI learning
-    print(f"\n🎥 Processing New Video with AI Learning...")
+    print(f"\nProcessing New Video with AI Learning...")
     
     indexer = VideoFolderIndexer()
     
@@ -66,7 +66,7 @@ async def demo_ai_learning_capabilities():
     
     # Create video folder
     video_folder = indexer.create_video_folder(video_metadata)
-    print(f"✅ Created video folder: {video_folder}")
+    print(f"Created video folder: {video_folder}")
     
     # Simulate frame processing with AI learning
     frames_dir = Path("data/theft_analysis_frames")
@@ -86,7 +86,7 @@ async def demo_ai_learning_capabilities():
             
             frames_list.append((frame_id, timestamp, frame_number))
         
-        print(f"✅ Copied {len(frames_list)} frames for AI analysis")
+        print(f"Copied {len(frames_list)} frames for AI analysis")
         
         # Process frames with AI learning
         telemetry_base = {
@@ -98,10 +98,10 @@ async def demo_ai_learning_capabilities():
         
         await indexer.process_video_frames(video_metadata.video_id, frames_list, telemetry_base)
         
-        print(f"✅ Completed AI-powered analysis")
+        print(f"Completed AI-powered analysis")
         
         # Show AI learning results
-        print(f"\n🤖 AI Learning Results for {video_metadata.video_id}:")
+        print(f"\nAI Learning Results for {video_metadata.video_id}:")
         
         # Get AI analysis from the agent
         if video_metadata.video_id in ai_learning_agent.video_profiles:
@@ -115,7 +115,7 @@ async def demo_ai_learning_capabilities():
         # Show AI reasoning chain
         if video_metadata.video_id in ai_learning_agent.reasoning_chains:
             reasoning_chain = ai_learning_agent.reasoning_chains[video_metadata.video_id]
-            print(f"\n🧠 AI Reasoning Chain:")
+            print(f"\nAI Reasoning Chain:")
             for i, step in enumerate(reasoning_chain, 1):
                 print(f"  {i}. {step}")
         
@@ -126,7 +126,7 @@ async def demo_ai_learning_capabilities():
             
             if 'adaptive_confidence' in frame_analysis.get('analysis_result', {}):
                 adaptive_result = frame_analysis['analysis_result']
-                print(f"\n🎯 AI-Enhanced Analysis for {first_frame_id}:")
+                print(f"\nAI-Enhanced Analysis for {first_frame_id}:")
                 print(f"  Original Confidence: {adaptive_result.get('original_analysis', {}).get('gpt4o_enhanced', {}).get('confidence', 0):.2f}")
                 print(f"  AI Adaptive Confidence: {adaptive_result.get('adaptive_confidence', 0):.2f}")
                 print(f"  Recognized Patterns: {adaptive_result.get('recognized_patterns', [])}")
@@ -134,7 +134,7 @@ async def demo_ai_learning_capabilities():
                 print(f"  AI Reasoning: {adaptive_result.get('ai_reasoning', 'N/A')}")
         
         # Show updated AI knowledge base
-        print(f"\n📈 Updated AI Knowledge Base:")
+        print(f"\nUpdated AI Knowledge Base:")
         updated_insights = ai_learning_agent.get_learning_insights()
         
         print(f"  Total Patterns: {updated_insights['total_patterns']} (+{updated_insights['total_patterns'] - insights['total_patterns']})")
@@ -154,7 +154,7 @@ async def demo_ai_learning_capabilities():
             print(f"  Total Behaviors Learned: {trends['total_behaviors_learned']}")
     
     # Demonstrate AI pattern recognition
-    print(f"\n🔍 AI Pattern Recognition Demo:")
+    print(f"\nAI Pattern Recognition Demo:")
     test_texts = [
         "Person reaching for pocket and concealing phone while looking around nervously",
         "Individual scanning the area before quickly grabbing merchandise",
@@ -168,24 +168,24 @@ async def demo_ai_learning_capabilities():
         print(f"    AI Recognized: {patterns}")
     
     # Show AI knowledge graph connections
-    print(f"\n🕸️ AI Knowledge Graph Connections:")
+    print(f"\nAI Knowledge Graph Connections:")
     for pattern, videos in list(ai_learning_agent.reasoning_chains.items())[:3]:
         print(f"  {pattern}: {len(videos)} reasoning steps")
     
-    print(f"\n🤖 AI Learning Agent Benefits:")
-    print(f"  ✅ LangGraph-powered reasoning chains")
-    print(f"  ✅ GPT-4 enhanced pattern analysis")
-    print(f"  ✅ Sophisticated threat assessment")
-    print(f"  ✅ Cross-video learning with AI")
-    print(f"  ✅ Adaptive confidence scoring")
-    print(f"  ✅ Comprehensive incident memory")
-    print(f"  ✅ AI-driven behavioral analysis")
-    print(f"  ✅ Contextual threat reasoning")
+    print(f"\nAI Learning Agent Benefits:")
+    print(f"  LangGraph-powered reasoning chains")
+    print(f"  GPT-4 enhanced pattern analysis")
+    print(f"  Sophisticated threat assessment")
+    print(f"  Cross-video learning with AI")
+    print(f"  Adaptive confidence scoring")
+    print(f"  Comprehensive incident memory")
+    print(f"  AI-driven behavioral analysis")
+    print(f"  Contextual threat reasoning")
 
 async def demo_cross_video_ai_learning():
     """Demonstrate cross-video AI learning"""
     
-    print(f"\n🌐 CROSS-VIDEO AI LEARNING DEMONSTRATION")
+    print(f"\nCROSS-VIDEO AI LEARNING DEMONSTRATION")
     print("=" * 70)
     
     # Process multiple videos to show AI cross-video learning
@@ -214,7 +214,7 @@ async def demo_cross_video_ai_learning():
     
     # Process each video with AI
     for video_info in videos:
-        print(f"\n📹 AI Processing {video_info['video_id']}...")
+        print(f"\nAI Processing {video_info['video_id']}...")
         
         video_metadata = VideoMetadata(
             video_id=video_info['video_id'],
@@ -272,7 +272,7 @@ async def demo_cross_video_ai_learning():
                     print(f"  AI Reasoning Steps: {len(reasoning)}")
     
     # Show AI cross-video insights
-    print(f"\n🌐 AI Cross-Video Learning Insights:")
+    print(f"\nAI Cross-Video Learning Insights:")
     
     # Show video similarities using AI
     videos = list(ai_learning_agent.video_profiles.keys())
@@ -289,14 +289,14 @@ async def demo_cross_video_ai_learning():
             if any(p in incident.description.lower() for p in pattern.description.lower().split()):
                 pattern_videos[pattern.pattern_id].append(incident.video_id)
     
-    print(f"\n🔄 AI-Identified Shared Patterns:")
+    print(f"\nAI-Identified Shared Patterns:")
     for pattern_id, video_list in pattern_videos.items():
         if len(video_list) > 1:
             pattern = ai_learning_agent.patterns[pattern_id]
             print(f"  {pattern.description}: {len(set(video_list))} videos")
     
     # Final AI knowledge summary
-    print(f"\n📊 Final AI Knowledge Summary:")
+    print(f"\nFinal AI Knowledge Summary:")
     final_insights = ai_learning_agent.get_learning_insights()
     
     print(f"  Total Patterns: {final_insights['total_patterns']}")
@@ -314,7 +314,7 @@ async def demo_cross_video_ai_learning():
     if ai_learning_agent.reasoning_chains:
         sample_video = list(ai_learning_agent.reasoning_chains.keys())[0]
         reasoning = ai_learning_agent.reasoning_chains[sample_video]
-        print(f"\n🧠 Sample AI Reasoning Chain for {sample_video}:")
+        print(f"\nSample AI Reasoning Chain for {sample_video}:")
         for i, step in enumerate(reasoning[:3], 1):  # Show first 3 steps
             print(f"  {i}. {step}")
 
@@ -327,8 +327,8 @@ if __name__ == "__main__":
     # Run cross-video AI learning
     asyncio.run(demo_cross_video_ai_learning())
     
-    print(f"\n🎉 AI LEARNING AGENT DEMONSTRATION COMPLETE!")
-    print(f"📁 AI Knowledge Base: {ai_learning_agent.knowledge_base_path}")
-    print(f"🤖 The AI agent is now smarter with LangGraph reasoning!")
-    print(f"🧠 Each video analysis improves the agent's intelligence!")
-    print(f"🔗 Cross-video learning creates a security knowledge network!")
+    print(f"\nAI LEARNING AGENT DEMONSTRATION COMPLETE!")
+    print(f"AI Knowledge Base: {ai_learning_agent.knowledge_base_path}")
+    print(f"The AI agent is now smarter with LangGraph reasoning!")
+    print(f"Each video analysis improves the agent's intelligence!")
+    print(f"Cross-video learning creates a security knowledge network!")

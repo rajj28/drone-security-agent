@@ -21,7 +21,7 @@ from src.video_folder_indexer import VideoFolderIndexer, VideoMetadata
 async def demo_video_indexing():
     """Demonstrate the video folder indexing system"""
     
-    print("🎥 VIDEO FOLDER INDEXING DEMONSTRATION")
+    print("VIDEO FOLDER INDEXING DEMONSTRATION")
     print("=" * 50)
     
     # Initialize the indexer
@@ -43,14 +43,14 @@ async def demo_video_indexing():
         tags=["theft", "shoplifting", "suspicious"]
     )
     
-    print(f"📁 Creating video folder for: {video_metadata.video_id}")
+    print(f"Creating video folder for: {video_metadata.video_id}")
     
     # Create video folder structure
     video_folder = indexer.create_video_folder(video_metadata)
-    print(f"✅ Video folder created: {video_folder}")
+    print(f"Video folder created: {video_folder}")
     
     # Show folder structure
-    print("\n📂 Folder Structure Created:")
+    print("\nFolder Structure Created:")
     print(f"{video_metadata.video_id}/")
     print(f"├── {indexer.metadata_file}")
     print(f"├── {indexer.index_file}")
@@ -59,7 +59,7 @@ async def demo_video_indexing():
     print(f"└── {indexer.analysis_dir_name}/")
     
     # Show metadata
-    print(f"\n📋 Video Metadata:")
+    print(f"\nVideo Metadata:")
     metadata = indexer.load_video_metadata(video_metadata.video_id)
     print(f"  Video ID: {metadata.video_id}")
     print(f"  Filename: {metadata.filename}")
@@ -69,7 +69,7 @@ async def demo_video_indexing():
     print(f"  Status: {metadata.indexing_status}")
     
     # Simulate frame processing with existing frames
-    print(f"\n🎬 Simulating Frame Processing...")
+    print(f"\nSimulating Frame Processing...")
     
     # Use existing frames from theft analysis
     frames_dir = Path("data/theft_analysis_frames")
@@ -89,7 +89,7 @@ async def demo_video_indexing():
             
             frames_list.append((frame_id, timestamp, frame_number))
         
-        print(f"✅ Copied {len(frames_list)} frames to video folder")
+        print(f"Copied {len(frames_list)} frames to video folder")
         
         # Process frames
         telemetry_base = {
@@ -101,10 +101,10 @@ async def demo_video_indexing():
         
         await indexer.process_video_frames(video_metadata.video_id, frames_list, telemetry_base)
         
-        print(f"✅ Processed {len(frames_list)} frames")
+        print(f"Processed {len(frames_list)} frames")
         
         # Show results
-        print(f"\n📊 Processing Results:")
+        print(f"\nProcessing Results:")
         updated_metadata = indexer.load_video_metadata(video_metadata.video_id)
         print(f"  Total Frames: {updated_metadata.total_frames}")
         print(f"  Processed Frames: {updated_metadata.processed_frames}")
@@ -112,7 +112,7 @@ async def demo_video_indexing():
         print(f"  Status: {updated_metadata.indexing_status}")
         
         # Show frame analyses
-        print(f"\n🔍 Frame Analyses:")
+        print(f"\nFrame Analyses:")
         analysis_folder = video_folder / indexer.analysis_dir_name
         for analysis_file in sorted(analysis_folder.glob("*.json")):
             with open(analysis_file, 'r') as f:
@@ -121,13 +121,13 @@ async def demo_video_indexing():
             print(f"  Frame {analysis['frame_number']}: {analysis['threat_level']} (confidence: {analysis['confidence']:.2f})")
         
         # Show alerts
-        print(f"\n🚨 Generated Alerts:")
+        print(f"\nGenerated Alerts:")
         alerts = indexer.get_video_alerts(video_metadata.video_id)
         for alert in alerts[:3]:  # Show first 3 alerts
             print(f"  {alert['title']}: {alert['description']}")
         
         # Show summary
-        print(f"\n📈 Video Summary:")
+        print(f"\nVideo Summary:")
         summary = indexer.get_video_analysis(video_metadata.video_id)
         if 'statistics' in summary:
             stats = summary['statistics']
@@ -137,7 +137,7 @@ async def demo_video_indexing():
             print(f"  Low Alerts: {stats['low_alerts']}")
         
         # Demonstrate consumption from video folder
-        print(f"\n🔄 Consuming Data from Video Folder:")
+        print(f"\nConsuming Data from Video Folder:")
         
         # Search for threat frames
         threat_frames = indexer.search_video_frames(video_metadata.video_id, threat_level="high")
@@ -150,7 +150,7 @@ async def demo_video_indexing():
             print(f"  Frame {first_frame_id} analysis loaded: {'success' if 'frame_id' in frame_analysis else 'failed'}")
         
         # Show folder structure with actual files
-        print(f"\n📁 Actual Folder Structure:")
+        print(f"\nActual Folder Structure:")
         for root, dirs, files in os.walk(video_folder):
             level = root.replace(str(video_folder), '').count(os.sep)
             indent = ' ' * 2 * level
@@ -160,25 +160,25 @@ async def demo_video_indexing():
                 print(f"{subindent}{file}")
     
     else:
-        print(f"❌ Sample frames not found at {frames_dir}")
+        print(f"Sample frames not found at {frames_dir}")
     
-    print(f"\n🎯 Key Benefits of Video Folder Indexing:")
-    print(f"  ✅ Each video is completely self-contained")
-    print(f"  ✅ All analysis data stored with the video")
-    print(f"  ✅ Easy to move/copy entire video analysis")
-    print(f"  ✅ Independent processing per video")
-    print(f"  ✅ Fast access to video-specific data")
-    print(f"  ✅ Scalable to thousands of videos")
+    print(f"\nKey Benefits of Video Folder Indexing:")
+    print(f"  Each video is completely self-contained")
+    print(f"  All analysis data stored with the video")
+    print(f"  Easy to move/copy entire video analysis")
+    print(f"  Independent processing per video")
+    print(f"  Fast access to video-specific data")
+    print(f"  Scalable to thousands of videos")
     
-    print(f"\n📂 Video Location: {video_folder}")
-    print(f"📊 Summary File: {video_folder / indexer.summary_file}")
-    print(f"🚨 Alerts File: {video_folder / indexer.alerts_file}")
-    print(f"📋 Index File: {video_folder / indexer.index_file}")
+    print(f"\nVideo Location: {video_folder}")
+    print(f"Summary File: {video_folder / indexer.summary_file}")
+    print(f"Alerts File: {video_folder / indexer.alerts_file}")
+    print(f"Index File: {video_folder / indexer.index_file}")
 
 async def demo_multiple_videos():
     """Demonstrate multiple videos being indexed independently"""
     
-    print("\n🎥 MULTIPLE VIDEOS DEMONSTRATION")
+    print("\nMULTIPLE VIDEOS DEMONSTRATION")
     print("=" * 50)
     
     indexer = VideoFolderIndexer()
@@ -232,15 +232,15 @@ async def demo_multiple_videos():
     # Create folders for all videos
     for video in videos:
         folder = indexer.create_video_folder(video)
-        print(f"✅ Created folder: {folder}")
+        print(f"Created folder: {folder}")
     
     # List all videos
     all_videos = indexer.list_videos()
-    print(f"\n📋 All Indexed Videos:")
+    print(f"\nAll Indexed Videos:")
     for video in all_videos:
         print(f"  {video['video_id']}: {video['location']} ({video['indexing_status']})")
     
-    print(f"\n📊 Total Videos: {len(all_videos)}")
+    print(f"\nTotal Videos: {len(all_videos)}")
 
 if __name__ == "__main__":
     import os

@@ -518,7 +518,7 @@ def analyze_frame_ultimate(image_path: Path, telemetry: Dict[str, Any],
         try:
             return future.result(timeout=timeout)
         except FutureTimeoutError:
-            print(f"⚠️ Ultimate analyzer timeout after {timeout}s - returning partial results")
+            print(f"Ultimate analyzer timeout after {timeout}s - returning partial results")
             # Return fallback results on timeout
             return {
                 'image_path': str(image_path),

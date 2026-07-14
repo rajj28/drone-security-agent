@@ -78,7 +78,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
               border: `1px solid ${debugData.overall === 'healthy' ? 'rgba(16,185,129,0.3)' : debugData.overall === 'degraded' ? 'rgba(245,158,11,0.3)' : 'rgba(239,68,68,0.3)'}`
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', color: debugData.overall === 'healthy' ? '#10b981' : debugData.overall === 'degraded' ? '#f59e0b' : '#ef4444' }}>
-                {debugData.overall === 'healthy' ? '✅' : debugData.overall === 'degraded' ? '⚠️' : '❌'} 
+                {statusIcon(debugData.overall === 'healthy' ? 'ok' : debugData.overall === 'degraded' ? 'degraded' : 'error')}
                 System: {debugData.overall.toUpperCase()}
               </div>
               {debugData.overall !== 'healthy' && (
@@ -124,7 +124,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
 
             {/* Tips */}
             <div style={{ padding: '1rem', background: 'rgba(99,102,241,0.05)', borderRadius: '8px', border: '1px solid rgba(99,102,241,0.1)', marginBottom: '1.5rem' }}>
-              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>💡 Troubleshooting Tips</h4>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Troubleshooting Tips</h4>
               <ul style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '1rem', lineHeight: '2' }}>
                 <li><strong>Quota exhausted:</strong> {debugData.tips.quota_exhausted}</li>
                 <li><strong>Model degraded:</strong> {debugData.tips.degraded}</li>
@@ -136,7 +136,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
 
         {/* Actions */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
-          <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.75rem' }}>🔧 Actions</h4>
+          <h4 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.75rem' }}>Actions</h4>
           <button 
             className="btn btn-secondary" 
             onClick={handleClearSessions} 
@@ -150,7 +150,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
 
         {/* Troubleshooting Guide */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
-          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '1rem' }}>📖 When to Debug — Quick Reference</h4>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '1rem' }}>When to Debug — Quick Reference</h4>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.78rem' }}>
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '6px' }}>
@@ -196,7 +196,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
 
           {/* Quick .env Guide */}
           <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
-            <h5 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>⚙️ Key .env Changes (restart server after)</h5>
+            <h5 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>Key .env Changes (restart server after)</h5>
             <pre style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: '#a7f3d0', lineHeight: '1.8', margin: 0 }}>
 {`# Switch vision if Groq exhausted:
 VISION_PROVIDER=gemini
@@ -211,7 +211,7 @@ AGENT_LLM_PROVIDER=groq`}
 
           {/* Nuclear Option */}
           <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '6px' }}>
-            <strong style={{ fontSize: '0.8rem', color: '#ef4444' }}>☢️ Nuclear Reset (if everything fails)</strong>
+            <strong style={{ fontSize: '0.8rem', color: '#ef4444' }}>Full Reset (if everything fails)</strong>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem', lineHeight: '1.6' }}>
               1. Stop server (Ctrl+C)<br/>
               2. Click "Clear All Sessions" above<br/>

@@ -7,9 +7,11 @@ import {
   Search, 
   BarChart2, 
   Bot,
-  Layers
+  Layers,
+  Radio
 } from 'lucide-react';
 import { VideoUpload } from './components/VideoUpload';
+import { LiveCapture } from './components/LiveCapture';
 import { FrameAnalysis } from './components/FrameAnalysis';
 import { AlertCenter } from './components/AlertCenter';
 import { SemanticSearch } from './components/SemanticSearch';
@@ -53,7 +55,7 @@ function App() {
     };
 
     checkConnection();
-    const interval = setInterval(checkConnection, 10000);
+    const interval = setInterval(checkConnection, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -89,7 +91,7 @@ function App() {
 
   // Periodically refresh sessions list in background
   useEffect(() => {
-    const interval = setInterval(fetchSessions, 15000);
+    const interval = setInterval(fetchSessions, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -129,6 +131,11 @@ function App() {
     // Don't call fetchSessions here — it runs on the 15s interval anyway
     // and calling it immediately can trigger auto-select that overrides our choice
     setActiveTab('upload'); // Remain on upload to monitor process
+  };
+
+  const handleSessionDeleted = () => {
+    setSelectedSessionId(null);
+    fetchSessions();
   };
 
   const handleInvestigateFrame = (frameName: string) => {
@@ -203,7 +210,14 @@ function App() {
               <UploadCloud size={18} />
               Video Upload
             </li>
-            <li 
+            <li
+              className={`nav-item ${activeTab === 'live' ? 'active' : ''}`}
+              onClick={() => setActiveTab('live')}
+            >
+              <Radio size={18} />
+              Live Capture
+            </li>
+            <li
               className={`nav-item ${activeTab === 'frames' ? 'active' : ''}`}
               onClick={() => setActiveTab('frames')}
             >
@@ -301,7 +315,7 @@ function App() {
               onClick={() => setShowTour(true)} 
               style={{ padding: '0.35rem 0.75rem', background: 'linear-gradient(135deg, #7c3aed, #a78bfa)', border: 'none', borderRadius: '6px', color: 'white', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
             >
-              🎙️ Tour
+              Guided Tour
             </button>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Video Session:</span>
             <select 
@@ -329,6 +343,17 @@ function App() {
               apiBase={API_BASE} 
               onUploadSuccess={handleUploadSuccess} 
               activeSessionId={selectedSessionId} 
+              onSessionDeleted={handleSessionDeleted}
+            />
+          )}
+
+          {activeTab === 'live' && (
+            <LiveCapture
+              apiBase={API_BASE}
+              onAnalysisStarted={(sessionId) => {
+                setSelectedSessionId(sessionId);
+                setActiveTab('upload'); // VideoUpload polls & shows the pipeline progress
+              }}
             />
           )}
 

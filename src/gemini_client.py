@@ -45,7 +45,11 @@ _key_idx = 0
 # Scale the global call spacing by the number of keys so adding keys raises throughput,
 # while each key still respects the per-key interval (API_MIN_INTERVAL_SEC).
 try:
-    configure_min_interval(float(settings.API_MIN_INTERVAL_SEC), max(1, len(_API_KEYS)))
+    if getattr(settings, "USE_VERTEX_AI", False):
+        interval = 2.5
+    else:
+        interval = float(settings.API_MIN_INTERVAL_SEC)
+    configure_min_interval(interval, max(1, len(_API_KEYS)))
     if len(_API_KEYS) > 1:
         print(f"[GEMINI] Load-sharing across {len(_API_KEYS)} API keys (round-robin)")
 except Exception:
@@ -90,25 +94,105 @@ def _parse_retry_after(body: str) -> float | None:
     return None
 
 
+def _get_vertex_token() -> str:
+    """Acquire an OAuth access token for Vertex AI."""
+    # 1. Check if GCP_ADC_JSON is set in the environment (used in production / Fly.io)
+    gcp_adc_json = os.environ.get("GCP_ADC_JSON")
+    if gcp_adc_json:
+        try:
+            import google.auth
+            import google.auth.transport.requests
+            
+            # If base64 encoded, decode it
+            if not gcp_adc_json.strip().startswith("{"):
+                import base64
+                gcp_adc_json = base64.b64decode(gcp_adc_json).decode("utf-8")
+                
+            info = json.loads(gcp_adc_json)
+            if info.get("type") == "service_account":
+                from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+                creds = ServiceAccountCredentials.from_service_account_info(
+                    info, scopes=["https://www.googleapis.com/auth/cloud-platform"]
+                )
+            else:
+                from google.oauth2.credentials import Credentials as UserCredentials
+                creds = UserCredentials.from_authorized_user_info(info)
+                
+            auth_req = google.auth.transport.requests.Request()
+            creds.refresh(auth_req)
+            if creds.token:
+                return creds.token
+        except Exception as e:
+            print(f"[VERTEX] Failed to load credentials from GCP_ADC_JSON: {e}")
+
+    # 2. Try standard google.auth
+    try:
+        import google.auth
+        import google.auth.transport.requests
+        creds, _ = google.auth.default()
+        auth_req = google.auth.transport.requests.Request()
+        creds.refresh(auth_req)
+        if creds.token:
+            return creds.token
+    except Exception:
+        pass
+
+    # 3. Fall back to gcloud CLI (local development)
+    import subprocess
+    try:
+        return subprocess.check_output("gcloud auth print-access-token", shell=True).decode("utf-8").strip()
+    except Exception as e:
+        raise RuntimeError("No Google Cloud credentials found for Vertex AI. Run 'gcloud auth login'") from e
+
+
 def _post_once(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
-    creds = _api_key()
-    # ADC tokens use a Bearer Authorization header.
-    # API keys (both legacy "AIza" standard keys and new "AQ." auth keys) are sent via
-    # the x-goog-api-key header. The legacy ?key= query param does NOT work for AQ. keys
-    # (returns 401), so we always use the header form.
-    if creds.startswith("ADC:"):
-        token = creds[4:]  # Strip marker
-        url = f"{GEMINI_API_BASE}/{path}"
+    if getattr(settings, "USE_VERTEX_AI", False):
+        token = _get_vertex_token()
+        project = settings.GCP_PROJECT_ID
+        location = settings.GCP_LOCATION
+        # path is like "models/gemini-2.5-flash:generateContent" or "models/text-embedding-004:embedContent"
+        # We need to extract the model name and action
+        # e.g., models/gemini-2.5-flash:generateContent -> gemini-2.5-flash and generateContent
+        match = re.search(r"models/([^:]+):(.+)", path)
+        if match:
+            model_name = match.group(1)
+            action = match.group(2)
+        else:
+            model_name = "gemini-2.5-flash"
+            action = "generateContent"
+
+        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project}/locations/{location}/publishers/google/models/{model_name}:{action}"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {token}",
         }
+        # Vertex AI requires "role": "user" or "model" in the content structures
+        if "contents" in body:
+            new_contents = []
+            for item in body["contents"]:
+                if "parts" in item and "role" not in item:
+                    item["role"] = "user"
+                new_contents.append(item)
+            body["contents"] = new_contents
     else:
-        url = f"{GEMINI_API_BASE}/{path}"
-        headers = {
-            "Content-Type": "application/json",
-            "x-goog-api-key": creds,
-        }
+        creds = _api_key()
+        # ADC tokens use a Bearer Authorization header.
+        # API keys (both legacy "AIza" standard keys and new "AQ." auth keys) are sent via
+        # the x-goog-api-key header. The legacy ?key= query param does NOT work for AQ. keys
+        # (returns 401), so we always use the header form.
+        if creds.startswith("ADC:"):
+            token = creds[4:]  # Strip marker
+            url = f"{GEMINI_API_BASE}/{path}"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {token}",
+            }
+        else:
+            url = f"{GEMINI_API_BASE}/{path}"
+            headers = {
+                "Content-Type": "application/json",
+                "x-goog-api-key": creds,
+            }
     
     data = json.dumps(body).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers=headers)
@@ -122,13 +206,11 @@ def _post_once(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _post(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
-    """Send a request with immediate key failover.
+    """Send a request. For standard API keys, support immediate key failover.
+    For Vertex AI, make calls directly without key rotation."""
+    if getattr(settings, "USE_VERTEX_AI", False):
+        return _post_once(path, body)
 
-    On a rate-limit/server-busy error (429/503/500), instantly retry with the NEXT key
-    (round-robin, no backoff) until every configured key has been tried once. Only if all
-    keys fail in the same cycle does the error propagate, letting call_with_retry apply
-    its rate-limit backoff before the next cycle.
-    """
     attempts = max(1, len(_API_KEYS))
     last_exc: Optional[BaseException] = None
     for i in range(attempts):
@@ -199,62 +281,6 @@ def generate_text(
     temperature: float = 0.2,
 ) -> str:
     """Text generation with configurable model order and rate-limit aware retries."""
-    llm_provider = os.environ.get("AGENT_LLM_PROVIDER", "gemini").lower()
-    if llm_provider == "nvidia":
-        try:
-            from openai import OpenAI
-            api_key = getattr(settings, 'NVIDIA_API_KEY', '') or os.environ.get("NVIDIA_API_KEY", "")
-            nvidia_model = getattr(settings, 'NVIDIA_MODEL', '') or os.environ.get("NVIDIA_MODEL", "nvidia/nemotron-3-ultra-550b-a55b")
-            if not api_key:
-                raise ValueError("NVIDIA_API_KEY not set")
-            
-            client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=api_key)
-            
-            messages = []
-            if system_instruction:
-                messages.append({"role": "system", "content": system_instruction})
-            messages.append({"role": "user", "content": prompt})
-            
-            chat_completion = client.chat.completions.create(
-                model=nvidia_model,
-                messages=messages,
-                max_tokens=max_output_tokens,
-                temperature=temperature,
-            )
-            return chat_completion.choices[0].message.content
-        except Exception as exc:
-            print(f"[NVIDIA] Text generation failed: {exc}, falling back to Groq")
-            # Fall through to Groq as backup
-
-    if llm_provider == "groq" or llm_provider == "nvidia":
-        try:
-            from groq import Groq
-            api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
-            if not api_key:
-                raise ValueError("GROQ_API_KEY not set")
-            
-            client = Groq(api_key=api_key)
-            
-            # Map standard gemini/gpt/empty models to llama-3.3-70b-versatile
-            groq_model = model or settings.GEMINI_MODEL
-            if not groq_model or "gemini" in groq_model.lower() or "gpt" in groq_model.lower():
-                groq_model = "llama-3.3-70b-versatile"
-                
-            messages = []
-            if system_instruction:
-                messages.append({"role": "system", "content": system_instruction})
-            messages.append({"role": "user", "content": prompt})
-            
-            chat_completion = client.chat.completions.create(
-                model=groq_model,
-                messages=messages,
-                max_tokens=max_output_tokens,
-                temperature=temperature,
-            )
-            return chat_completion.choices[0].message.content
-        except Exception as exc:
-            print(f"[GROQ] Text generation failed: {exc}")
-
     models = _model_chain(model)
     last_error: Optional[Exception] = None
 
@@ -298,58 +324,6 @@ def generate_vision(
     temperature: float = 0.2,
 ) -> Dict[str, Any]:
     """Vision + text generation."""
-    vision_provider = getattr(settings, "VISION_PROVIDER", os.environ.get("VISION_PROVIDER", "gemini")).lower()
-    if vision_provider == "groq":
-        try:
-            from groq import Groq
-            api_key = settings.GROQ_API_KEY or os.environ.get("GROQ_API_KEY", "")
-            if not api_key:
-                raise ValueError("GROQ_API_KEY not set")
-            
-            if isinstance(image, Path):
-                raw = image.read_bytes()
-            elif isinstance(image, bytes):
-                raw = image
-            else:
-                raw = Path(image).read_bytes()
-            
-            b64 = base64.b64encode(raw).decode("ascii")
-            
-            client = Groq(api_key=api_key)
-            groq_model = os.environ.get("GROQ_VISION_MODEL") or getattr(settings, "GROQ_VISION_MODEL", "meta-llama/llama-4-scout-17b-16e-instruct")
-
-            def _call():
-                return client.chat.completions.create(
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {"type": "text", "text": prompt},
-                                {
-                                    "type": "image_url",
-                                    "image_url": {
-                                        "url": f"data:{mime_type};base64,{b64}",
-                                    },
-                                },
-                            ],
-                        }
-                    ],
-                    model=groq_model,
-                    max_tokens=max_output_tokens,
-                    temperature=temperature,
-                )
-
-            # Retry on 429/rate limits with backoff + minimal spacing between calls.
-            chat_completion = call_with_retry(_call, label=f"groq-vision-{groq_model}", max_retries=3)
-            text = chat_completion.choices[0].message.content
-            return {
-                "success": True,
-                "text": text,
-                "model_used": groq_model,
-            }
-        except Exception as exc:
-            return {"success": False, "error": str(exc), "text": "", "model_used": "groq-vision"}
-
     if isinstance(image, Path):
         raw = image.read_bytes()
     elif isinstance(image, bytes):

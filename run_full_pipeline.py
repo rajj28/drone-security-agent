@@ -37,9 +37,9 @@ def _set_env(session_id: str, use_mongo: bool, offline: bool, standard: bool) ->
         os.environ["USE_CLOUD_ANALYZER"] = "false"
         os.environ["SKIP_HF_APIS"] = "true"
     else:
-        os.environ.setdefault("USE_CLOUD_ANALYZER", "true")
+        os.environ.setdefault("USE_CLOUD_ANALYZER", "false")
         os.environ.setdefault("GPT_SINGLE_STAGE", "true")
-        os.environ.setdefault("SKIP_HF_APIS", "false")
+        os.environ.setdefault("SKIP_HF_APIS", "true")
 
 
 def main() -> int:

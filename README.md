@@ -1,4 +1,4 @@
-# 🛡️ Drone Security Analyst Agent
+# Drone Security Analyst Agent
 
 **AI-Powered Autonomous Security Surveillance System**
 
@@ -103,7 +103,7 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 | **Frontend** | React 19, TypeScript, Vite 8, Lucide Icons |
 | **Database** | MongoDB Atlas (session persistence) |
 | **Frame Processing** | OpenCV, FFmpeg, Pillow |
-| **Deployment** | Google Cloud Run, Docker multi-stage builds |
+| **Deployment** | Fly.io (recommended) or Google Cloud Run, Docker |
 | **Optional LLMs** | Groq (free tier), Ollama (local) |
 
 ---
@@ -343,9 +343,25 @@ These results are fused with Gemini's analysis for higher confidence scoring.
 
 ## Deployment
 
-### Google Cloud Run (Production)
+The project deploys as a single container serving both the FastAPI backend and the React frontend (static files served from `/frontend/dist/`).
 
-The project is deployed as a single container serving both the FastAPI backend and the React frontend (static files served from `/frontend/dist/`).
+### Fly.io (Recommended)
+
+Fly.io machines give the background video pipeline full CPU (Cloud Run throttles CPU once the HTTP response is sent) and suspend/resume in ~1s instead of cold-starting. Config lives in `fly.toml`.
+
+```bash
+# One-time setup
+fly apps create drone-security-agent
+fly secrets set GEMINI_API_KEY="..." PINECONE_API_KEY="..." MONGODB_URI="..."
+
+# Build frontend + deploy
+cd frontend && npm run build && cd ..
+fly deploy
+```
+
+See [FLY_DEPLOYMENT.md](FLY_DEPLOYMENT.md) for the full guide (secrets, scaling, troubleshooting).
+
+### Google Cloud Run (Alternative)
 
 ```bash
 # Build the production image

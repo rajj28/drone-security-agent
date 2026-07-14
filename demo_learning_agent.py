@@ -22,11 +22,11 @@ from src.simple_learning_agent import simple_learning_agent
 async def demo_learning_capabilities():
     """Demonstrate learning agent capabilities"""
     
-    print("🧠 INTELLIGENT LEARNING AGENT DEMONSTRATION")
+    print("INTELLIGENT LEARNING AGENT DEMONSTRATION")
     print("=" * 60)
     
     # Show current knowledge base
-    print("\n📚 Current Knowledge Base:")
+    print("\nCurrent Knowledge Base:")
     insights = simple_learning_agent.get_learning_insights()
     
     print(f"  Total Patterns Learned: {insights['total_patterns']}")
@@ -41,7 +41,7 @@ async def demo_learning_capabilities():
         print(f"  Top Pattern: {insights['top_patterns'][0]['description']} (frequency: {insights['top_patterns'][0]['frequency']})")
     
     # Process a new video with learning
-    print(f"\n🎥 Processing New Video with Learning...")
+    print(f"\nProcessing New Video with Learning...")
     
     indexer = VideoFolderIndexer()
     
@@ -63,7 +63,7 @@ async def demo_learning_capabilities():
     
     # Create video folder
     video_folder = indexer.create_video_folder(video_metadata)
-    print(f"✅ Created video folder: {video_folder}")
+    print(f"Created video folder: {video_folder}")
     
     # Simulate frame processing with learning
     frames_dir = Path("data/theft_analysis_frames")
@@ -83,7 +83,7 @@ async def demo_learning_capabilities():
             
             frames_list.append((frame_id, timestamp, frame_number))
         
-        print(f"✅ Copied {len(frames_list)} frames for learning analysis")
+        print(f"Copied {len(frames_list)} frames for learning analysis")
         
         # Process frames with learning
         telemetry_base = {
@@ -95,10 +95,10 @@ async def demo_learning_capabilities():
         
         await indexer.process_video_frames(video_metadata.video_id, frames_list, telemetry_base)
         
-        print(f"✅ Completed learning analysis")
+        print(f"Completed learning analysis")
         
         # Show learning results
-        print(f"\n🧠 Learning Results for {video_metadata.video_id}:")
+        print(f"\nLearning Results for {video_metadata.video_id}:")
         
         # Get video learning profile
         profile = simple_learning_agent.video_profiles.get(video_metadata.video_id)
@@ -116,14 +116,14 @@ async def demo_learning_capabilities():
             
             if 'adaptive_confidence' in frame_analysis.get('analysis_result', {}):
                 adaptive_result = frame_analysis['analysis_result']
-                print(f"\n🎯 Adaptive Analysis for {first_frame_id}:")
+                print(f"\nAdaptive Analysis for {first_frame_id}:")
                 print(f"  Original Confidence: {adaptive_result.get('original_analysis', {}).get('gpt4o_enhanced', {}).get('confidence', 0):.2f}")
                 print(f"  Adaptive Confidence: {adaptive_result.get('adaptive_confidence', 0):.2f}")
                 print(f"  Recognized Patterns: {adaptive_result.get('recognized_patterns', [])}")
                 print(f"  Similar Videos: {adaptive_result.get('similar_videos', [])}")
         
         # Show updated knowledge base
-        print(f"\n📈 Updated Knowledge Base:")
+        print(f"\nUpdated Knowledge Base:")
         updated_insights = simple_learning_agent.get_learning_insights()
         
         print(f"  Total Patterns: {updated_insights['total_patterns']} (+{updated_insights['total_patterns'] - insights['total_patterns']})")
@@ -142,7 +142,7 @@ async def demo_learning_capabilities():
             print(f"  Total Behaviors Learned: {trends['total_behaviors_learned']}")
     
     # Demonstrate pattern recognition
-    print(f"\n🔍 Pattern Recognition Demo:")
+    print(f"\nPattern Recognition Demo:")
     test_texts = [
         "Person reaching for pocket and concealing phone",
         "Individual looking around nervously before grabbing item",
@@ -156,26 +156,26 @@ async def demo_learning_capabilities():
         print(f"    Recognized: {patterns}")
     
     # Show knowledge graph connections
-    print(f"\n🕸️ Knowledge Graph Connections:")
+    print(f"\nKnowledge Graph Connections:")
     for pattern, videos in list(simple_learning_agent.knowledge_graph.items())[:5]:
         if pattern.startswith('pattern_') or pattern.startswith('similar_videos_'):
             continue
         print(f"  {pattern}: {len(videos)} videos")
     
-    print(f"\n🎯 Learning Agent Benefits:")
-    print(f"  ✅ Learns from every video analyzed")
-    print(f"  ✅ Remembers patterns and incidents")
-    print(f"  ✅ Adapts threat detection over time")
-    print(f"  ✅ Provides contextual analysis")
-    print(f"  ✅ Builds cumulative knowledge")
-    print(f"  ✅ Recognizes similar behaviors")
-    print(f"  ✅ Improves confidence scoring")
-    print(f"  ✅ Creates video-specific learning profiles")
+    print(f"\nLearning Agent Benefits:")
+    print(f"  Learns from every video analyzed")
+    print(f"  Remembers patterns and incidents")
+    print(f"  Adapts threat detection over time")
+    print(f"  Provides contextual analysis")
+    print(f"  Builds cumulative knowledge")
+    print(f"  Recognizes similar behaviors")
+    print(f"  Improves confidence scoring")
+    print(f"  Creates video-specific learning profiles")
 
 async def demo_cross_video_learning():
     """Demonstrate cross-video pattern learning"""
     
-    print(f"\n🔄 CROSS-VIDEO LEARNING DEMONSTRATION")
+    print(f"\nCROSS-VIDEO LEARNING DEMONSTRATION")
     print("=" * 60)
     
     # Process multiple videos to show cross-video learning
@@ -204,7 +204,7 @@ async def demo_cross_video_learning():
     
     # Process each video
     for video_info in videos:
-        print(f"\n📹 Processing {video_info['video_id']}...")
+        print(f"\nProcessing {video_info['video_id']}...")
         
         video_metadata = VideoMetadata(
             video_id=video_info['video_id'],
@@ -257,7 +257,7 @@ async def demo_cross_video_learning():
                 print(f"  Adaptation Level: {profile.adaptation_level}%")
     
     # Show cross-video insights
-    print(f"\n🌐 Cross-Video Learning Insights:")
+    print(f"\nCross-Video Learning Insights:")
     
     # Show video similarities
     videos = list(simple_learning_agent.video_profiles.keys())
@@ -273,13 +273,13 @@ async def demo_cross_video_learning():
         if pattern.startswith('pattern_') or 'pattern' in pattern:
             pattern_videos[pattern].extend(video_list)
     
-    print(f"\n🔄 Shared Patterns Across Videos:")
+    print(f"\nShared Patterns Across Videos:")
     for pattern, video_list in pattern_videos.items():
         if len(video_list) > 1:
             print(f"  {pattern}: {len(video_list)} videos")
     
     # Final knowledge summary
-    print(f"\n📊 Final Knowledge Summary:")
+    print(f"\nFinal Knowledge Summary:")
     final_insights = simple_learning_agent.get_learning_insights()
     
     print(f"  Total Patterns: {final_insights['total_patterns']}")
@@ -302,6 +302,6 @@ if __name__ == "__main__":
     # Run cross-video learning
     asyncio.run(demo_cross_video_learning())
     
-    print(f"\n🎉 LEARNING AGENT DEMONSTRATION COMPLETE!")
-    print(f"📁 Knowledge Base: {simple_learning_agent.knowledge_base_path}")
-    print(f"🧠 The agent is now smarter and will continue learning from each video!")
+    print(f"\nLEARNING AGENT DEMONSTRATION COMPLETE!")
+    print(f"Knowledge Base: {simple_learning_agent.knowledge_base_path}")
+    print(f"The agent is now smarter and will continue learning from each video!")

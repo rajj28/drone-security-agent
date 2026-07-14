@@ -82,7 +82,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
         {/* Left: PDF */}
         <div style={{ borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem' }}>
-            📄 Assignment Document (Original PDF)
+            Assignment Document (Original PDF)
           </div>
           <iframe 
             src="/assignment.pdf#toolbar=0&view=FitH" 
@@ -94,7 +94,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
         {/* Right: Implementation Checklist */}
         <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <div style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>✅ What We Implemented</span>
+            <span>What We Implemented</span>
           </div>
           <div style={{ flexGrow: 1, overflowY: 'auto', padding: '1.5rem' }}>
             {requirements.map((section, sIdx) => (

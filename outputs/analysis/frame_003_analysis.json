@@ -1,30 +1,39 @@
 {
   "frame_id": "frame_003",
-  "timestamp": "16:00:02",
+  "timestamp": "16:01:07",
   "location": "Garage",
-  "raw_response": "I'm unable to view or analyze images directly. However, if you provide a description of the scene, I can help you interpret or analyze it based on the details you give.",
-  "_parsing_failed": true,
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "scene_type": "unknown",
-  "object_details": [],
-  "person_features": [],
-  "vehicle_details": [],
-  "security_signals": [],
-  "alert_reasoning": "Review frame manually",
-  "alert_priority_signals": [],
-  "objects_detected": [],
+  "threat_level": "MEDIUM",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "Two people are visible in a retail store. One person is standing behind the counter with their hands on the glass case, while the other person is sitting on a red stool in front of the counter.",
+  "scene_type": "retail",
+  "people_count": 2,
+  "objects_detected": [
+    "person",
+    "glass case",
+    "phones"
+  ],
+  "person_features": [
+    "Person 1: standing behind counter with hands on glass case, facing downwards towards the case",
+    "Person 2: sitting on a red stool, back to the camera, facing the counter"
+  ],
   "vehicles_detected": [],
-  "suspicious_elements": [],
-  "people_count": 0,
-  "vlm_description": "Scene analysis unavailable.",
-  "activity": "Unknown activity",
-  "recommended_action": "Review frame manually",
+  "activity": "Person 1 appears to be handling or looking into the glass case while Person 2 is sitting and possibly waiting or observing",
+  "security_signals": [
+    "person_handling_merchandise",
+    "lingering_near_counter"
+  ],
+  "suspicious_elements": [
+    "person_reaching_towards_merchandise"
+  ],
+  "reasoning": "The person behind the counter could be an employee or someone unauthorized. Their hands are on the glass case which contains merchandise, potentially indicating an interest in the items. The second person is sitting and not engaging with staff, which could imply they are waiting for an opportunity to act. Given the context of a retail environment during business hours, this behavior is suspicious but not conclusively threatening.",
+  "recommended_action": "Monitor the situation closely, observe if Person 1 starts to take any items from the case or if Person 2 interacts with Person 1 in a suspicious manner.",
+  "confidence": 0.7,
+  "object_details": [],
+  "vehicle_details": [],
+  "alert_reasoning": "Monitor the situation closely, observe if Person 1 starts to take any items from the case or if Person 2 interacts with Person 1 in a suspicious manner.",
+  "alert_priority_signals": [],
+  "threat_assessment": "MEDIUM",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 1980
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 2895
 }

@@ -9,6 +9,7 @@ api.py — FastAPI backend for Drone Security Analyst Agent.
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
 from pathlib import Path
@@ -79,19 +80,30 @@ def check_ffmpeg():
     """Verify ffmpeg is installed."""
     try:
         import subprocess
-        result = subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=5)
+        result = subprocess.run(['ffmpeg', '-version'], capture_output=True, timeout=15)
         if result.returncode == 0:
             version = result.stdout.decode().split('\n')[0]
-            logger.info(f"✅ FFmpeg available: {version[:60]}")
+            logger.info(f"FFmpeg available: {version[:60]}")
             return True
         else:
-            logger.error("❌ FFmpeg not working properly")
+            logger.error("FFmpeg not working properly")
             return False
     except Exception as e:
-        logger.error(f"❌ FFmpeg not found: {e}")
+        logger.error(f"FFmpeg not found: {e}")
         return False
 
 FFMPEG_AVAILABLE = check_ffmpeg()
+
+def ffmpeg_available() -> bool:
+    """Return ffmpeg availability, re-probing if the boot-time check failed.
+
+    The startup probe can time out on a cold-started machine, and a stale
+    False here would permanently block video processing.
+    """
+    global FFMPEG_AVAILABLE
+    if not FFMPEG_AVAILABLE:
+        FFMPEG_AVAILABLE = check_ffmpeg()
+    return FFMPEG_AVAILABLE
 
 app = FastAPI(
     title="Drone Security Analyst API",
@@ -109,6 +121,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Compress JSON/static responses (big win for session/frame list payloads)
+app.add_middleware(GZipMiddleware, minimum_size=1024)
+
+
+@app.middleware("http")
+async def add_cache_headers(request, call_next):
+    """Long-cache immutable assets: Vite-hashed bundles and per-session frame images."""
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/assets/"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    elif "/frame-image/" in path and response.status_code == 200:
+        response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
 @app.get("/api")
 def api_info():
     """API information endpoint"""
@@ -121,7 +148,16 @@ def api_info():
             "frames": "/frames",
             "sessions": "/sessions",
             "upload": "/upload-video",
-            "search": "/search"
+            "search": "/search",
+            "qa": "/qa",
+            "alerts": "/alerts",
+            "session_summary": "/session-summary",
+        },
+        "features": {
+            "semantic_search": True,
+            "security_qa_agent": True,
+            "robust_frame_preprocess": bool(settings.ROBUST_PREPROCESS),
+            "cloud_analyzer": os.getenv("USE_CLOUD_ANALYZER", str(settings.USE_CLOUD_ANALYZER)).lower() in ("1", "true", "yes"),
         },
         "documentation": "/docs"
     }
@@ -175,7 +211,7 @@ def health():
         "timestamp": datetime.now().isoformat(),
         "version": "2.0.0",
         "system": "drone-security-agent",
-        "ffmpeg_available": FFMPEG_AVAILABLE,
+        "ffmpeg_available": ffmpeg_available(),
         "mongodb_connected": mongodb_storage.is_connected(),
         "persistence": "mongodb" if mongodb_storage.is_connected() else "memory-only"
     }
@@ -276,7 +312,8 @@ def debug_status():
     checks.append({"name": "MongoDB (Sessions)", "status": mongo_status, "detail": "Connected" if mongo_status == "ok" else "Not connected", "provider": "mongodb"})
     
     # 6. FFmpeg
-    checks.append({"name": "FFmpeg (Video Processing)", "status": "ok" if FFMPEG_AVAILABLE else "missing", "detail": "Installed" if FFMPEG_AVAILABLE else "Not found in PATH", "provider": "system"})
+    ffmpeg_ok = ffmpeg_available()
+    checks.append({"name": "FFmpeg (Video Processing)", "status": "ok" if ffmpeg_ok else "missing", "detail": "Installed" if ffmpeg_ok else "Not found in PATH", "provider": "system"})
     
     # Overall status
     critical_issues = [c for c in checks if c["status"] in ["error", "invalid_key", "missing"]]
@@ -332,7 +369,7 @@ def debug_clear_sessions():
 async def upload_sample_video(
     background_tasks: BackgroundTasks,
     extraction_strategy: str = "hybrid",
-    max_frames: int = 15
+    max_frames: int = 30
 ):
     """Upload the bundled sample video for demo/tour purposes."""
     import shutil
@@ -396,7 +433,7 @@ async def upload_video(
     file: UploadFile = File(...),
     session_id: Optional[str] = None,
     extraction_strategy: str = "hybrid",
-    max_frames: int = 100
+    max_frames: int = 30
 ):
     """
     Upload and process a video file for security analysis with intelligent frame extraction.
@@ -554,6 +591,57 @@ def list_sessions():
     
     return {"sessions": formatted_sessions, "source": "mongodb" if mongodb_storage.is_connected() else "memory"}
 
+@app.delete("/sessions/{session_id}")
+def delete_session_endpoint(session_id: str):
+    """
+    Cancel a running session pipeline (if active), delete the session metadata
+    from database, and delete all associated files and results from disk.
+    """
+    logger.info(f"Received request to delete/cancel session: {session_id}")
+    
+    # 1. Mark as cancelled in memory so running threads terminate immediately
+    from src.cancellation import cancel_session
+    cancel_session(session_id)
+
+    # 1b. If this is an active live capture, stop its stream/ingestion first
+    from src.live_capture import get_live_session, remove_live_session
+    live = get_live_session(session_id)
+    if live:
+        live.stop()
+        remove_live_session(session_id)
+        logger.info(f"Stopped active live capture for session {session_id}")
+    
+    # 2. Try to remove metadata from MongoDB / local memory cache
+    db_deleted = False
+    if mongodb_storage.is_connected():
+        try:
+            db_deleted = mongodb_storage.delete_session(session_id)
+        except Exception as e:
+            logger.error(f"Failed to delete session {session_id} from MongoDB: {e}")
+            
+    if session_id in processing_status:
+        processing_status.pop(session_id)
+        
+    # 3. Delete session directory from disk
+    import shutil
+    session_dir = Path("data/sessions") / session_id
+    disk_deleted = False
+    
+    if session_dir.exists():
+        try:
+            shutil.rmtree(session_dir, ignore_errors=True)
+            disk_deleted = True
+            logger.info(f"Deleted directory for session {session_id} from disk")
+        except Exception as e:
+            logger.error(f"Could not immediately delete directory for session {session_id}: {e}")
+
+    return {
+        "session_id": session_id,
+        "message": "Session cancellation and deletion request processed.",
+        "db_deleted": db_deleted,
+        "disk_deleted": disk_deleted
+    }
+
 async def keep_alive_heartbeat(session_id: str, interval: int = 60):
     """
     Keep-alive heartbeat to prevent Render free tier from sleeping during long operations.
@@ -692,6 +780,9 @@ def _run_pipeline_sync(session_id: str, video_path: str, session_dir: str, extra
 
 def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
     """Synchronous pipeline body (runs in a worker thread). Executes all stages in-process."""
+    from src.cancellation import is_cancelled, clear_cancellation
+    if is_cancelled(session_id):
+        raise RuntimeError("Session cancelled by user request.")
     try:
         import sys
         import subprocess
@@ -704,15 +795,15 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         save_session_status(session_id, status_update)
         
         # Step 1: Check ffmpeg availability
-        if not FFMPEG_AVAILABLE:
-            logger.error(f"[{session_id}] ❌ FFmpeg not available - cannot extract frames!")
+        if not ffmpeg_available():
+            logger.error(f"[{session_id}] FFmpeg not available - cannot extract frames!")
             status_update = get_session_status(session_id) or {}
             status_update["status"] = "failed"
             status_update["error"] = "FFmpeg not installed"
             save_session_status(session_id, status_update)
             return
         
-        logger.info(f"[{session_id}] ✅ FFmpeg available, starting frame extraction")
+        logger.info(f"[{session_id}] FFmpeg available, starting frame extraction")
         
         # Step 2: Extract frames using intelligent extractor
         logger.info(f"[PIPELINE] Starting frame extraction for session {session_id}")
@@ -892,6 +983,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("frame_extraction")
         status_update["progress"] = 20
+        from src.cancellation import is_cancelled
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
         
         # Step 2: Generate telemetry
         status_update["current_step"] = "generating_telemetry"
@@ -928,7 +1022,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("telemetry_generation")
         status_update["progress"] = 40
-        
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+            
         # Step 3: Vision analysis
         status_update["current_step"] = "analyzing_frames"
         save_session_status(session_id, status_update)
@@ -964,7 +1060,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("vision_analysis")
         status_update["progress"] = 60
-        
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+            
         # Step 3b: Index frames in Pinecone for semantic search
         status_update["current_step"] = "indexing_frames"
         save_session_status(session_id, status_update)
@@ -979,7 +1077,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
             logger.info(f"[PIPELINE] Pinecone indexing completed for session {session_id}")
         except Exception as exc:
             logger.warning(f"[PIPELINE] Pinecone indexing failed (non-fatal): {exc}")
-        
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+            
         # Step 4: Alert generation
         status_update["current_step"] = "generating_alerts"
         save_session_status(session_id, status_update)
@@ -996,7 +1096,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("alert_generation")
         status_update["progress"] = 80
-        
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+            
         # Step 5: Person tracking
         status_update["current_step"] = "tracking_persons"
         save_session_status(session_id, status_update)
@@ -1018,7 +1120,9 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update = get_session_status(session_id) or {}
         status_update.setdefault("processing_steps", []).append("person_tracking")
         status_update["progress"] = 90
-        
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+            
         # Step 6: Session summary
         status_update["current_step"] = "generating_summary"
         save_session_status(session_id, status_update)
@@ -1051,6 +1155,26 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         
     except Exception as e:
         error_msg = str(e)
+        from src.cancellation import is_cancelled, clear_cancellation
+        if is_cancelled(session_id) or "cancelled by user request" in error_msg:
+            logger.info(f"Pipeline caught cancellation for session {session_id}. Cleaning up and exiting.")
+            # Restore original settings
+            settings.EXTRACTED_DIR = original_extracted_dir
+            settings.TELEMETRY_DIR = original_telemetry_dir
+            settings.OUTPUTS_DIR = original_outputs_dir
+            settings.SESSION_DIR = original_session_dir
+            settings.ANALYSIS_DIR = original_analysis_dir
+            settings.ALERTS_DIR = original_alerts_dir
+            settings.SESSION_ID = ""
+            os.environ.pop("SESSION_ID", None)
+            
+            # Clean directory from disk
+            import shutil
+            session_root = Path("data/sessions") / session_id
+            shutil.rmtree(session_root, ignore_errors=True)
+            clear_cancellation(session_id)
+            return
+            
         # Detect common issues and provide user-friendly messages
         if "429" in error_msg or "rate_limit" in error_msg or "tokens per day" in error_msg:
             user_error = "API quota exhausted (Groq daily limit). Please wait 10-15 minutes or check Debug panel for status."
@@ -1070,6 +1194,305 @@ def _run_pipeline_body(session_id: str, video_path: str, session_dir: str, extra
         status_update["error_detail"] = error_msg[:500]
         status_update["current_step"] = "failed"
         save_session_status(session_id, status_update)
+
+# ---------------------------------------------------------------------------
+# Live capture: drone / mobile camera feeds
+# ---------------------------------------------------------------------------
+
+@app.post("/live/start")
+def start_live_capture(payload: Optional[Dict[str, Any]] = None):
+    """
+    Start a live capture session.
+
+    Body:
+        source: "browser" (phone/laptop camera pushes frames) or
+                "stream" (server pulls a drone/IP-camera RTSP/RTMP/HTTP URL)
+        stream_url: required when source == "stream"
+        capture_interval: seconds between saved frames (stream mode, default 2)
+        max_frames: stop capturing after this many frames (default 60)
+    """
+    from src.live_capture import start_live_session
+
+    payload = payload or {}
+    source = payload.get("source", "browser")
+    if source not in ("browser", "stream"):
+        raise HTTPException(400, "source must be 'browser' or 'stream'")
+
+    stream_url = (payload.get("stream_url") or "").strip()
+    if source == "stream" and not stream_url:
+        raise HTTPException(400, "stream_url is required for stream source (e.g. rtsp://... from your drone)")
+
+    max_frames = max(5, min(500, int(payload.get("max_frames", 60))))
+    capture_interval = max(0.5, min(60.0, float(payload.get("capture_interval", 2.0))))
+
+    session_id = str(uuid.uuid4())
+    session_dir = Path("data") / "sessions" / session_id
+    extracted_dir = session_dir / "extracted"
+    extracted_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        start_live_session(
+            session_id,
+            extracted_dir,
+            source,
+            max_frames=max_frames,
+            stream_url=stream_url or None,
+            capture_interval=capture_interval,
+        )
+    except Exception as e:
+        raise HTTPException(400, f"Could not start live capture: {e}")
+
+    label = "Live Capture (camera)" if source == "browser" else f"Live Stream ({stream_url[:60]})"
+    save_session_status(session_id, {
+        "session_id": session_id,
+        "filename": label,
+        "status": "live",
+        "current_step": "capturing",
+        "progress": 0,
+        "upload_time": datetime.now().isoformat(),
+        "source": f"live-{source}",
+        "max_frames": max_frames,
+        "capture_interval": capture_interval,
+        "frame_count": 0,
+        "extracted_frames": [],
+        "session_dir": str(extracted_dir),
+    })
+    logger.info(f"[LIVE] Started {source} capture session {session_id} (max {max_frames} frames)")
+
+    return {
+        "session_id": session_id,
+        "status": "live",
+        "source": source,
+        "max_frames": max_frames,
+        "capture_interval": capture_interval,
+    }
+
+
+@app.post("/live/{session_id}/frame")
+async def push_live_frame(session_id: str, file: UploadFile = File(...)):
+    """Receive one camera frame (JPEG) from the browser during a live session."""
+    from src.live_capture import get_live_session
+
+    live = get_live_session(session_id)
+    if not live:
+        raise HTTPException(404, "No active live session with this id (already stopped?)")
+    if live.source != "browser":
+        raise HTTPException(400, "This live session captures from a stream URL; frames cannot be pushed")
+    if live.is_full():
+        return {"accepted": False, "reason": "max_frames reached", "frame_count": live.frame_count, "full": True}
+
+    data = await file.read()
+    if not data:
+        raise HTTPException(400, "Empty frame")
+
+    entry = live.add_frame_bytes(data)
+    status_update = get_session_status(session_id) or {}
+    status_update["frame_count"] = live.frame_count
+    save_session_status(session_id, status_update)
+
+    return {"accepted": True, "frame_count": live.frame_count, "full": live.is_full(), **entry}
+
+
+@app.get("/live/{session_id}/status")
+def live_capture_status(session_id: str):
+    """Poll live capture progress (frame count, stream errors, capacity)."""
+    from src.live_capture import get_live_session
+
+    live = get_live_session(session_id)
+    if not live:
+        # Session may already be stopped and analyzing — report from stored status
+        stored = get_session_status(session_id)
+        if stored:
+            return {"session_id": session_id, "capturing": False, "frame_count": stored.get("frame_count", 0),
+                    "status": stored.get("status"), "error": stored.get("error")}
+        raise HTTPException(404, "Live session not found")
+
+    return {
+        "session_id": session_id,
+        "capturing": True,
+        "source": live.source,
+        "frame_count": live.frame_count,
+        "max_frames": live.max_frames,
+        "full": live.is_full(),
+        "elapsed_seconds": round(time.time() - live.start_time, 1),
+        "error": live.error,
+    }
+
+
+@app.post("/live/{session_id}/stop")
+async def stop_live_capture(session_id: str, background_tasks: BackgroundTasks, analyze: bool = True):
+    """Stop a live capture and run the standard analysis pipeline on the captured frames."""
+    from src.live_capture import get_live_session, remove_live_session
+
+    live = get_live_session(session_id)
+    if not live:
+        raise HTTPException(404, "No active live session with this id")
+
+    live.stop()
+    remove_live_session(session_id)
+    logger.info(f"[LIVE] Stopped session {session_id} with {live.frame_count} frames")
+
+    status_update = get_session_status(session_id) or {}
+
+    if live.frame_count == 0:
+        status_update["status"] = "failed"
+        status_update["error"] = live.error or "No frames were captured"
+        status_update["current_step"] = "failed"
+        save_session_status(session_id, status_update)
+        return {"session_id": session_id, "frame_count": 0, "analysis_started": False,
+                "error": status_update["error"]}
+
+    # Produce the same artifacts an uploaded video would have at this point
+    session_root = Path("data") / "sessions" / session_id
+    live.write_extraction_log(session_root / "outputs")
+    frame_paths = [str(live.extracted_dir / f["filename"]) for f in live.frames]
+
+    status_update["extracted_frames"] = frame_paths
+    status_update["frame_count"] = live.frame_count
+    status_update["status"] = "processing" if analyze else "captured"
+    status_update["current_step"] = "queued" if analyze else "captured"
+    status_update["progress"] = 10 if analyze else 0
+    if live.error:
+        status_update["capture_warning"] = live.error
+    save_session_status(session_id, status_update)
+
+    if analyze:
+        background_tasks.add_task(process_live_pipeline, session_id)
+
+    return {
+        "session_id": session_id,
+        "frame_count": live.frame_count,
+        "analysis_started": analyze,
+        "capture_warning": live.error,
+    }
+
+
+async def process_live_pipeline(session_id: str):
+    """Async wrapper for live-session analysis, mirroring process_video_pipeline."""
+    import asyncio
+
+    heartbeat_task = asyncio.create_task(keep_alive_heartbeat(session_id, interval=60))
+    try:
+        await asyncio.to_thread(_run_live_analysis_sync, session_id)
+    finally:
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass
+
+
+def _run_live_analysis_sync(session_id: str):
+    with _pipeline_lock:
+        _run_live_analysis_body(session_id)
+
+
+def _run_live_analysis_body(session_id: str):
+    """
+    Run the analysis stages (telemetry → vision → index → alerts → tracking → summary)
+    on frames already captured live. Frame extraction is skipped: the live session
+    already wrote frame_*.jpg and extraction_log.json in the standard session layout.
+    """
+    import sys
+    from src.cancellation import is_cancelled, clear_cancellation
+
+    def check_cancelled():
+        if is_cancelled(session_id):
+            raise RuntimeError("Session cancelled by user request.")
+
+    # Stages mutate global settings via apply_session_layout; snapshot and restore.
+    _SETTING_ATTRS = ("SESSION_DIR", "EXTRACTED_DIR", "OUTPUTS_DIR", "TELEMETRY_DIR",
+                      "ANALYSIS_DIR", "ALERTS_DIR", "INDEX_DIR", "SESSION_ID")
+    snapshot = {attr: getattr(settings, attr, None) for attr in _SETTING_ATTRS}
+
+    env = os.environ.copy()
+    env["SESSION_ID"] = session_id
+
+    def update(step: str, progress: int):
+        status_update = get_session_status(session_id) or {}
+        status_update["status"] = "processing"
+        status_update["current_step"] = step
+        status_update["progress"] = progress
+        save_session_status(session_id, status_update)
+
+    try:
+        check_cancelled()
+
+        update("generating_telemetry", 20)
+        _run_stage(session_id, "telemetry", [sys.executable, "-m", "src.telemetry_generator"], env=env, timeout=300)
+        check_cancelled()
+
+        update("analyzing_frames", 40)
+        _run_stage(session_id, "vision", [sys.executable, "-m", "src.vision_analyzer"], env=env, timeout=600)
+        check_cancelled()
+
+        update("indexing_frames", 60)
+        try:
+            from src.pinecone_indexer import index_frames
+            from src.session_bootstrap import apply_session_layout
+            os.environ["SESSION_ID"] = session_id
+            settings.SESSION_ID = session_id
+            apply_session_layout(session_id)
+            index_frames()
+        except Exception as exc:
+            logger.warning(f"[LIVE PIPELINE] Pinecone indexing failed (non-fatal): {exc}")
+        check_cancelled()
+
+        update("generating_alerts", 75)
+        _run_stage(session_id, "alerts", [sys.executable, "-m", "src.alert_engine"], env=env, timeout=300)
+        check_cancelled()
+
+        update("tracking_persons", 85)
+        try:
+            _run_stage(session_id, "tracking", [sys.executable, "src/person_tracker.py"], env=env, timeout=300)
+        except Exception as exc:
+            logger.warning(f"[LIVE PIPELINE] Person tracking failed (non-fatal): {exc}")
+        check_cancelled()
+
+        update("generating_summary", 95)
+        _run_stage(session_id, "summary", [sys.executable, "-m", "src.summarizer"], env=env, timeout=300)
+
+        status_update = get_session_status(session_id) or {}
+        status_update["status"] = "completed"
+        status_update["current_step"] = "completed"
+        status_update["progress"] = 100
+        status_update["completion_time"] = datetime.now().isoformat()
+        save_session_status(session_id, status_update)
+        logger.info(f"[LIVE PIPELINE] Analysis completed for live session {session_id}")
+
+    except Exception as e:
+        error_msg = str(e)
+        if is_cancelled(session_id) or "cancelled by user request" in error_msg:
+            logger.info(f"[LIVE PIPELINE] Session {session_id} cancelled; cleaning up.")
+            import shutil
+            shutil.rmtree(Path("data/sessions") / session_id, ignore_errors=True)
+            clear_cancellation(session_id)
+            return
+        if "429" in error_msg or "rate_limit" in error_msg or "tokens per day" in error_msg:
+            user_error = "API quota exhausted (Groq daily limit). Please wait 10-15 minutes or check Debug panel for status."
+        elif "503" in error_msg or "DEGRADED" in error_msg:
+            user_error = "AI model temporarily unavailable (server-side issue). Please retry in a few minutes."
+        elif "401" in error_msg or "invalid" in error_msg.lower():
+            user_error = "API key invalid or expired. Check your .env configuration."
+        elif "timeout" in error_msg.lower():
+            user_error = "Processing timed out. Try capturing fewer frames."
+        else:
+            user_error = error_msg[:200]
+        logger.error(f"[LIVE PIPELINE] Analysis failed for session {session_id}: {error_msg}")
+        status_update = get_session_status(session_id) or {}
+        status_update["status"] = "failed"
+        status_update["error"] = user_error
+        status_update["error_detail"] = error_msg[:500]
+        status_update["current_step"] = "failed"
+        save_session_status(session_id, status_update)
+
+    finally:
+        for attr, value in snapshot.items():
+            if value is not None:
+                setattr(settings, attr, value)
+        settings.SESSION_ID = ""
+        os.environ.pop("SESSION_ID", None)
+
 
 @app.get("/frames")
 def list_frames():
@@ -1329,11 +1752,25 @@ def semantic_search(payload: Dict[str, Any]):
     session_id = payload.get("session_id")
     if not query:
         raise HTTPException(400, "Missing query")
-    # Set session context for namespace resolution
+    # Set session context for namespace resolution AND directory layout
     if session_id:
         os.environ["SESSION_ID"] = session_id
         settings.SESSION_ID = session_id
-    return search_frames(query, top_k)
+        from src.session_bootstrap import apply_session_layout
+        apply_session_layout(session_id)
+    try:
+        return search_frames(query, top_k)
+    except Exception as exc:
+        logger.error(f"Semantic search failed: {exc}")
+        # Return an empty-but-valid response so the frontend can display a message
+        return {
+            "query": query,
+            "namespace": session_id or settings.PINECONE_NAMESPACE,
+            "integrated_inference": settings.PINECONE_USE_INTEGRATED,
+            "timestamp": datetime.now().isoformat(),
+            "results": [],
+            "error": f"Search unavailable: {str(exc)[:200]}",
+        }
 
 
 @app.post("/qa")
@@ -1348,8 +1785,19 @@ def ask_qa(payload: Dict[str, Any]):
         settings.SESSION_ID = session_id
         from src.session_bootstrap import apply_session_layout
         apply_session_layout(session_id)
-    agent = SecurityQAAgent()
-    return agent.answer(question)
+    try:
+        agent = SecurityQAAgent()
+        return agent.answer(question)
+    except Exception as exc:
+        logger.error(f"QA agent failed: {exc}")
+        # Return a graceful fallback so the frontend chat doesn't just say "connection error"
+        return {
+            "question": question,
+            "answer": f"I was unable to process your question due to a backend issue: {str(exc)[:200]}. Please ensure the video has been fully processed and Pinecone is indexed.",
+            "sources": [],
+            "confidence": 0,
+            "error": str(exc)[:200],
+        }
 
 @app.get("/alerts")
 def get_all_alerts():
@@ -1404,14 +1852,11 @@ def get_high_alerts():
 @app.get("/sessions/{session_id}/frame-image/{frame_name}")
 def get_session_frame_image(session_id: str, frame_name: str):
     """Serve a frame image for a specific session from MongoDB GridFS or filesystem"""
-    logger.info(f"[FRAME IMAGE] Request for session: {session_id}, frame: {frame_name}")
-    
     # Try MongoDB GridFS first
     mongo_storage = get_mongodb_storage()
     if mongo_storage.is_connected():
         image_data = mongo_storage.get_frame_image(session_id, frame_name)
         if image_data:
-            logger.info(f"[FRAME IMAGE] Serving from MongoDB GridFS: {frame_name}")
             return Response(content=image_data, media_type="image/jpeg")
     
     # Security: ensure frame_name doesn't contain path traversal
@@ -1443,22 +1888,14 @@ def get_session_frame_image(session_id: str, frame_name: str):
     session_status = get_session_status(session_id)
     if session_status:
         stored_frames = session_status.get("extracted_frames", [])
-        logger.info(f"[FRAME IMAGE] Stored frames count: {len(stored_frames)}")
-        logger.info(f"[FRAME IMAGE] Looking for: {frame_name}")
-        for i, frame_path in enumerate(stored_frames[:3]):  # Log first 3
-            logger.info(f"[FRAME IMAGE] Stored[{i}]: {frame_path}")
         for frame_path in stored_frames:
             if frame_name in str(frame_path):
                 possible_paths.insert(0, Path(frame_path))
-                logger.info(f"[FRAME IMAGE] Found stored path: {frame_path}")
                 break
-    
+
     # Try each path
-    logger.info(f"[FRAME IMAGE] Checking {len(possible_paths)} possible paths for {frame_name}")
-    for i, img_path in enumerate(possible_paths):
-        logger.info(f"[FRAME IMAGE] Path {i}: {img_path} - exists: {img_path.exists()}")
+    for img_path in possible_paths:
         if img_path.exists():
-            logger.info(f"[FRAME IMAGE] Found frame at: {img_path}")
             return FileResponse(
                 img_path,
                 media_type="image/jpeg",

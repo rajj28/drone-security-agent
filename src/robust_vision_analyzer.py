@@ -13,12 +13,15 @@ import json
 import time
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List
-from PIL import Image, ImageEnhance, ImageFilter
-import cv2
-import numpy as np
+from typing import Dict, Any, Optional, List, Union
 from openai import OpenAI
 from src.config import settings
+from src.frame_preprocessor import (
+    assess_image_quality,
+    preprocess_frame_image,
+    quality_prompt_hints,
+    preprocessing_enabled,
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -33,56 +36,6 @@ class RobustVisionAnalyzer:
         self.error_count = 0
         self.fallback_count = 0
         
-    def _preprocess_image(self, image_path: Path) -> Optional[Image.Image]:
-        """Preprocess image for better analysis with various enhancements."""
-        try:
-            # Load image
-            img = Image.open(image_path)
-            
-            # Convert to RGB if necessary
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            
-            # Check image quality and apply enhancements
-            img_array = np.array(img)
-            
-            # Calculate image quality metrics
-            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
-            blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
-            brightness = np.mean(gray)
-            contrast = np.std(gray)
-            
-            logger.info(f"Image quality - Blur: {blur_score:.2f}, Brightness: {brightness:.2f}, Contrast: {contrast:.2f}")
-            
-            # Apply enhancements based on quality
-            if blur_score < 100:  # Blurry image
-                logger.info("Applying sharpening filter")
-                img = img.filter(ImageFilter.SHARPEN)
-                self.fallback_count += 1
-            
-            if brightness < 50:  # Dark image
-                logger.info("Applying brightness enhancement")
-                enhancer = ImageEnhance.Brightness(img)
-                img = enhancer.enhance(1.5)
-                self.fallback_count += 1
-            
-            if contrast < 30:  # Low contrast
-                logger.info("Applying contrast enhancement")
-                enhancer = ImageEnhance.Contrast(img)
-                img = enhancer.enhance(1.5)
-                self.fallback_count += 1
-            
-            # Resize if too large (to reduce API costs and improve processing)
-            if img.size[0] > 1920 or img.size[1] > 1080:
-                img.thumbnail((1920, 1080), Image.Resampling.LANCZOS)
-                logger.info(f"Resized image to {img.size}")
-            
-            return img
-            
-        except Exception as e:
-            logger.error(f"Image preprocessing failed: {e}")
-            return None
-    
     def _get_adaptive_prompt(self, telemetry: Dict[str, Any], image_quality: Dict[str, float]) -> str:
         """Generate adaptive prompt based on telemetry and image quality."""
         base_prompt = (
@@ -183,32 +136,37 @@ class RobustVisionAnalyzer:
             f"}}"
         )
     
-    def _analyze_with_fallback(self, image_path: Path, system_prompt: str, user_prompt: str, telemetry: Dict[str, Any]) -> Dict[str, Any]:
+    def _analyze_with_fallback(
+        self,
+        image_path: Path,
+        system_prompt: str,
+        user_prompt: str,
+        telemetry: Dict[str, Any],
+        image_bytes: Optional[bytes] = None,
+    ) -> Dict[str, Any]:
         """Analyze image with multiple fallback strategies."""
-        
-        # Try original image first
-        try:
-            result = self._single_analysis_attempt(image_path, system_prompt, user_prompt)
-            if result and self._validate_analysis(result):
-                return result
-        except Exception as e:
-            logger.warning(f"Primary analysis failed: {e}")
-        
-        # Fallback 1: Enhanced image
-        logger.info("Trying fallback 1: Enhanced image")
-        try:
-            enhanced_img = self._preprocess_image(image_path)
-            if enhanced_img:
-                # Save enhanced version temporarily
-                enhanced_path = image_path.parent / f"enhanced_{image_path.name}"
-                enhanced_img.save(enhanced_path)
-                
-                result = self._single_analysis_attempt(enhanced_path, system_prompt, user_prompt)
+        sources: List[Union[Path, bytes]] = []
+        if image_bytes is not None:
+            sources.append(image_bytes)
+        sources.append(image_path)
+
+        for source in sources:
+            try:
+                result = self._single_analysis_attempt(source, system_prompt, user_prompt)
                 if result and self._validate_analysis(result):
-                    enhanced_path.unlink()  # Clean up
                     return result
-                
-                enhanced_path.unlink()  # Clean up
+            except Exception as e:
+                logger.warning(f"Analysis attempt failed: {e}")
+
+        # Fallback 1: Force-enhanced image via shared preprocessor
+        logger.info("Trying fallback 1: Force-enhanced image")
+        try:
+            enhanced_bytes, _ = preprocess_frame_image(image_path, force=True)
+            if enhanced_bytes:
+                self.fallback_count += 1
+                result = self._single_analysis_attempt(enhanced_bytes, system_prompt, user_prompt)
+                if result and self._validate_analysis(result):
+                    return result
         except Exception as e:
             logger.warning(f"Fallback 1 failed: {e}")
         
@@ -230,12 +188,19 @@ class RobustVisionAnalyzer:
         logger.info("Using fallback 3: Default analysis")
         return self._create_default_analysis(telemetry, image_path.name)
     
-    def _single_analysis_attempt(self, image_path: Path, system_prompt: str, user_prompt: str) -> Optional[Dict[str, Any]]:
+    def _single_analysis_attempt(
+        self,
+        image_source: Union[Path, bytes],
+        system_prompt: str,
+        user_prompt: str,
+    ) -> Optional[Dict[str, Any]]:
         """Single attempt at image analysis."""
         try:
-            # Encode image
-            with open(image_path, "rb") as image_file:
-                base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+            if isinstance(image_source, bytes):
+                raw_bytes = image_source
+            else:
+                raw_bytes = image_source.read_bytes()
+            base64_image = base64.b64encode(raw_bytes).decode("utf-8")
             
             # Make API call
             response = self.client.chat.completions.create(
@@ -356,31 +321,33 @@ class RobustVisionAnalyzer:
     def analyze_frame(self, frame_path: Path, telemetry: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze a single frame with robust error handling."""
         try:
-            # Calculate image quality
-            img_array = np.array(Image.open(frame_path))
-            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
-            image_quality = {
-                'blur_score': cv2.Laplacian(gray, cv2.CV_64F).var(),
-                'brightness': np.mean(gray),
-                'contrast': np.std(gray)
-            }
-            
-            # Get adaptive prompts
+            if preprocessing_enabled():
+                image_bytes, image_quality = preprocess_frame_image(frame_path)
+            else:
+                image_quality = assess_image_quality(frame_path)
+                image_bytes = None
+
             system_prompt = self._get_adaptive_prompt(telemetry, image_quality)
-            user_prompt = self._get_enhanced_user_prompt(telemetry)
-            
-            # Perform analysis with fallbacks
-            analysis = self._analyze_with_fallback(frame_path, system_prompt, user_prompt, telemetry)
-            
-            # Add metadata
+            user_prompt = self._get_enhanced_user_prompt(telemetry) + quality_prompt_hints(image_quality)
+
+            analysis = self._analyze_with_fallback(
+                frame_path,
+                system_prompt,
+                user_prompt,
+                telemetry,
+                image_bytes=image_bytes,
+            )
+
             analysis['frame_id'] = frame_path.stem
             analysis['timestamp'] = telemetry.get('timestamp', '')
             analysis['location'] = telemetry.get('location', '')
+            analysis['image_quality'] = image_quality
             analysis['processing_metadata'] = {
                 'image_quality': image_quality,
                 'processing_time': time.time(),
                 'fallback_used': self.fallback_count > 0,
-                'analysis_method': 'robust_vision_analyzer'
+                'analysis_method': 'robust_vision_analyzer',
+                'preprocessed': bool(image_quality.get('preprocessed')),
             }
             
             self.processed_count += 1
@@ -411,7 +378,7 @@ def analyze_frame_robust(frame_path: Path, telemetry: Dict[str, Any]) -> Dict[st
 
 def run_robust_analysis():
     """Run robust analysis on all frames."""
-    logger.info("🔍 Starting robust vision analysis...")
+    logger.info("Starting robust vision analysis...")
     
     # Get all analysis files
     analysis_files = sorted(settings.ANALYSIS_DIR.glob("frame_*_analysis.json"))
@@ -443,14 +410,14 @@ def run_robust_analysis():
                 json.dump(analysis, f, indent=2, ensure_ascii=False)
             
             processed_count += 1
-            logger.info(f"✅ Processed {frame_id}")
+            logger.info(f"Processed {frame_id}")
             
         except Exception as e:
-            logger.error(f"❌ Error processing {frame_id}: {e}")
+            logger.error(f"Error processing {frame_id}: {e}")
     
     # Print statistics
     stats = analyzer.get_processing_stats()
-    logger.info(f"\n📊 Robust Analysis Statistics:")
+    logger.info(f"\nRobust Analysis Statistics:")
     logger.info(f"   Frames processed: {stats['processed_count']}")
     logger.info(f"   Errors: {stats['error_count']}")
     logger.info(f"   Fallbacks used: {stats['fallback_count']}")

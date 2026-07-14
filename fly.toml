@@ -1,0 +1,45 @@
+# fly.toml — Fly.io configuration for the Drone Security Analyst Agent
+#
+# Deploy with:  fly deploy
+# Full guide:   FLY_DEPLOYMENT.md
+
+app = "drone-security-agent"
+primary_region = "sin"   # Singapore - has high capacity and low latency to India
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  PIPELINE_MODE = "in_process"
+  USE_CLOUD_ANALYZER = "true"
+  ROBUST_PREPROCESS = "true"
+  SKIP_HF_APIS = "false"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # "suspend" resumes in ~1s instead of a full cold boot — this is what fixes
+  # the slow first request you saw on Cloud Run's scale-to-zero.
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  # Set to 1 to keep the app always warm (costs more, zero wake latency).
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  # Video decoding + vision pipeline needs headroom; shared-cpu-2x/2GB is the
+  # practical minimum. CPU is never throttled mid-pipeline (unlike Cloud Run).
+  size = "shared-cpu-4x"
+  memory = "2gb"

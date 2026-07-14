@@ -1,36 +1,43 @@
 {
   "frame_id": "frame_004",
-  "timestamp": "16:00:03",
+  "timestamp": "16:01:08",
   "location": "Back Entrance",
-  "vlm_description": "The frame shows an exterior scene at the back entrance of a building. There are two people present.",
-  "scene_type": "exterior",
+  "threat_level": "HIGH",
+  "threat_type": "suspicious_behavior",
+  "vlm_description": "Two men are in a retail store. One man is behind the counter, and the other is standing opposite him. The man behind the counter has his back to the camera and is reaching into the display case. The other man is looking down at the counter.",
+  "scene_type": "retail",
   "people_count": 2,
-  "person_features": [
-    "Person_1: Standing near the door, looking around.",
-    "Person_2: Walking towards the entrance, holding a bag."
-  ],
   "objects_detected": [
-    "door",
-    "bag"
+    "person",
+    "person",
+    "display_case",
+    "phones"
   ],
-  "activity": "One person is approaching the entrance while another is standing by.",
-  "security_signals": [],
-  "suspicious_elements": [],
-  "threat_level": "CLEAR",
-  "threat_type": "clear",
-  "reasoning": "Initial observation - no security assessment",
-  "recommended_action": "Continue monitoring",
+  "person_features": [
+    "Person 1: behind the counter, back to camera, reaching into display case, unknown facial expression, handling merchandise",
+    "Person 2: standing opposite the counter, looking down, hands near counter"
+  ],
+  "vehicles_detected": [],
+  "activity": "The man behind the counter is reaching into the display case. The other man is standing and looking down.",
+  "security_signals": [
+    "reaching_towards_merchandise",
+    "lingering_without_purpose",
+    "person_1: back to camera, reaching into display case,"
+  ],
+  "suspicious_elements": [
+    "person_behind_counter_without_authorization",
+    "hands_near_merchandise",
+    "reaching"
+  ],
+  "reasoning": "The man behind the counter is reaching into the display case, which could indicate a theft attempt. The presence of another person watching suggests potential collaboration or distraction. This behavior is suspicious and warrants a higher threat level.",
+  "recommended_action": "Security personnel should investigate the situation immediately to verify if the individuals have authorization to handle the merchandise.",
   "confidence": 0.9,
   "object_details": [],
   "vehicle_details": [],
-  "alert_reasoning": "Continue monitoring",
+  "alert_reasoning": "Security threat detected: person_1: back to camera, reaching into display case,. Review frame immediately for suspicious activity.",
   "alert_priority_signals": [],
-  "vehicles_detected": [],
+  "threat_assessment": "HIGH",
   "reasoning_signals": [],
-  "clip_threat_score": 0,
-  "blip_caption": "",
-  "blip_insights": {},
-  "overall_threat_level": "UNKNOWN",
-  "model_used": "cloud-clip-blip-gpt4o",
-  "processing_time_ms": 2665
+  "model_used": "meta-llama/llama-4-scout-17b-16e-instruct",
+  "processing_time_ms": 16619
 }

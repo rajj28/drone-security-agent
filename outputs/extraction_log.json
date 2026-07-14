@@ -1,8 +1,71 @@
 {
-  "total_frames": 0,
-  "video_duration_seconds": 3599,
-  "fps": 15,
-  "resolution": "1920x1080",
-  "codec": "hevc",
-  "frames": []
+  "extraction_strategy": "uniform",
+  "video_path": "Sneaky Thieves Caught Stealing Phones On Camera - Newsflare (1080p, h264) (1).mp4",
+  "total_frames_extracted": 5,
+  "total_frames": 5,
+  "extraction_timestamp": 1783523783.809221,
+  "frames": [
+    {
+      "frame_number": 1,
+      "filename": "frame_001.jpg",
+      "timestamp": 0.0,
+      "file_size_kb": 200.7734375,
+      "extraction_time_ms": 101.32408142089844,
+      "motion_score": 0.0,
+      "scene_change_score": 0.0,
+      "importance_score": 0.3,
+      "extraction_reason": "uniform"
+    },
+    {
+      "frame_number": 2,
+      "filename": "frame_002.jpg",
+      "timestamp": 20.0,
+      "file_size_kb": 224.3984375,
+      "extraction_time_ms": 164.2301082611084,
+      "motion_score": 0.0,
+      "scene_change_score": 0.0,
+      "importance_score": 0.3,
+      "extraction_reason": "uniform"
+    },
+    {
+      "frame_number": 3,
+      "filename": "frame_003.jpg",
+      "timestamp": 40.0,
+      "file_size_kb": 231.53125,
+      "extraction_time_ms": 160.3868007659912,
+      "motion_score": 0.0,
+      "scene_change_score": 0.0,
+      "importance_score": 0.3,
+      "extraction_reason": "uniform"
+    },
+    {
+      "frame_number": 4,
+      "filename": "frame_004.jpg",
+      "timestamp": 60.0,
+      "file_size_kb": 222.2734375,
+      "extraction_time_ms": 144.60468292236328,
+      "motion_score": 0.0,
+      "scene_change_score": 0.0,
+      "importance_score": 0.3,
+      "extraction_reason": "uniform"
+    },
+    {
+      "frame_number": 5,
+      "filename": "frame_005.jpg",
+      "timestamp": 80.0,
+      "file_size_kb": 223.818359375,
+      "extraction_time_ms": 137.56728172302246,
+      "motion_score": 0.0,
+      "scene_change_score": 0.0,
+      "importance_score": 0.3,
+      "extraction_reason": "uniform"
+    }
+  ],
+  "statistics": {
+    "avg_file_size_kb": 220.558984375,
+    "avg_extraction_time_ms": 141.62259101867676,
+    "avg_importance_score": 0.3,
+    "motion_frames": 0,
+    "scene_change_frames": 0
+  }
 }

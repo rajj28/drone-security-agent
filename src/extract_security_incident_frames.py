@@ -16,9 +16,9 @@ for i in range(200):
 def extract_frames_at_timestamps():
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
-    print("🚁 Drone Security Agent — Frame Extractor")
+    print("Drone Security Agent — Frame Extractor")
     print("=" * 45)
-    print(f"📹 Extracting {len(TIMESTAMPS)} frames spread across 1 hour\n")
+    print(f"Extracting {len(TIMESTAMPS)} frames spread across 1 hour\n")
 
     extracted = []
 
@@ -42,18 +42,18 @@ def extract_frames_at_timestamps():
 
         if result.returncode == 0 and Path(output_path).exists():
             size_kb = Path(output_path).stat().st_size / 1024
-            print(f"   ✅ {frame_name}.jpg @ {mins:02d}:{secs:02d} ({size_kb:.1f} KB)")
+            print(f"   {frame_name}.jpg @ {mins:02d}:{secs:02d} ({size_kb:.1f} KB)")
             extracted.append(output_path)
         else:
-            print(f"   ❌ Failed at {mins:02d}:{secs:02d} — {result.stderr[:50]}")
+            print(f"   Failed at {mins:02d}:{secs:02d} — {result.stderr[:50]}")
 
-    print(f"\n🎯 Done! {len(extracted)}/{len(TIMESTAMPS)} frames extracted")
-    print(f"📁 Saved to: {OUTPUT_DIR}")
+    print(f"\nDone! {len(extracted)}/{len(TIMESTAMPS)} frames extracted")
+    print(f"Saved to: {OUTPUT_DIR}")
     return extracted
 
 if __name__ == "__main__":
     if not Path(MP4_FILE).exists():
-        print(f"❌ File not found: {MP4_FILE}")
+        print(f"File not found: {MP4_FILE}")
         sys.exit(1)
 
     extract_frames_at_timestamps()

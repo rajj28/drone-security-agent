@@ -63,7 +63,7 @@ def _retry_delay(exc: BaseException, attempt: int, base_delay: float) -> float:
     retry_after = getattr(exc, "retry_after_sec", None)
     if retry_after is not None and retry_after > 0:
         return min(retry_after + 0.5, 60.0)
-    return min(base_delay * (2**attempt), 45.0)
+    return min(base_delay * (2**attempt), 30.0)
 
 
 class ApiRateLimiter:
@@ -107,9 +107,12 @@ def get_rate_limiter() -> ApiRateLimiter:
             try:
                 from src.config import settings
 
-                interval = float(settings.API_MIN_INTERVAL_SEC)
+                if getattr(settings, "USE_VERTEX_AI", False):
+                    interval = 2.5
+                else:
+                    interval = float(settings.API_MIN_INTERVAL_SEC)
             except Exception:
-                interval = float(os.environ.get("API_MIN_INTERVAL_SEC", "12"))
+                interval = float(os.environ.get("API_MIN_INTERVAL_SEC", "4"))
             _limiter = ApiRateLimiter(interval)
     return _limiter
 
@@ -118,7 +121,7 @@ def call_with_retry(
     fn: Callable[[], T],
     *,
     max_retries: int = 4,
-    base_delay: float = 2.0,
+    base_delay: float = 1.5,
     label: str = "api",
 ) -> T:
     """Retry with backoff on 429/503; honor Retry-After when parsed; fail fast on quota."""

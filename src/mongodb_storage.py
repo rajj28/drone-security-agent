@@ -45,11 +45,11 @@ class MongoDBStorage:
             # self.sessions_collection.create_index("session_id", unique=True)
             # self.sessions_collection.create_index("created_at", ASCENDING)
             
-            logger.info("✅ MongoDB connected successfully (no indexes)")
+            logger.info("MongoDB connected successfully (no indexes)")
             return True
             
         except Exception as e:
-            logger.error(f"❌ MongoDB connection failed: {e}")
+            logger.error(f"MongoDB connection failed: {e}")
             self.client = None
             return False
     
@@ -78,10 +78,10 @@ class MongoDBStorage:
                 {"$set": data},
                 upsert=True
             )
-            logger.info(f"✅ Session {session_id} saved to MongoDB")
+            logger.info(f"Session {session_id} saved to MongoDB")
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to save session: {e}")
+            logger.error(f"Failed to save session: {e}")
             return False
     
     def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
@@ -95,9 +95,24 @@ class MongoDBStorage:
                 {"_id": 0}  # Exclude MongoDB _id
             )
         except Exception as e:
-            logger.error(f"❌ Failed to get session: {e}")
+            logger.error(f"Failed to get session: {e}")
             return None
-    
+
+    def delete_session(self, session_id: str) -> bool:
+        """Delete session data and related GridFS images from MongoDB."""
+        if not self.is_connected():
+            return False
+        try:
+            self.sessions_collection.delete_one({"session_id": session_id})
+            gridfs_files = self.fs.find({"session_id": session_id})
+            for file_obj in gridfs_files:
+                self.fs.delete(file_obj._id)
+            logger.info(f"Session {session_id} and its files deleted from MongoDB")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to delete session {session_id} from MongoDB: {e}")
+            return False
+            
     def get_all_sessions(self) -> List[Dict[str, Any]]:
         """Get all sessions from MongoDB."""
         if not self.is_connected():
@@ -107,7 +122,7 @@ class MongoDBStorage:
             sessions = list(self.sessions_collection.find({}, {"_id": 0}))
             return sessions
         except Exception as e:
-            logger.error(f"❌ Failed to get sessions: {e}")
+            logger.error(f"Failed to get sessions: {e}")
             return []
     
     def save_frame_image(self, session_id: str, frame_name: str, image_data: bytes) -> str:
@@ -134,11 +149,11 @@ class MongoDBStorage:
                 content_type="image/jpeg"
             )
             
-            logger.info(f"✅ Frame {frame_name} saved to GridFS (ID: {file_id})")
+            logger.info(f"Frame {frame_name} saved to GridFS (ID: {file_id})")
             return str(file_id)
             
         except Exception as e:
-            logger.error(f"❌ Failed to save frame image: {e}")
+            logger.error(f"Failed to save frame image: {e}")
             return ""
     
     def get_frame_image(self, session_id: str, frame_name: str) -> Optional[bytes]:
@@ -161,7 +176,7 @@ class MongoDBStorage:
             return None
             
         except Exception as e:
-            logger.error(f"❌ Failed to get frame image: {e}")
+            logger.error(f"Failed to get frame image: {e}")
             return None
     
     def close(self):
