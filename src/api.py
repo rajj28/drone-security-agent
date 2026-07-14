@@ -369,7 +369,8 @@ def debug_clear_sessions():
 async def upload_sample_video(
     background_tasks: BackgroundTasks,
     extraction_strategy: str = "hybrid",
-    max_frames: int = 30
+    max_frames: int = 30,
+    use_cloud_enhancers: bool = False
 ):
     """Upload the bundled sample video for demo/tour purposes."""
     import shutil
@@ -418,6 +419,7 @@ async def upload_sample_video(
         session_dir=str(extracted_dir),
         extraction_strategy=extraction_strategy,
         max_frames=max_frames,
+        use_cloud_enhancers=use_cloud_enhancers,
     )
     
     return {
@@ -433,7 +435,8 @@ async def upload_video(
     file: UploadFile = File(...),
     session_id: Optional[str] = None,
     extraction_strategy: str = "hybrid",
-    max_frames: int = 30
+    max_frames: int = 30,
+    use_cloud_enhancers: bool = False
 ):
     """
     Upload and process a video file for security analysis with intelligent frame extraction.
@@ -545,7 +548,8 @@ async def upload_video(
             str(video_path),
             str(extracted_dir),  # Use session extracted folder
             extraction_strategy,
-            max_frames
+            max_frames,
+            use_cloud_enhancers
         )
         
         logger.info(f"Video uploaded: {file.filename} (Session: {session_id})")
@@ -746,7 +750,7 @@ def _run_stage(session_id: str, stage: str, subprocess_args: list, *, env=None, 
         raise Exception(f"{stage} stage failed: {result.stderr}")
 
 
-async def process_video_pipeline(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
+async def process_video_pipeline(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100, use_cloud_enhancers: bool = False):
     """
     Async wrapper: runs the heavy, blocking pipeline in a worker thread so the API
     event loop stays responsive (status polls, heartbeat) while processing runs.
@@ -758,7 +762,7 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
     logger.info(f"[{session_id}] Started keep-alive heartbeat for long processing")
     try:
         await asyncio.to_thread(
-            _run_pipeline_sync, session_id, video_path, session_dir, extraction_strategy, max_frames
+            _run_pipeline_sync, session_id, video_path, session_dir, extraction_strategy, max_frames, use_cloud_enhancers
         )
     finally:
         heartbeat_task.cancel()
@@ -768,13 +772,16 @@ async def process_video_pipeline(session_id: str, video_path: str, session_dir: 
             pass
 
 
-def _run_pipeline_sync(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100):
+def _run_pipeline_sync(session_id: str, video_path: str, session_dir: str, extraction_strategy: str = "hybrid", max_frames: int = 100, use_cloud_enhancers: bool = False):
     """
     Runs the pipeline body under a global lock. Pipeline stages mutate shared global
     settings (apply_session_layout), so concurrent runs must be serialized to avoid one
     session reading/writing another session's directories.
     """
     with _pipeline_lock:
+        # Per-run toggle for the HF CLIP+BLIP cross-check layer. Safe because runs
+        # are serialized under the lock; vision_analyzer reads this env at call time.
+        os.environ["USE_CLOUD_ANALYZER"] = "true" if use_cloud_enhancers else "false"
         _run_pipeline_body(session_id, video_path, session_dir, extraction_strategy, max_frames)
 
 

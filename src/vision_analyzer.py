@@ -42,6 +42,19 @@ USE_BLIP_ANALYZER = bool(getattr(settings, "USE_BLIP_ANALYZER", False))
 USE_CLIP_ANALYZER = bool(getattr(settings, "USE_CLIP_ANALYZER", False))
 USE_CLOUD_ANALYZER = bool(settings.USE_CLOUD_ANALYZER)
 
+
+def cloud_analyzer_enabled() -> bool:
+    """Runtime check for the cloud enhancer (HF CLIP+BLIP cross-check).
+
+    The pipeline sets USE_CLOUD_ANALYZER in os.environ per run (driven by the
+    dashboard's "Enable Cloud Enhancers" toggle), so the env value must win
+    over the boot-time settings default.
+    """
+    env = os.environ.get("USE_CLOUD_ANALYZER")
+    if env is not None:
+        return env.lower() in ("1", "true", "yes")
+    return USE_CLOUD_ANALYZER
+
 print(f"Analyzer Configuration:")
 print(f"  Ultimate Analyzer (Local CLIP+BLIP+GPT-4o): {USE_ULTIMATE_ANALYZER}")
 print(f"  Cloud Analyzer (HF CLIP+BLIP + Gemini): {USE_CLOUD_ANALYZER}")
@@ -958,7 +971,7 @@ def analyze_frame(
             print(f"Ultimate Analyzer failed, falling back to standard: {e}")
     
     # Use Cloud Analyzer if configured (Hugging Face API + Local GPT-4o)
-    if USE_CLOUD_ANALYZER:
+    if cloud_analyzer_enabled():
         try:
             from src.cloud_enhanced_analyzer import analyze_frame_cloud
             print("[CLOUD] Using Cloud-Enhanced Analyzer (HF CLIP + BLIP + Gemini)...")

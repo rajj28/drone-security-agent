@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, CheckCircle, AlertTriangle, RefreshCw, Music, Square } from 'lucide-react';
+import { UploadCloud, CheckCircle, AlertTriangle, RefreshCw, Music, Square, Sparkles } from 'lucide-react';
 
 const FUNNY_LINES = [
   "Teaching the AI the difference between a burglar and a very committed raccoon...",
@@ -35,6 +35,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ apiBase, onUploadSucce
   const [file, setFile] = useState<File | null>(null);
   const [strategy, setStrategy] = useState<string>('hybrid');
   const [maxFrames, setMaxFrames] = useState<number>(30);
+  const [cloudEnhancers, setCloudEnhancers] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -131,6 +132,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ apiBase, onUploadSucce
       const uploadUrl = new URL(`${apiBase}/upload-sample-video`);
       uploadUrl.searchParams.append('extraction_strategy', strategy);
       uploadUrl.searchParams.append('max_frames', maxFrames.toString());
+      uploadUrl.searchParams.append('use_cloud_enhancers', cloudEnhancers.toString());
 
       const res = await fetch(uploadUrl.toString(), {
         method: 'POST',
@@ -200,6 +202,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ apiBase, onUploadSucce
       const uploadUrl = new URL(`${apiBase}/upload-video`);
       uploadUrl.searchParams.append('extraction_strategy', strategy);
       uploadUrl.searchParams.append('max_frames', maxFrames.toString());
+      uploadUrl.searchParams.append('use_cloud_enhancers', cloudEnhancers.toString());
 
       const res = await fetch(uploadUrl.toString(), {
         method: 'POST',
@@ -352,9 +355,44 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ apiBase, onUploadSucce
           </div>
         </div>
 
-        <button 
-          className="btn btn-primary" 
-          disabled={!file || uploading} 
+        {/* Cloud Enhancers toggle — HF CLIP+BLIP cross-check for Gemini */}
+        <div
+          onClick={() => setCloudEnhancers(v => !v)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer',
+            padding: '0.85rem 1rem', borderRadius: '10px', marginBottom: '1.25rem',
+            background: cloudEnhancers ? 'rgba(168, 85, 247, 0.08)' : 'rgba(255,255,255,0.02)',
+            border: cloudEnhancers ? '1px solid rgba(168, 85, 247, 0.45)' : '1px solid var(--border-color)',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <Sparkles size={18} style={{ color: cloudEnhancers ? '#a855f7' : 'var(--text-muted)', flexShrink: 0 }} />
+          <div style={{ flexGrow: 1 }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: cloudEnhancers ? '#c084fc' : 'var(--text-main)' }}>
+              Enable Cloud Enhancers {cloudEnhancers ? '— ON' : ''}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+              Cross-checks Gemini with CLIP threat scoring + BLIP captioning (HuggingFace cloud GPUs).
+              Reduces hallucination and wrong analysis — recommended for production runs, slower per frame.
+            </div>
+          </div>
+          {/* Switch */}
+          <div style={{
+            width: '38px', height: '21px', borderRadius: '11px', flexShrink: 0, position: 'relative',
+            background: cloudEnhancers ? '#a855f7' : 'rgba(255,255,255,0.12)',
+            transition: 'background 0.2s ease',
+          }}>
+            <div style={{
+              position: 'absolute', top: '2.5px', left: cloudEnhancers ? '19px' : '3px',
+              width: '16px', height: '16px', borderRadius: '50%', background: 'white',
+              transition: 'left 0.2s ease',
+            }} />
+          </div>
+        </div>
+
+        <button
+          className="btn btn-primary"
+          disabled={!file || uploading}
           onClick={handleUpload}
           style={{ width: '100%' }}
         >

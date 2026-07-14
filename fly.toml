@@ -12,7 +12,9 @@ primary_region = "sin"   # Singapore - has high capacity and low latency to Indi
 [env]
   PORT = "8080"
   PIPELINE_MODE = "in_process"
-  USE_CLOUD_ANALYZER = "true"
+  # Default off — the dashboard's "Enable Cloud Enhancers" toggle turns the
+  # HF CLIP+BLIP cross-check on per run.
+  USE_CLOUD_ANALYZER = "false"
   ROBUST_PREPROCESS = "true"
   SKIP_HF_APIS = "false"
 
