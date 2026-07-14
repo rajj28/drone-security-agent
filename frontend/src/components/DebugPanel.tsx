@@ -155,17 +155,17 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.78rem' }}>
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '6px' }}>
               <strong style={{ color: '#ef4444' }}>Pipeline stuck at 40% (Vision stage)</strong>
-              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>Groq daily token limit (500K) exhausted. Fix: Wait 24h, OR use a new Groq account (different email), OR change <code>VISION_PROVIDER=gemini</code> in .env and restart server.</p>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>Gemini free-tier rate limit hit. Key rotation and backoff retry automatically — usually it recovers on its own. If persistent: add another <code>GEMINI_API_KEY_2/3</code> in .env, or raise <code>API_MIN_INTERVAL_SEC</code> and restart.</p>
             </div>
 
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '6px' }}>
-              <strong style={{ color: '#f59e0b' }}>503 Service Unavailable (NVIDIA)</strong>
-              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>NVIDIA NIM model temporarily down. Auto-retries built in. If persistent, wait 1-2 hours. System falls back to Groq automatically.</p>
+              <strong style={{ color: '#f59e0b' }}>503 Service Unavailable (HuggingFace CLIP/BLIP)</strong>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>HF Inference API model is cold-starting or down. Auto-retries built in. If persistent, run without the Cloud Enhancers toggle — Gemini analysis continues unaffected.</p>
             </div>
 
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '6px' }}>
               <strong style={{ color: '#f59e0b' }}>Frame analysis empty / same reasoning</strong>
-              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>Vision API failed silently. Check Groq status above. If "quota_exhausted" — that's the cause.</p>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>Vision API failed silently. Check Gemini status above. If "quota_exhausted" — that's the cause.</p>
             </div>
 
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '6px' }}>
@@ -180,7 +180,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
 
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '6px' }}>
               <strong style={{ color: '#818cf8' }}>Security Agent error / 503</strong>
-              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>LLM provider failing. Check NVIDIA status above. Fallback to Groq is automatic.</p>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>Gemini is failing or rate-limited. Key rotation and backoff retries are automatic — wait a minute and ask again.</p>
             </div>
 
             <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '6px' }}>
@@ -198,14 +198,15 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ apiBase }) => {
           <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
             <h5 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>Key .env Changes (restart server after)</h5>
             <pre style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: '#a7f3d0', lineHeight: '1.8', margin: 0 }}>
-{`# Switch vision if Groq exhausted:
-VISION_PROVIDER=gemini
+{`# Add extra Gemini keys (round-robin, multiplies quota):
+GEMINI_API_KEY_2=...
+GEMINI_API_KEY_3=...
 
 # Reduce frames if slow:
 MAX_FRAMES=10
 
-# Switch orchestration if NVIDIA down:
-AGENT_LLM_PROVIDER=groq`}
+# Slow down calls if hitting 429s:
+API_MIN_INTERVAL_SEC=4`}
             </pre>
           </div>
 

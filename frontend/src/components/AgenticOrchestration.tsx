@@ -73,7 +73,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
             </div>
             <div style={{ padding: '0.75rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#818cf8' }}>VLM Analysis</div>
-              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Groq llama-4-scout</div>
+              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Gemini 2.5 Flash (+ CLIP/BLIP)</div>
             </div>
             <div style={{ padding: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981' }}>Vector Index</div>
@@ -87,7 +87,7 @@ export const AgenticOrchestration: React.FC<AgenticOrchestrationProps> = ({ apiB
           {/* Orchestrator */}
           <div style={{ padding: '1rem', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15))', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '10px', marginBottom: '1.5rem' }}>
             <div style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.9rem', color: '#a78bfa', marginBottom: '0.75rem' }}>
-              AI ORCHESTRATOR — NVIDIA Nemotron-3-Ultra-550B
+              AI ORCHESTRATOR — Gemini 2.5
             </div>
             <div className="resp-grid-3" style={{ gap: '0.75rem' }}>
               <div style={{ padding: '0.6rem', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', textAlign: 'center' }}>

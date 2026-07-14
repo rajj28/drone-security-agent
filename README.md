@@ -104,7 +104,7 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 | **Database** | MongoDB Atlas (session persistence) |
 | **Frame Processing** | OpenCV, FFmpeg, Pillow |
 | **Deployment** | Fly.io (recommended) or Google Cloud Run, Docker |
-| **Optional LLMs** | Groq (free tier), Ollama (local) |
+| **Verification Ensemble** | HF CLIP + BLIP cloud enhancers (cross-check Gemini, toggle per run) |
 
 ---
 
@@ -209,13 +209,9 @@ PINECONE_DIMENSION=768
 PINECONE_USE_INTEGRATED=true       # Use llama-text-embed-v2 integrated inference
 PINECONE_NAMESPACE=drone-security
 
-# Optional: Cloud enhanced analysis (CLIP + BLIP)
+# Optional: Cloud Enhancers — CLIP + BLIP cross-check of Gemini analysis
+# (toggle per run from the dashboard's "Enable Cloud Enhancers" switch)
 HF_API_TOKEN=your_huggingface_token
-USE_CLOUD_ANALYZER=true
-
-# Optional: Free LLM for Q&A agent (saves Gemini quota)
-AGENT_LLM_PROVIDER=groq            # gemini, groq, ollama
-GROQ_API_KEY=your_groq_key
 
 # Optional: MongoDB persistence
 MONGODB_URI=mongodb+srv://...

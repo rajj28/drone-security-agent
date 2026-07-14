@@ -13,8 +13,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
         { text: "Feature spec (value + key requirements)", done: true, extra: "FEATURE_SPEC.md" },
         { text: "Architecture for telemetry & video pipeline", done: true, extra: "Multi-stage: Extract → Telemetry → VLM → Alerts → Summary" },
         { text: "Prototype implementation", done: true, extra: "Full-stack Python + React" },
-        { text: "Video frame analysis with AI", done: true, extra: "Groq VLM (llama-4-scout)" },
-        { text: "AI-generated component", done: true, extra: "Multi-agent orchestration (NVIDIA NIM)" },
+        { text: "Video frame analysis with AI", done: true, extra: "Gemini 2.5 Flash VLM" },
+        { text: "AI-generated component", done: true, extra: "Multi-agent orchestration (Gemini)" },
         { text: "Cross-domain frame indexing", done: true, extra: "Pinecone vector DB + semantic search" },
         { text: "QA test cases", done: true, extra: "42 pytest tests — all passing" },
       ]
@@ -31,14 +31,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
       category: "Bonus (Both Implemented)",
       items: [
         { text: "Video summarization", done: true, extra: "AI session summary with key events" },
-        { text: "Agent Q&A (follow-up questions)", done: true, extra: "Security Agent chat (NVIDIA Nemotron-550B)" },
+        { text: "Agent Q&A (follow-up questions)", done: true, extra: "Security Agent chat (Gemini + RAG)" },
       ]
     },
     {
       category: "Beyond Requirements",
       items: [
         { text: "Production React dashboard with real-time status", done: true, extra: "" },
-        { text: "Multi-model AI (Groq + NVIDIA NIM + Gemini)", done: true, extra: "" },
+        { text: "Multi-model AI (Gemini + CLIP + BLIP verification ensemble)", done: true, extra: "" },
         { text: "CLIP + BLIP + HuggingFace API support", done: true, extra: "Cloud enhanced analyzer pipeline" },
         { text: "Multi-agent orchestration with reasoning chains", done: true, extra: "" },
         { text: "AI Learning Agent (LangGraph state machine)", done: true, extra: "" },
@@ -65,8 +65,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
           </div>
         </div>
         <div className="landing-badges" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span className="tech-badge">Groq</span>
-          <span className="tech-badge">NVIDIA NIM</span>
+          <span className="tech-badge">Gemini</span>
+          <span className="tech-badge">CLIP + BLIP</span>
           <span className="tech-badge">Pinecone</span>
           <span className="tech-badge">LangChain</span>
           <span className="tech-badge">React</span>
@@ -126,8 +126,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterDashboard }) =>
             <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
               <h3 style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Architecture</h3>
               <pre style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: '#a7f3d0', lineHeight: '1.5', margin: 0 }}>
-{`Video → Frame Extractor (Hybrid Motion) → Groq VLM Analysis
-  → Pinecone Index → Alert Engine (Rules + NVIDIA NIM)
+{`Video → Frame Extractor (Hybrid Motion) → Gemini VLM Analysis
+  (+ CLIP/BLIP cloud enhancers) → Pinecone Index
+  → Alert Engine (Rules + Gemini LLM validation)
   → Session Summary → React Dashboard`}
               </pre>
             </div>

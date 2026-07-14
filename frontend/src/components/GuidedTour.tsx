@@ -22,7 +22,7 @@ const tourSteps = [
     title: 'Processing...',
     scrollTo: '.processing-card',
     action: 'wait', // Special action: wait for pipeline to finish
-    speech: "The pipeline is running. Frame extraction uses motion detection to find the most important moments — no boring static frames. Then Groq's vision model analyzes each frame, describing what it sees. After that, frames get indexed in Pinecone for semantic search, alerts are generated, and a session summary is created. Sit tight — I'll continue the tour once everything's ready.",
+    speech: "The pipeline is running. Frame extraction uses motion detection to find the most important moments — no boring static frames. Then Gemini's vision model analyzes each frame, describing what it sees. After that, frames get indexed in Pinecone for semantic search, alerts are generated, and a session summary is created. Sit tight — I'll continue the tour once everything's ready.",
     highlight: "Pipeline running: Extraction → Telemetry → Vision Analysis → Indexing → Alerts → Summary",
   },
   {
@@ -34,14 +34,14 @@ const tourSteps = [
       { type: 'scroll', selector: 'details', delay: 6000 },
     ],
     waitAfter: 4000,
-    speech: "Here we go — Frame Analysis. Each frame was analyzed by Groq's llama 4 scout vision model. Click any frame on the left sidebar. You see the actual image, drone telemetry data — GPS, altitude, speed — and the AI Scene Vision panel with people count, scene description, and detected objects in green. The reasoning section explains the threat logic. And scroll down — there's the full raw JSON payload with every data point the AI extracted.",
+    speech: "Here we go — Frame Analysis. Each frame was analyzed by Gemini's vision model — with optional CLIP and BLIP cross-checks when Cloud Enhancers are enabled. Click any frame on the left sidebar. You see the actual image, drone telemetry data — GPS, altitude, speed — and the AI Scene Vision panel with people count, scene description, and detected objects in green. The reasoning section explains the threat logic. And scroll down — there's the full raw JSON payload with every data point the AI extracted.",
     highlight: "Per-frame: VLM description, threat assessment, reasoning, detected objects, telemetry data.",
   },
   {
     tab: 'alerts',
     title: 'Alert Center',
     scrollTo: '.premium-card',
-    speech: "Alert Center — two-layer security system. First layer checks rules: after-hours activity, restricted zones, shoplifting patterns, suspicious hand movements. Second layer — an LLM powered by NVIDIA validates each alert and can escalate or dismiss. Only MEDIUM, HIGH, and CRITICAL alerts show here. Each alert has the frame, timestamp, and AI reasoning.",
+    speech: "Alert Center — two-layer security system. First layer checks rules: after-hours activity, restricted zones, shoplifting patterns, suspicious hand movements. Second layer — a Gemini-powered LLM validates each alert and can escalate or dismiss. Only MEDIUM, HIGH, and CRITICAL alerts show here. Each alert has the frame, timestamp, and AI reasoning.",
     highlight: "Two-layer alert system: Rule-based + LLM-validated. Filtered to MEDIUM/HIGH/CRITICAL.",
   },
   {
@@ -72,15 +72,15 @@ const tourSteps = [
       { type: 'click', selector: 'button[type="submit"], .btn-primary', delay: 5500 },
     ],
     waitAfter: 20000, // Wait 20s for AI response
-    speech: "Security Agent — conversational AI for follow-up questions. Watch — I'll ask: 'Was there any theft detected?'. It retrieves relevant frame data from Pinecone, combines it with the full analysis context, and generates a concise answer. Powered by NVIDIA Nemotron 550 billion parameters. This is the bonus Q&A feature the assignment mentioned.",
+    speech: "Security Agent — conversational AI for follow-up questions. Watch — I'll ask: 'Was there any theft detected?'. It retrieves relevant frame data from Pinecone, combines it with the full analysis context, and generates a concise answer. Powered by Gemini with retrieval-augmented context. This is the bonus Q&A feature the assignment mentioned.",
     highlight: "Natural language Q&A over video data. Evidence-based answers with source retrieval.",
   },
   {
     tab: 'orchestration',
     title: 'AI Orchestration',
     scrollTo: '.premium-card',
-    speech: "Multi-Agent Orchestration — three specialized agents coordinated by a central orchestrator. Analysis Agent for pattern recognition, QA Agent for validation, Question Agent for interaction. All running on NVIDIA NIM. The architecture diagram shows the full data flow. Production-grade design.",
-    highlight: "Multi-agent system: Analysis + QA + Question agents coordinated by NVIDIA NIM orchestrator.",
+    speech: "Multi-Agent Orchestration — three specialized agents coordinated by a central orchestrator. Analysis Agent for pattern recognition, QA Agent for validation, Question Agent for interaction. All running on Gemini. The architecture diagram shows the full data flow. Production-grade design.",
+    highlight: "Multi-agent system: Analysis + QA + Question agents coordinated by a Gemini orchestrator.",
   },
   {
     tab: 'debug',
