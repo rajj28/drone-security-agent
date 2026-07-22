@@ -22,7 +22,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Dict, Any, Union
+from typing import Dict, Any, Optional, Union
 from PIL import Image
 from src.config import settings
 from src.gemini_client import generate_vision
@@ -496,7 +496,14 @@ def _normalize_analysis(analysis: Dict[str, Any], telemetry: Dict[str, Any]) -> 
             normalized["alert_reasoning"] = f"Security threat detected: {', '.join(security_signals)}. Review frame immediately for suspicious activity."
     
     # RULE-BASED ALERT LAYER: Adjust threat level based on telemetry context
-    threat_level = normalized.get("threat_level", "UNKNOWN")
+    threat_level = str(normalized.get("threat_level", "UNKNOWN")).upper()
+    # The VLM sometimes invents labels outside the schema (seen live: "ELEVATED").
+    # Map them onto the 5-level scale so alert rules and MEDIUM+ filters still fire.
+    _LEVEL_ALIASES = {"ELEVATED": "HIGH", "SEVERE": "CRITICAL", "MODERATE": "MEDIUM",
+                      "NONE": "CLEAR", "NORMAL": "CLEAR", "SAFE": "CLEAR"}
+    threat_level = _LEVEL_ALIASES.get(threat_level, threat_level)
+    if threat_level not in ("CRITICAL", "HIGH", "MEDIUM", "LOW", "CLEAR"):
+        threat_level = "UNKNOWN"
     threat_type = normalized.get("threat_type", "unknown")
     is_after_hours = telemetry.get("is_after_hours", False)
     location = telemetry.get("location", "unknown")
@@ -892,13 +899,13 @@ def _save_offline_result(
     image_path: Path,
     telemetry: Dict[str, Any],
     output_dir: Path,
+    reason: Optional[str] = None,
 ) -> Dict[str, Any]:
     from src.offline_vision_fallback import analyze_frame_offline
-    from src.api_retry import quota_exhausted
 
-    reason = "OFFLINE_VISION=true" if _use_offline_vision() else "API quota/rate limit"
+    reason = reason or ("OFFLINE_VISION=true" if _use_offline_vision() else "API quota/rate limit")
     print(f"[VISION] Using offline fallback ({reason}) for {frame_id}")
-    result = analyze_frame_offline(frame_id, image_path, telemetry)
+    result = analyze_frame_offline(frame_id, image_path, telemetry, reason=reason)
     out_path = output_dir / f"{frame_id}_analysis.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
@@ -909,18 +916,23 @@ def analyze_frame(
     frame_id: str,
     image_path: Path,
     telemetry: Dict[str, Any],
-    output_dir: Path = settings.ANALYSIS_DIR
+    output_dir: Optional[Path] = None
 ) -> Dict[str, Any]:
     """
     Analyzes a frame using selected analyzer and saves the result as JSON.
     Returns the analysis dict.
-    
+
     OPTIMIZED: Supports multiple analyzers based on configuration:
     - Ultimate: CLIP + BLIP + GPT-4o (most accurate)
     - BLIP: BLIP + GPT-4o (good balance)
     - CLIP: CLIP + GPT-4o (fast)
     - Standard: GPT-4o only (fastest)
     """
+    # Resolved at call time: apply_session_layout() repoints settings.ANALYSIS_DIR
+    # per session, and a module-level default would freeze the first session's dir
+    # for the lifetime of an in-process API server.
+    if output_dir is None:
+        output_dir = settings.ANALYSIS_DIR
     print(f"\nAnalyzing {frame_id}...")
 
     from src.api_retry import quota_exhausted
@@ -1160,9 +1172,48 @@ def analyze_frame(
         print(f"Vision analysis failed for {frame_id}: {e}")
         if is_quota_exhausted_error(e):
             mark_quota_exhausted()
-        if quota_exhausted() or _use_offline_vision():
-            return _save_offline_result(frame_id, image_path, telemetry, output_dir)
-        return {}
+        # Never let a frame silently vanish with no analysis file on any failure —
+        # a missing frame is easy to miss entirely, whereas a clearly-labeled
+        # degraded result at least shows up and demands human review.
+        if _use_offline_vision():
+            reason = "OFFLINE_VISION=true"
+        elif quota_exhausted() or is_quota_exhausted_error(e):
+            reason = "API quota/rate limit"
+        else:
+            reason = f"Gemini call failed: {e}"
+        return _save_offline_result(frame_id, image_path, telemetry, output_dir, reason=reason)
+
+def _apply_concealment_escalation(result: Dict[str, Any], signal: Dict[str, Any], frame_id: str) -> None:
+    """Escalates `result` in place based on an object_continuity concealment signal
+    and rewrites the frame's analysis JSON on disk so downstream consumers
+    (alert engine, API, dashboard) see the escalated threat level."""
+    from src.object_continuity import escalate_severity
+
+    current = str(result.get("threat_level", "CLEAR") or "CLEAR").upper()
+    escalated = escalate_severity(current, signal["escalate_to"])
+    result["threat_level"] = escalated
+    result["threat_assessment"] = escalated.lower()
+    if result.get("threat_type") in (None, "clear", "unknown", ""):
+        result["threat_type"] = "theft_behavior"
+
+    signals = result.setdefault("security_signals", []) or []
+    if "possible_concealment" not in signals:
+        signals.append("possible_concealment")
+    result["security_signals"] = signals
+
+    elements = result.setdefault("suspicious_elements", []) or []
+    if signal["reason"] not in elements:
+        elements.append(signal["reason"])
+    result["suspicious_elements"] = elements
+
+    result["reasoning"] = (str(result.get("reasoning", "") or "") + " " + signal["reason"]).strip()
+    result["alert_reasoning"] = (str(result.get("alert_reasoning", "") or "") + " " + signal["reason"]).strip()
+
+    out_path = settings.ANALYSIS_DIR / f"{frame_id}_analysis.json"
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2)
+    print(f"[VISION] Object continuity: escalated {frame_id} to {escalated} ({signal['vanished_objects']})")
+
 
 def analyze_all_frames():
     """
@@ -1241,10 +1292,12 @@ def analyze_all_frames():
     result_map = {fid: (tel, res) for fid, tel, res in completed}
     
     from src.cancellation import is_cancelled
+    from src.object_continuity import concealment_signal, escalate_severity
     session_id = os.environ.get("SESSION_ID") or getattr(settings, "SESSION_ID", "")
     if is_cancelled(session_id):
         raise RuntimeError("Pipeline execution cancelled by user request.")
 
+    prev_result = None
     for i, frame in enumerate(frame_meta):
         frame_id = f"frame_{i+1:03}"
         if is_cancelled(session_id):
@@ -1253,13 +1306,24 @@ def analyze_all_frames():
             # Re-insert skipped/rejected placeholders
             all_results.append(None)
             continue
-            
+
         telemetry, result = result_map[frame_id]
+
+        # Object-continuity check: an item actively handled in the previous
+        # frame that has vanished here (with no set-down/hand-off visible) is
+        # a strong concealment signal that a single-frame VLM call can't see,
+        # since by the time it's concealed there's nothing left to look at.
+        if result and prev_result:
+            signal = concealment_signal(prev_result, result)
+            if signal:
+                _apply_concealment_escalation(result, signal, frame_id)
+
         all_results.append(result)
-        
+
         if result:
             alert_summary = derive_alert_from_analysis(result, telemetry)
             unified.record_frame(frame_id, telemetry, result, alert_summary)
+            prev_result = result
             
     # Save combined
     if is_cancelled(session_id):

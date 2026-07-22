@@ -16,6 +16,7 @@ from src.config import settings
 from src.gemini_client import generate_text
 from src.gemini_langchain import GeminiLangChain
 from src.behavioral_analyzer import analyze_behavioral_threats
+from src.object_continuity import concealment_signal, escalate_severity
 
 RULES = [
     (lambda a, t: t["is_after_hours"] and "person" in a.get("objects_detected", []), "HIGH", "after_hours_person"),
@@ -24,6 +25,12 @@ RULES = [
     (lambda a, t: t["is_after_hours"] and any(v not in ["sedan","SUV"] for v in a.get("vehicles_detected", [])), "HIGH", "unknown_vehicle_after_hours"),
     (lambda a, t: "loitering" in a.get("activity", "").lower(), "MEDIUM", "loitering_detected"),
     (lambda a, t: a.get("threat_assessment") == "high", "HIGH", "threat_assessment_high"),
+    # Frame never actually reached a real VLM (Gemini outage/quota/config error) —
+    # always surface this for human review rather than letting it silently pass
+    # as if a real "no threat" assessment had been made. Placed after the
+    # telemetry/content rules above so a degraded frame that's ALSO after-hours
+    # or in a restricted zone still gets the more severe, more specific rule.
+    (lambda a, t: "analysis_degraded" in (a.get("security_signals") or []), "MEDIUM", "analysis_degraded_needs_review"),
     
     # Generic security threats detection
     # 1. Intrusions / Trespassing / Fence climbing
@@ -193,9 +200,19 @@ def _build_context_summary(
     session_context: Dict[str, Any],
     alert_json: Dict[str, Any],
 ) -> str:
-    """Builds a concise cumulative summary for a processed alert frame."""
+    """Builds a concise cumulative summary for a processed alert frame.
+
+    Includes the actual objects/activity seen in this frame (not just running
+    counts) — the theft-reasoning LLM call for later frames reads these
+    summaries as its only window into what happened earlier in the session,
+    so without object-level detail it has no way to notice something a
+    person was holding has since disappeared.
+    """
+    objects = ", ".join(analysis.get("objects_detected", []) or []) or "none"
+    activity = (analysis.get("activity") or "")[:200]
     return (
         f"Frame {frame_id} reviewed at {telemetry.get('location', 'unknown location')} ({telemetry.get('timestamp', 'unknown time')}). "
+        f"Objects seen: {objects}. Activity: {activity}. "
         f"Cumulative status: {session_context.get('frames_analyzed', 0)} frames, "
         f"{session_context.get('total_alerts', 0)} alerts, {session_context.get('people_detected', 0)} people, "
         f"{session_context.get('vehicles_detected', 0)} vehicles. "
@@ -282,6 +299,7 @@ class AlertEngineAgent:
         self.memory = _AlertConversationMemory()
         self.session_context = self._load_session_context()
         self.alert_runs: List[Dict[str, Any]] = []
+        self._prev_analysis: Dict[str, Any] | None = None
 
     def _load_session_context(self) -> Dict[str, Any]:
         """Loads the rolling alert session context from disk."""
@@ -317,10 +335,19 @@ class AlertEngineAgent:
         analysis: Dict[str, Any],
         telemetry: Dict[str, Any],
         alert: Dict[str, Any],
+        continuity_signal: Dict[str, Any] | None = None,
     ) -> Dict[str, Any]:
         """Uses the LLM plus memory and recent context to reason about the alert."""
         recent_context = _load_recent_context_summaries(limit=4)
         recent_memory = self._serialize_recent_memory(limit=4)
+        continuity_block = ""
+        if continuity_signal:
+            continuity_block = (
+                "\nOBJECT CONTINUITY SIGNAL (deterministic, computed by comparing this frame's "
+                "objects_detected against the previous frame's — trust this over your own read of "
+                "the current frame alone, since a concealed object leaves nothing to see):\n"
+                f"{continuity_signal['reason']} Suggested minimum severity: {continuity_signal['escalate_to']}.\n"
+            )
         prompt = f"""
 You are the security alert reasoning layer for a surveillance monitoring system.
 Your job is to ACTIVELY DETECT threats — especially THEFT/SHOPLIFTING — from the frame
@@ -343,7 +370,7 @@ Theft is often spread ACROSS frames — use the recent context to connect action
 theft or threat is occurring, set "alert_triggered": true with the right severity, EVEN IF
 the initial threat level was CLEAR/NONE. If the scene is genuinely normal shopping/activity
 with no suspicious behavior, set severity "NONE".
-
+{continuity_block}
 Current frame:
 {json.dumps({
     'frame_id': frame_id,
@@ -495,11 +522,20 @@ Return JSON with keys:
         alert = rule_based_alert(analysis, telemetry)
         people_count = int(analysis.get("people_count", 0) or 0)
         has_people = people_count > 0 or bool(analysis.get("person_features"))
+
+        # Deterministic cross-frame check: did something this person was
+        # handling in the previous frame vanish here with no set-down visible?
+        # A single-frame analysis (rules or LLM) has no way to see this on its
+        # own, since the concealment itself leaves nothing behind to look at.
+        continuity = None
+        if self._prev_analysis is not None:
+            continuity = concealment_signal(self._prev_analysis, analysis)
+
         # Run the LLM reasoning layer on every frame that has people (not just rule-flagged
         # ones) so it can actively detect theft/suspicious behavior the rules miss. The LLM
         # may escalate a CLEAR/NONE frame into an alert.
-        if alert.get("severity") in ["MEDIUM", "HIGH"] or has_people:
-            llm_result = self._reason_about_alert(frame_id, analysis, telemetry, alert)
+        if alert.get("severity") in ["MEDIUM", "HIGH"] or has_people or continuity:
+            llm_result = self._reason_about_alert(frame_id, analysis, telemetry, alert, continuity)
             alert.update(llm_result)
             sev = str(alert.get("severity", "NONE")).upper()
             alert["severity"] = sev
@@ -510,6 +546,21 @@ Return JSON with keys:
                     or analysis.get("threat_type")
                     or "llm_detected_threat"
                 )
+
+        # Hard floor: even if the LLM reasoning layer talked itself out of it,
+        # don't let severity fall below what the deterministic signal implies.
+        if continuity:
+            floor = continuity["escalate_to"]
+            current_sev = alert.get("severity", "NONE")
+            escalated_sev = escalate_severity(current_sev, floor)
+            if escalated_sev != current_sev:
+                alert["severity"] = escalated_sev
+                alert["alert_triggered"] = True
+                alert["rule_triggered"] = alert.get("rule_triggered") or "object_continuity_concealment"
+                alert["llm_reasoning"] = (str(alert.get("llm_reasoning", "") or "") + " " + continuity["reason"]).strip()
+                alert.setdefault("context_signal", continuity["reason"])
+
+        self._prev_analysis = analysis
 
         alert_json = self._build_alert_json(frame_id, analysis, telemetry, alert)
         alert_json["structured_reasoning"] = {
@@ -572,6 +623,8 @@ Return JSON with keys:
             except Exception as exc:
                 print(f"Failed to process {frame_id}: {exc}")
 
+        results = self._run_object_continuity_audit(all_analysis, results)
+
         combined = {
             "session_date": time.strftime("%Y-%m-%d"),
             "total_alerts": sum(1 for item in results if item.get("alert_triggered")),
@@ -589,6 +642,63 @@ Return JSON with keys:
 
         self._write_agent_runs()
         print(f"\nCombined alerts saved to {settings.ALERTS_DIR / 'all_alerts.json'}")
+        return results
+
+    def _run_object_continuity_audit(
+        self,
+        all_analysis: List[Dict[str, Any]],
+        results: List[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """Follow-up QA pass: re-scans the whole session for handled-object-vanished
+        patterns and retroactively escalates any alert that's still weak despite one.
+
+        This exists as a second, independent line of defense on top of the inline
+        check in process_frame() — it catches sessions/re-runs where frames were
+        processed individually (e.g. one-off API re-analysis) so self._prev_analysis
+        never had a chance to build up, and it re-validates the whole sequence
+        rather than only ever looking one frame back.
+        """
+        frames = [f for f in all_analysis if f and f.get("frame_id")]
+        alerts_by_frame = {r.get("frame_id"): r for r in results if r.get("frame_id")}
+        audited = 0
+
+        for prev_frame, curr_frame in zip(frames, frames[1:]):
+            frame_id = curr_frame.get("frame_id")
+            signal = concealment_signal(prev_frame, curr_frame)
+            if not signal:
+                continue
+
+            alert_json = alerts_by_frame.get(frame_id)
+            if alert_json is None:
+                continue
+
+            current_sev = alert_json.get("severity", "NONE")
+            escalated_sev = escalate_severity(current_sev, signal["escalate_to"])
+            if escalated_sev == current_sev and alert_json.get("alert_triggered"):
+                continue  # already caught by the inline check or rules
+
+            audited += 1
+            alert_json["severity"] = escalated_sev
+            alert_json["alert_triggered"] = True
+            alert_json["rule_triggered"] = alert_json.get("rule_triggered") or "object_continuity_concealment"
+            alert_json["auto_escalate"] = escalated_sev in ("HIGH", "CRITICAL")
+            note = f"[Object-continuity audit] {signal['reason']}"
+            alert_json["llm_reasoning"] = (str(alert_json.get("llm_reasoning", "") or "") + " " + note).strip()
+            alert_json["recommended_action"] = alert_json.get("recommended_action") or "Review flagged frame — object disappeared from view between consecutive frames."
+            structured = alert_json.setdefault("structured_reasoning", {})
+            structured["severity"] = escalated_sev
+            structured["alert_triggered"] = True
+            structured["context_signal"] = note
+            structured.setdefault("llm_reasoning", alert_json["llm_reasoning"])
+
+            _write_json_file(settings.ALERTS_DIR / f"{frame_id}_alert.json", alert_json)
+            print(f"[AUDIT] Object continuity retroactively escalated {frame_id} to {escalated_sev}: {signal['vanished_objects']}")
+
+        if audited:
+            self._record_memory(
+                "Object continuity audit",
+                f"Retroactively escalated {audited} frame(s) where a handled object vanished without being set down in view.",
+            )
         return results
 
     def _write_agent_runs(self) -> None:

@@ -617,10 +617,10 @@ Return JSON with keys:
         history_hits = self.query_event_history(question, "all")
         prompt = f"""
 You are the Drone Security Analyst Agent.
-Answer the operator's question using the session context, retrieved frames, and event history.
-Be precise, concise, and operationally useful.
-
-CRITICAL OPERATIONAL REQUIREMENT: If the session context or retrieved frames show suspects accessing a store counter, handling objects near display cases, entering staff-only areas, or coordinating behavior in a retail setting, the final verdict for the session is theft. When answering, provide a complete, detailed response addressing the question fully. Include specific details about the people, the retail shop context, and the theft behavior (manipulating phones/display counters). Do not use extremely brief one-word answers; ensure all expected details (such as counts and descriptions) are present along with the theft verdict.
+Answer the operator's question using ONLY the session context, retrieved frames, and event history
+provided below — do not invent people, objects, locations, or incidents that aren't in this data.
+Be precise, concise, and operationally useful. If nothing suspicious is present in the data, say so
+plainly instead of describing an incident that didn't happen.
 
 Question:
 {question}
@@ -644,86 +644,45 @@ Respond in JSON with keys:
 }}
 """
         
-        # Helper to ensure all expected evaluation keywords are present in the final answer
-        def post_process_agent_answer(q: str, ans: str, session_context: Dict[str, Any]) -> str:
-            ans_lower = ans.lower()
-            
-            # 1. Suspicious activity question
-            if "suspicious" in q.lower():
-                required = ["phone", "theft", "retail", "shop", "person", "suspicious"]
-                missing = [r for r in required if r not in ans_lower and (r != "theft" or "steal" not in ans_lower)]
-                if missing or len(ans) < 20:
-                    return "The suspicious activity in this session is a retail shop theft where a person or group of suspects was caught stealing a phone from the display counter."
-            
-            # 2. People count question
-            if "how many" in q.lower() or "people" in q.lower():
-                required = ["people", "person"]
-                missing = [r for r in required if r not in ans_lower]
-                # Try to count people from context summaries or fallback
-                people_count = session_context.get("people_detected", 21)
-                if people_count == 0:
-                    people_count = 21
-                has_number = any(char.isdigit() or w in ans_lower for char in ans for w in ["one", "two", "three", "four", "five", "several", "multiple"])
-                if missing or len(ans) < 15 or not has_number:
-                    return f"A total of {people_count} people were visible during monitoring in the retail store where the theft occurred."
-            
-            # 3. Display counter question
-            if any(k in q.lower() for k in ["display", "counter", "case"]):
-                required = ["display", "counter", "shop", "theft", "phone"]
-                missing = [r for r in required if r not in ans_lower]
-                if missing or len(ans) < 15:
-                    return "Yes, there was suspicious activity near the phone display counter inside the retail shop where the theft occurred."
-                    
-            # Ensure "theft" is explicitly stated if retail shop/phone manipulation occurs
-            if any(k in ans_lower for k in ["phone", "counter", "display", "shop", "retail"]) and "theft" not in ans_lower and "steal" not in ans_lower:
-                ans = ans + " The final verdict is theft."
-                
-            return ans
-
         try:
             response = self.llm.invoke(prompt)
             content = getattr(response, "content", str(response))
             parsed = json.loads(content.replace("```json", "").replace("```", "").strip())
-            parsed["answer"] = post_process_agent_answer(question, parsed.get("answer", ""), self.session_context)
         except Exception:
-            # Build contextual fallback from available data
+            # LLM call failed or returned unparseable output — fall back to an honest
+            # summary built directly from recorded session stats. Do NOT fabricate an
+            # incident here; only report numbers actually present in session_context.
             people_count = self.session_context.get("people_detected", 0)
             frames_analyzed = self.session_context.get("frames_analyzed", 0)
             locations = self.session_context.get("locations_visited", [])
-            
-            # Extract keywords from search hits for context-aware fallback
+            total_alerts = self.session_context.get("total_alerts", 0)
+            high_alerts = self.session_context.get("high_alerts", 0)
+
             hit_frames = [hit.get("frame_id", "unknown") for hit in search_hits if isinstance(hit, dict)]
-            
-            # Get max people visible in any single frame for accurate "simultaneous" count
-            max_people_in_frame = 0
-            try:
-                context_summaries = _load_recent_context_summaries(limit=20)
-                for summary in context_summaries:
-                    if isinstance(summary, dict):
-                        frame_people = summary.get("running_stats", {}).get("people_detected", 0)
-                        # Actually get per-frame people count from the summary text
-                        summary_text = summary.get("context_summary", "")
-                        import re
-                        match = re.search(r'(\d+) people?', summary_text)
-                        if match:
-                            frame_people = int(match.group(1))
-                        max_people_in_frame = max(max_people_in_frame, frame_people)
-            except Exception:
-                pass
-            # Fallback to current session context if we can't parse
-            if max_people_in_frame == 0:
-                max_people_in_frame = people_count
-            
-            # Construct fallback and post-process
-            fallback_answer = f"Session shows {people_count} people in retail store with phone theft display activity."
-            fallback_answer = post_process_agent_answer(question, fallback_answer, self.session_context)
-            
+
+            if total_alerts:
+                summary = (
+                    f"{total_alerts} alert(s) were raised across {frames_analyzed} analyzed frame(s) "
+                    f"({high_alerts} high severity), covering {', '.join(locations) or 'unknown locations'}."
+                )
+            else:
+                summary = (
+                    f"No alerts were raised across {frames_analyzed} analyzed frame(s) "
+                    f"({people_count} total people detected), covering {', '.join(locations) or 'unknown locations'}."
+                )
+
             parsed = {
-                "answer": fallback_answer,
-                "confidence": 0.55,
-                "sources": hit_frames[:5] if hit_frames else [f"frame_{i:03d}" for i in range(1, frames_analyzed + 1)],
-                "next_action": "Review the analyzed frames for detailed threat assessment.",
-                "reasoning": f"Using session context: {frames_analyzed} frames, {people_count} people detected, locations: {locations}.",
+                "answer": (
+                    "The reasoning model was unavailable to answer this directly. Based on the "
+                    f"session's recorded data: {summary}"
+                ),
+                "confidence": 0.3,
+                "sources": hit_frames[:5],
+                "next_action": "Retry the question, or review the analyzed frames directly.",
+                "reasoning": (
+                    f"LLM call failed; falling back to raw session_context stats: "
+                    f"{frames_analyzed} frames, {people_count} people, {total_alerts} alerts, locations: {locations}."
+                ),
             }
 
         self._record_memory(f"Question: {question}", parsed.get("answer", ""))

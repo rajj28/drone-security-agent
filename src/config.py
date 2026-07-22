@@ -28,8 +28,14 @@ for env_var in ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_p
 load_dotenv()
 
 class Settings(BaseSettings):
-    # Google Gemini (primary LLM / VLM)
-    GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
+    # Google Gemini (primary LLM / VLM).
+    # PERMANENT PRODUCTION CHOICE: auth goes through Vertex AI (GCP service-account
+    # credentials, postpaid billing to the GCP account) — this is the only supported
+    # path and defaults to True below so a missing/unset env var still uses Vertex
+    # rather than silently falling through to a (now-removed) API key.
+    # These API key fields are a legacy fallback ONLY for USE_VERTEX_AI=false during
+    # local development without GCP credentials; production must never rely on them.
+    GEMINI_API_KEY: str = Field("", env="GEMINI_API_KEY")
     # Optional additional keys (different GCP projects) for round-robin load sharing,
     # which multiplies the free-tier rate limit. Leave blank if unused.
     GEMINI_API_KEY_2: str = Field("", env="GEMINI_API_KEY_2")
@@ -42,8 +48,10 @@ class Settings(BaseSettings):
     GEMINI_FLASH_ONLY: bool = Field(False, env="GEMINI_FLASH_ONLY")
     API_MIN_INTERVAL_SEC: float = Field(4.0, env="API_MIN_INTERVAL_SEC")
     GEMINI_EMBEDDING_MODEL: str = Field("text-embedding-004", env="GEMINI_EMBEDDING_MODEL")
-    # Vertex AI configuration (to bill directly to GCP credit account)
-    USE_VERTEX_AI: bool = Field(False, env="USE_VERTEX_AI")
+    # Vertex AI configuration (bills directly to the GCP credit account). Defaults to
+    # True — this is the permanent, intended auth path; set USE_VERTEX_AI=false
+    # explicitly (e.g. in a local .env) to opt out for dev without GCP credentials.
+    USE_VERTEX_AI: bool = Field(True, env="USE_VERTEX_AI")
     GCP_PROJECT_ID: str = Field("project-9e4a6e94-3f27-47fe-8f4", env="GCP_PROJECT_ID")
     GCP_LOCATION: str = Field("us-central1", env="GCP_LOCATION")
 

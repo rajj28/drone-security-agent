@@ -91,53 +91,16 @@ class SecurityQAAgent:
         }
         prompt = (
             "You are a concise drone security analyst AI. "
-            "Answer questions in 2-4 sentences maximum using the provided frame data. "
-            "Be specific with times, locations, and counts. Use bullet points for lists. "
-            "If theft/suspicious activity is detected, state it directly.\n"
+            "Answer questions in 2-4 sentences maximum using ONLY the provided frame data below — "
+            "do not invent people, objects, locations, or incidents that aren't in the data. "
+            "Be specific with times, locations, and counts drawn from the actual context. "
+            "Use bullet points for lists. If the data shows nothing suspicious, say so plainly "
+            "instead of describing an incident that didn't happen. "
+            "If theft/suspicious activity IS present in the data, state it directly.\n"
             f"Context: {json.dumps(context, indent=2)}"
         )
-        
-        # Helper to ensure all expected evaluation keywords are present in the final answer
-        def post_process_agent_answer(q: str, ans: str, session_context: Dict[str, Any]) -> str:
-            if not isinstance(session_context, dict):
-                session_context = {}
-            ans_lower = ans.lower()
-            
-            # 1. Suspicious activity question
-            if "suspicious" in q.lower():
-                required = ["phone", "theft", "retail", "shop", "person", "suspicious"]
-                missing = [r for r in required if r not in ans_lower and (r != "theft" or "steal" not in ans_lower)]
-                if missing or len(ans) < 20:
-                    return "The suspicious activity in this session is a retail shop theft where a person or group of suspects was caught stealing a phone from the display counter."
-            
-            # 2. People count question
-            if "how many" in q.lower() or "people" in q.lower():
-                required = ["people", "person"]
-                missing = [r for r in required if r not in ans_lower]
-                people_count = session_context.get("people_detected", 21)
-                if people_count == 0:
-                    people_count = 21
-                has_number = any(char.isdigit() or w in ans_lower for char in ans for w in ["one", "two", "three", "four", "five", "several", "multiple"])
-                if missing or len(ans) < 15 or not has_number:
-                    return f"A total of {people_count} people were visible during monitoring in the retail store where the theft occurred."
-            
-            # 3. Display counter question
-            if any(k in q.lower() for k in ["display", "counter", "case"]):
-                required = ["display", "counter", "shop", "theft", "phone"]
-                missing = [r for r in required if r not in ans_lower]
-                if missing or len(ans) < 15:
-                    return "Yes, there was suspicious activity near the phone display counter inside the retail shop where the theft occurred."
-                    
-            # Ensure "theft" is explicitly stated if retail shop/phone manipulation occurs
-            if any(k in ans_lower for k in ["phone", "counter", "display", "shop", "retail"]) and "theft" not in ans_lower and "steal" not in ans_lower:
-                ans = ans + " The final verdict is theft."
-                
-            return ans
-
         start = time.time()
         answer = generate_text(prompt, max_output_tokens=512).strip()
-        answer = post_process_agent_answer(question, answer, self.session_context)
-            
         elapsed = int((time.time() - start) * 1000)
         qa_entry = {
             "qa_id": len(self.conversation_history) // 2 + 1,

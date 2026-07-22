@@ -184,17 +184,27 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
 
                 {/* 2. Top-Level Alarm Card */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div 
-                    className="premium-card" 
-                    style={{ 
-                      height: '100%', 
-                      borderLeft: `4px solid ${getThreatBorderColor(analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR')}` 
+                  {!analysis && (
+                    <div style={{ padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.35)', color: '#f59e0b', fontSize: '0.85rem', fontWeight: 600 }}>
+                      No analysis available for this frame. The vision stage may have failed or is still running — check the Debug panel. Values below are NOT real results.
+                    </div>
+                  )}
+                  {analysis && (analysis.security_signals || []).some((s: string) => s === 'analysis_degraded' || s === 'offline_heuristic') && (
+                    <div style={{ padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', color: 'var(--color-high)', fontSize: '0.85rem', fontWeight: 600 }}>
+                      DEGRADED ANALYSIS — the real AI vision model was unavailable for this frame ({analysis.model_used || 'offline heuristic'}) and it was never actually reviewed for threats. The threat level below is a fallback placeholder, not a genuine assessment. Manual review required.
+                    </div>
+                  )}
+                  <div
+                    className="premium-card"
+                    style={{
+                      height: '100%',
+                      borderLeft: `4px solid ${analysis ? getThreatBorderColor(analysis.threat_level || analysis.overall_threat_level || 'UNKNOWN') : 'var(--text-muted)'}`
                     }}
                   >
                     <h4 className="card-title">Threat Level Summary</h4>
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-                      <span className="card-value" style={{ color: getThreatBorderColor(analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR') }}>
-                        {analysis?.threat_level || analysis?.overall_threat_level || 'CLEAR'}
+                      <span className="card-value" style={{ color: analysis ? getThreatBorderColor(analysis.threat_level || analysis.overall_threat_level || 'UNKNOWN') : 'var(--text-muted)' }}>
+                        {analysis ? (analysis.threat_level || analysis.overall_threat_level || 'UNKNOWN') : 'NOT ANALYZED'}
                       </span>
                     </div>
                     
@@ -208,7 +218,9 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
 
                     <div style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                       <strong>Reasoning: </strong>
-                      {analysis?.alert_reasoning || analysis?.reasoning || 'No threat indicators identified in this frame.'}
+                      {analysis
+                        ? (analysis.alert_reasoning || analysis.reasoning || 'No threat indicators identified in this frame.')
+                        : 'No analysis data — this frame was never analyzed, so no threat verdict exists.'}
                     </div>
 
                     {analysis?.security_signals && analysis.security_signals.length > 0 && (
@@ -238,26 +250,27 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                     <div className="metadata-pair">
                       <span className="metadata-label">GPS Coordinate</span>
                       <span className="metadata-value-mono">
-                        {telemetry?.location?.latitude?.toFixed(5) || '37.7749'}N,{' '}
-                        {telemetry?.location?.longitude?.toFixed(5) || '-122.4194'}W
+                        {telemetry?.location?.latitude != null && telemetry?.location?.longitude != null
+                          ? `${telemetry.location.latitude.toFixed(5)}N, ${telemetry.location.longitude.toFixed(5)}W`
+                          : 'N/A'}
                       </span>
                     </div>
                     <div className="metadata-pair">
                       <span className="metadata-label">Altitude</span>
                       <span className="metadata-value-mono">
-                        {telemetry?.altitude_m?.toFixed(1) || telemetry?.altitude || '45.2'} meters
+                        {telemetry?.altitude_m?.toFixed(1) ?? telemetry?.altitude ?? 'N/A'} meters
                       </span>
                     </div>
                     <div className="metadata-pair">
                       <span className="metadata-label">Gimbal Heading</span>
                       <span className="metadata-value-mono">
-                        {telemetry?.gimbal_yaw_deg?.toFixed(1) || telemetry?.heading || '180.0'}° (South)
+                        {telemetry?.gimbal_yaw_deg?.toFixed(1) ?? telemetry?.heading ?? 'N/A'}°
                       </span>
                     </div>
                     <div className="metadata-pair">
                       <span className="metadata-label">Drone Speed</span>
                       <span className="metadata-value-mono">
-                        {telemetry?.speed_mps?.toFixed(1) || telemetry?.speed || '5.4'} m/s
+                        {telemetry?.speed_mps?.toFixed(1) ?? telemetry?.speed ?? 'N/A'} m/s
                       </span>
                     </div>
                     <div className="metadata-pair">
@@ -269,7 +282,7 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                     <div className="metadata-pair">
                       <span className="metadata-label">Battery Level</span>
                       <span className="metadata-value" style={{ color: 'var(--color-clear)' }}>
-                        {telemetry?.battery_percentage || '92'}%
+                        {telemetry?.battery_percentage ?? 'N/A'}%
                       </span>
                     </div>
                   </div>
@@ -299,14 +312,14 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                       </div>
                     )}
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                      <span><strong>Scene Location:</strong> {analysis?.scene_type || 'Retail Store/Aisle'}</span>
-                      <span><strong>People Present:</strong> {analysis?.people_count ?? 0}</span>
+                      <span><strong>Scene Location:</strong> {analysis?.scene_type || 'Unknown'}</span>
+                      <span><strong>People Present:</strong> {analysis?.people_count ?? '—'}</span>
                     </div>
 
                     <div style={{ fontSize: '0.9rem', lineHeight: '1.4', background: 'rgba(255,255,255,0.02)', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
                       <strong>VLM Scene Description:</strong>
                       <p style={{ marginTop: '0.25rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                        {analysis?.vlm_description || 'A neutral scan of shelves with products. Customers are walking.'}
+                        {analysis?.vlm_description || 'No VLM description available — this frame has no analysis result.'}
                       </p>
                     </div>
 
@@ -343,10 +356,10 @@ export const FrameAnalysis: React.FC<FrameAnalysisProps> = ({ apiBase, activeSes
                           <span style={{ textTransform: 'capitalize', color: 'var(--text-muted)' }}>{person.clothing_color || 'Unknown'} Clothing</span>
                         </div>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
-                          <strong>Actions: </strong>{person.actions?.join(', ') || 'Neutral posture'}
+                          <strong>Actions: </strong>{person.actions?.join(', ') || 'Not recorded'}
                         </p>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          <strong>Physical: </strong>{person.physical_attributes || 'Slim build, average height'}
+                          <strong>Physical: </strong>{person.physical_attributes || 'Not recorded'}
                         </p>
                       </div>
                     ))}
