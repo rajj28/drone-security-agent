@@ -78,6 +78,26 @@ _HELD_ITEM_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Broader than _HELD_ITEM_PATTERN's verb list — used only to detect *whether*
+# a person is actively manipulating something in a frame at all, not to
+# extract a specific object phrase, so it can afford to be looser.
+_HAND_VERB_PATTERN = re.compile(
+    r"\b(?:holding|holds|held|manipulat\w*|examin\w*|grasp\w*|reach\w*|touch\w*|"
+    r"pick\w*|carr\w*|conceal\w*|tuck\w*)\b",
+    re.IGNORECASE,
+)
+
+# Descriptive words that are shared across nearly every hand/body description
+# regardless of what object is involved — excluded from the object-overlap
+# check so two frames don't look like "the same object" just because both
+# mention a hand.
+_OBJECT_OVERLAP_STOPWORDS = (
+    "hand", "hands", "right", "left", "person", "fingers", "finger", "with",
+    "from", "that", "this", "near", "over", "onto", "into", "above", "below",
+    "about", "upon", "also", "only", "were", "have", "been", "being", "their",
+    "which", "while", "frame", "side", "visible", "extending",
+)
+
 
 def _normalize(term: str) -> str:
     return re.sub(r"\(.*?\)", "", term).strip().lower()
@@ -174,6 +194,95 @@ def find_vanished_handled_objects(prev: Dict[str, Any], curr: Dict[str, Any]) ->
     return vanished
 
 
+def _hand_active(frame: Dict[str, Any]) -> bool:
+    """True if the frame's text describes a person actively manipulating
+    something (holding/reaching/grasping/touching/...), regardless of what."""
+    return bool(_HAND_VERB_PATTERN.search(_text_blob(frame)))
+
+
+def _object_word_sets(objects: List[str]) -> List["tuple[str, set]"]:
+    """For each non-background object name, its set of descriptive words
+    (len >= 4, minus generic body/frame words) used for cross-frame overlap
+    matching — deliberately looser than `_canonical` synonym groups, since
+    here we want "small blue container with green lid" to line up with
+    "small blue and green object" via shared adjectives, not a noun match."""
+    out = []
+    for o in objects:
+        if _is_background(o) or _is_excluded_held_term(o):
+            continue
+        words = {
+            w for w in re.findall(r"[a-z]+", _normalize(o))
+            if len(w) >= 4 and w not in _OBJECT_OVERLAP_STOPWORDS
+        }
+        if words:
+            out.append((o, words))
+    return out
+
+
+def find_still_handled_objects(prev: Dict[str, Any], curr: Dict[str, Any]) -> List[str]:
+    """Returns curr's object names that look like the same physical item(s)
+    still being actively handled from `prev`'s frame — i.e. NOT vanished,
+    the opposite case from `find_vanished_handled_objects`. Used to catch a
+    different failure mode: the VLM re-describes the same in-hand item with
+    different words each frame, and its own per-frame severity score
+    flip-flops (HIGH then CLEAR) even though the same handling never stopped.
+    """
+    prev_people = int(prev.get("people_count", 0) or 0)
+    curr_people = int(curr.get("people_count", 0) or 0)
+    if prev_people == 0 or curr_people == 0:
+        return []
+    if not _hand_active(prev) or not _hand_active(curr):
+        return []
+
+    curr_text = _text_blob(curr)
+    if any(p in curr_text for p in _SET_DOWN_PHRASES):
+        return []  # explicit resolution shown — a real de-escalation, not a scoring flip-flop
+
+    prev_objs = _object_word_sets(prev.get("objects_detected") or [])
+    curr_objs = _object_word_sets(curr.get("objects_detected") or [])
+
+    matches = []
+    for c_name, c_words in curr_objs:
+        for _, p_words in prev_objs:
+            if len(c_words & p_words) >= 2:
+                matches.append(c_name)
+                break
+    return matches
+
+
+def persistence_signal(prev: Dict[str, Any], curr: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Returns a signal dict if `curr` looks like an inconsistent severity
+    drop relative to `prev` — the same item is still being actively handled,
+    with no set-down/hand-off shown, yet the VLM scored this frame much less
+    severely than the last one. Complements `concealment_signal`, which only
+    covers the item *vanishing*; this covers it staying in view while the
+    score alone swings down.
+    """
+    prev_severity = str(prev.get("threat_level", "CLEAR") or "CLEAR").upper()
+    curr_severity = str(curr.get("threat_level", "CLEAR") or "CLEAR").upper()
+    if _SEVERITY_ORDER.get(prev_severity, 0) < 2:  # only care if prev was MEDIUM+
+        return None
+    if _SEVERITY_ORDER.get(curr_severity, 0) >= _SEVERITY_ORDER.get(prev_severity, 0):
+        return None  # not a drop, nothing to correct
+
+    still_handled = find_still_handled_objects(prev, curr)
+    if not still_handled:
+        return None
+
+    return {
+        "objects": still_handled,
+        "signal_type": "persistence",
+        "escalate_to": prev_severity,
+        "reason": (
+            f"Object continuity: {', '.join(still_handled)} appears to be the same item still being "
+            f"actively handled by the same person as the previous frame (scored {prev_severity}), with "
+            f"no set-down or hand-off shown — the handling never stopped, so dropping to {curr_severity} "
+            f"looks like a per-frame scoring inconsistency rather than a real change in the situation. "
+            f"Carrying the prior severity forward."
+        ),
+    }
+
+
 def concealment_signal(prev: Dict[str, Any], curr: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Returns a concealment-signal dict if `curr` looks like it followed a
     concealment action relative to `prev`, else None.
@@ -201,6 +310,8 @@ def concealment_signal(prev: Dict[str, Any], curr: Dict[str, Any]) -> Optional[D
     )
     return {
         "vanished_objects": vanished,
+        "objects": vanished,
+        "signal_type": "concealment",
         "escalate_to": "HIGH" if (near_receptacle and concealable) else "MEDIUM",
         "reason": (
             f"Object continuity: {', '.join(vanished)} were being actively handled in the "

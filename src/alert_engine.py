@@ -16,7 +16,7 @@ from src.config import settings
 from src.gemini_client import generate_text
 from src.gemini_langchain import GeminiLangChain
 from src.behavioral_analyzer import analyze_behavioral_threats
-from src.object_continuity import concealment_signal, escalate_severity
+from src.object_continuity import concealment_signal, persistence_signal, escalate_severity
 
 RULES = [
     (lambda a, t: t["is_after_hours"] and "person" in a.get("objects_detected", []), "HIGH", "after_hours_person"),
@@ -344,8 +344,9 @@ class AlertEngineAgent:
         if continuity_signal:
             continuity_block = (
                 "\nOBJECT CONTINUITY SIGNAL (deterministic, computed by comparing this frame's "
-                "objects_detected against the previous frame's — trust this over your own read of "
-                "the current frame alone, since a concealed object leaves nothing to see):\n"
+                "objects_detected/person_features against the previous frame's — trust this over "
+                "your own read of the current frame alone, since a concealed object leaves nothing "
+                "to see, and a per-frame score can inconsistently swing down even mid-handling):\n"
                 f"{continuity_signal['reason']} Suggested minimum severity: {continuity_signal['escalate_to']}.\n"
             )
         prompt = f"""
@@ -523,13 +524,16 @@ Return JSON with keys:
         people_count = int(analysis.get("people_count", 0) or 0)
         has_people = people_count > 0 or bool(analysis.get("person_features"))
 
-        # Deterministic cross-frame check: did something this person was
+        # Deterministic cross-frame checks: (1) did something this person was
         # handling in the previous frame vanish here with no set-down visible?
         # A single-frame analysis (rules or LLM) has no way to see this on its
         # own, since the concealment itself leaves nothing behind to look at.
+        # (2) is the same item still being handled while the severity score
+        # dropped anyway — a per-frame scoring flip-flop rather than a real
+        # de-escalation?
         continuity = None
         if self._prev_analysis is not None:
-            continuity = concealment_signal(self._prev_analysis, analysis)
+            continuity = concealment_signal(self._prev_analysis, analysis) or persistence_signal(self._prev_analysis, analysis)
 
         # Run the LLM reasoning layer on every frame that has people (not just rule-flagged
         # ones) so it can actively detect theft/suspicious behavior the rules miss. The LLM
@@ -556,7 +560,8 @@ Return JSON with keys:
             if escalated_sev != current_sev:
                 alert["severity"] = escalated_sev
                 alert["alert_triggered"] = True
-                alert["rule_triggered"] = alert.get("rule_triggered") or "object_continuity_concealment"
+                rule_name = "object_continuity_concealment" if continuity.get("signal_type") == "concealment" else "object_continuity_persistence"
+                alert["rule_triggered"] = alert.get("rule_triggered") or rule_name
                 alert["llm_reasoning"] = (str(alert.get("llm_reasoning", "") or "") + " " + continuity["reason"]).strip()
                 alert.setdefault("context_signal", continuity["reason"])
 
@@ -664,7 +669,7 @@ Return JSON with keys:
 
         for prev_frame, curr_frame in zip(frames, frames[1:]):
             frame_id = curr_frame.get("frame_id")
-            signal = concealment_signal(prev_frame, curr_frame)
+            signal = concealment_signal(prev_frame, curr_frame) or persistence_signal(prev_frame, curr_frame)
             if not signal:
                 continue
 
@@ -677,14 +682,21 @@ Return JSON with keys:
             if escalated_sev == current_sev and alert_json.get("alert_triggered"):
                 continue  # already caught by the inline check or rules
 
+            is_concealment = signal.get("signal_type") == "concealment"
+            rule_name = "object_continuity_concealment" if is_concealment else "object_continuity_persistence"
             audited += 1
             alert_json["severity"] = escalated_sev
             alert_json["alert_triggered"] = True
-            alert_json["rule_triggered"] = alert_json.get("rule_triggered") or "object_continuity_concealment"
+            alert_json["rule_triggered"] = alert_json.get("rule_triggered") or rule_name
             alert_json["auto_escalate"] = escalated_sev in ("HIGH", "CRITICAL")
             note = f"[Object-continuity audit] {signal['reason']}"
             alert_json["llm_reasoning"] = (str(alert_json.get("llm_reasoning", "") or "") + " " + note).strip()
-            alert_json["recommended_action"] = alert_json.get("recommended_action") or "Review flagged frame — object disappeared from view between consecutive frames."
+            default_action = (
+                "Review flagged frame — object disappeared from view between consecutive frames."
+                if is_concealment
+                else "Review flagged frame — same item still being handled despite a lower score than the previous frame."
+            )
+            alert_json["recommended_action"] = alert_json.get("recommended_action") or default_action
             structured = alert_json.setdefault("structured_reasoning", {})
             structured["severity"] = escalated_sev
             structured["alert_triggered"] = True
@@ -692,7 +704,7 @@ Return JSON with keys:
             structured.setdefault("llm_reasoning", alert_json["llm_reasoning"])
 
             _write_json_file(settings.ALERTS_DIR / f"{frame_id}_alert.json", alert_json)
-            print(f"[AUDIT] Object continuity retroactively escalated {frame_id} to {escalated_sev}: {signal['vanished_objects']}")
+            print(f"[AUDIT] Object continuity ({signal.get('signal_type', 'concealment')}) retroactively escalated {frame_id} to {escalated_sev}: {signal['objects']}")
 
         if audited:
             self._record_memory(

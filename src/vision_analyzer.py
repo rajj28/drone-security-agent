@@ -1184,9 +1184,11 @@ def analyze_frame(
         return _save_offline_result(frame_id, image_path, telemetry, output_dir, reason=reason)
 
 def _apply_concealment_escalation(result: Dict[str, Any], signal: Dict[str, Any], frame_id: str) -> None:
-    """Escalates `result` in place based on an object_continuity concealment signal
-    and rewrites the frame's analysis JSON on disk so downstream consumers
-    (alert engine, API, dashboard) see the escalated threat level."""
+    """Escalates `result` in place based on an object_continuity signal —
+    either a "vanished while handled" concealment signal or a "still handled,
+    severity dropped" persistence signal — and rewrites the frame's analysis
+    JSON on disk so downstream consumers (alert engine, API, dashboard) see
+    the escalated threat level."""
     from src.object_continuity import escalate_severity
 
     current = str(result.get("threat_level", "CLEAR") or "CLEAR").upper()
@@ -1196,9 +1198,10 @@ def _apply_concealment_escalation(result: Dict[str, Any], signal: Dict[str, Any]
     if result.get("threat_type") in (None, "clear", "unknown", ""):
         result["threat_type"] = "theft_behavior"
 
+    signal_tag = "possible_concealment" if signal.get("signal_type") == "concealment" else "inconsistent_scoring"
     signals = result.setdefault("security_signals", []) or []
-    if "possible_concealment" not in signals:
-        signals.append("possible_concealment")
+    if signal_tag not in signals:
+        signals.append(signal_tag)
     result["security_signals"] = signals
 
     elements = result.setdefault("suspicious_elements", []) or []
@@ -1212,7 +1215,7 @@ def _apply_concealment_escalation(result: Dict[str, Any], signal: Dict[str, Any]
     out_path = settings.ANALYSIS_DIR / f"{frame_id}_analysis.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
-    print(f"[VISION] Object continuity: escalated {frame_id} to {escalated} ({signal['vanished_objects']})")
+    print(f"[VISION] Object continuity ({signal.get('signal_type', 'concealment')}): escalated {frame_id} to {escalated} ({signal['objects']})")
 
 
 def analyze_all_frames():
@@ -1292,7 +1295,7 @@ def analyze_all_frames():
     result_map = {fid: (tel, res) for fid, tel, res in completed}
     
     from src.cancellation import is_cancelled
-    from src.object_continuity import concealment_signal, escalate_severity
+    from src.object_continuity import concealment_signal, persistence_signal, escalate_severity
     session_id = os.environ.get("SESSION_ID") or getattr(settings, "SESSION_ID", "")
     if is_cancelled(session_id):
         raise RuntimeError("Pipeline execution cancelled by user request.")
@@ -1309,12 +1312,15 @@ def analyze_all_frames():
 
         telemetry, result = result_map[frame_id]
 
-        # Object-continuity check: an item actively handled in the previous
-        # frame that has vanished here (with no set-down/hand-off visible) is
-        # a strong concealment signal that a single-frame VLM call can't see,
-        # since by the time it's concealed there's nothing left to look at.
+        # Object-continuity checks: (1) an item actively handled in the previous
+        # frame that has vanished here (with no set-down/hand-off visible) is a
+        # strong concealment signal a single-frame VLM call can't see, since by
+        # the time it's concealed there's nothing left to look at. (2) an item
+        # still being actively handled in both frames whose severity score
+        # nonetheless dropped is a per-frame scoring inconsistency, not a real
+        # de-escalation — carry the prior severity forward instead.
         if result and prev_result:
-            signal = concealment_signal(prev_result, result)
+            signal = concealment_signal(prev_result, result) or persistence_signal(prev_result, result)
             if signal:
                 _apply_concealment_escalation(result, signal, frame_id)
 
