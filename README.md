@@ -47,8 +47,7 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 ## Architecture
 
 <p align="center">
-  <img src="<img width="3200" height="2940" alt="architecture-diagram-v2" src="https://github.com/user-attachments/assets/6746d263-1f01-4d74-b46a-b23b766526b7" />
-" alt="System Architecture Diagram" width="100%"/>
+  <img src="docs/images/architecture-diagram-v2.png" alt="System Architecture Diagram" width="100%"/>
 </p>
 
 ---
@@ -174,7 +173,7 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your API keys (at minimum: GEMINI_API_KEY, PINECONE_API_KEY)
+# Edit .env with your API keys (at minimum: Vertex AI settings USE_VERTEX_AI/GCP_PROJECT_ID/GCP_LOCATION, and PINECONE_API_KEY)
 
 # Start the API server
 uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
@@ -194,8 +193,10 @@ The API will be available at `http://localhost:8000` and the dashboard at `http:
 All configuration is managed through environment variables (`.env` file). Key variables:
 
 ```bash
-# Required
-GEMINI_API_KEY=your_gemini_api_key
+# Required — Gemini runs through Vertex AI (postpaid GCP billing)
+USE_VERTEX_AI=true
+GCP_PROJECT_ID=your_gcp_project
+GCP_LOCATION=us-central1
 PINECONE_API_KEY=your_pinecone_api_key
 
 # Gemini model selection
@@ -349,7 +350,7 @@ Fly.io machines give the background video pipeline full CPU (Cloud Run throttles
 ```bash
 # One-time setup
 fly apps create drone-security-agent
-fly secrets set GEMINI_API_KEY="..." PINECONE_API_KEY="..." MONGODB_URI="..."
+fly secrets set USE_VERTEX_AI=true GCP_PROJECT_ID="..." GCP_LOCATION="us-central1" GCP_ADC_JSON="$(base64 -w0 gcp-credentials.json)" PINECONE_API_KEY="..." MONGODB_URI="..."
 
 # Build frontend + deploy
 cd frontend && npm run build && cd ..
@@ -375,7 +376,7 @@ gcloud run deploy drone-security-dashboard \
   --allow-unauthenticated \
   --memory 2Gi \
   --cpu 2 \
-  --set-env-vars "GEMINI_API_KEY=...,PINECONE_API_KEY=...,MONGODB_URI=..."
+  --set-env-vars "USE_VERTEX_AI=true,GCP_PROJECT_ID=...,GCP_LOCATION=us-central1,PINECONE_API_KEY=...,MONGODB_URI=..."
 ```
 
 ### Docker Compose (Local)
