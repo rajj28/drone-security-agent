@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green)](https://fastapi.tiangolo.com)
 [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
-[![Google Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployed-4285F4)](https://cloud.google.com/run)
+[![Fly.io](https://img.shields.io/badge/Fly.io-Deployed-8b5cf6)](https://drone-security-agent.fly.dev/)
 [![Gemini 2.5](https://img.shields.io/badge/Gemini-2.5%20Pro%20%2F%20Flash-orange)](https://ai.google.dev)
 
 > An end-to-end AI agent that ingests drone surveillance video, extracts frames using intelligent strategies, analyzes each frame with multi-model vision AI, detects security threats, generates alerts, and provides a natural-language Q&A interface — all exposed through a production REST API and React dashboard.
@@ -88,7 +88,7 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 | **AI Q&A Agent** | Conversational security assistant with session context |
 | **MongoDB Persistence** | Session state survives container restarts and autoscaling |
 | **React Dashboard** | Modern glassmorphic UI with real-time processing status |
-| **Google Cloud Run** | Production deployment with auto-scaling and CI/CD |
+| **Fly.io Deployment** | Production deployment with ~1s suspend/resume machines |
 
 ---
 
