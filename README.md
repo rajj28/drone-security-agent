@@ -47,7 +47,8 @@ The Drone Security Analyst Agent automates physical security monitoring by proce
 ## Architecture
 
 <p align="center">
-  <img src="docs/images/architecture-diagram.svg" alt="System Architecture Diagram" width="100%"/>
+  <img src="<img width="3200" height="2940" alt="architecture-diagram-v2" src="https://github.com/user-attachments/assets/6746d263-1f01-4d74-b46a-b23b766526b7" />
+" alt="System Architecture Diagram" width="100%"/>
 </p>
 
 ---
