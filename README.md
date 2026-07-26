@@ -10,7 +10,7 @@
 
 > An end-to-end AI agent that ingests drone surveillance video, extracts frames using intelligent strategies, analyzes each frame with multi-model vision AI, detects security threats, generates alerts, and provides a natural-language Q&A interface — all exposed through a production REST API and React dashboard.
 
-**Live Demo:** https://drone-security-dashboard-27774218566.us-central1.run.app/
+**Live Demo:** [https://drone-security-dashboard-27774218566.us-central1.run.app/](https://drone-security-agent.fly.dev/)
 
 ---
 
