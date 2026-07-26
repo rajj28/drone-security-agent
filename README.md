@@ -247,7 +247,7 @@ See `.env.example` for the full list.
 ### Upload Video
 
 ```bash
-curl -X POST "https://drone-security-dashboard-27774218566.us-central1.run.app/upload-video" \
+curl -X POST "https://drone-security-agent.fly.dev/upload-video" \
   -F "file=@surveillance.mp4" \
   -F "extraction_strategy=hybrid" \
   -F "max_frames=100"
@@ -411,9 +411,9 @@ python evaluate_project.py
 
 ## Live Deployment
 
-- **Dashboard + API:** https://drone-security-dashboard-27774218566.us-central1.run.app/
-- **Health Check:** https://drone-security-dashboard-27774218566.us-central1.run.app/health
-- **API Docs:** https://drone-security-dashboard-27774218566.us-central1.run.app/docs
+- **Dashboard + API:** https://drone-security-agent.fly.dev/
+- **Health Check:** https://drone-security-agent.fly.dev/health
+- **API Docs:** https://drone-security-agent.fly.dev/docs
 
 ---
 
